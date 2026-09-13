@@ -165,6 +165,14 @@ module SketchupDarkMode
       @cmd_toggle.tooltip = 'Przełącz tryb ciemny (Dark Mode)'
       @cmd_toggle.status_bar_text = 'Włącza lub wyłącza tryb ciemny'
 
+      @cmd_toggle.set_validation_proc do
+        if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
+          Main.dark_mode_active? ? MF_CHECKED : MF_UNCHECKED
+        else
+          Main.dark_mode_active? ? 1 : 0
+        end
+      end
+
       update_ui_elements
 
       # 2. Komenda Przywróć domyślne (Jasny motyw)
