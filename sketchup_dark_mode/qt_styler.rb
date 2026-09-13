@@ -104,6 +104,18 @@ module SketchupDarkMode
         Fiddle::TYPE_LONG_LONG
       )
 
+      # 12. void QMainWindow::setCorner(Qt::Corner, Qt::DockWidgetArea)
+      begin
+        sym_corner = qt_widgets_handle['?setCorner@QMainWindow@@QEAAXW4Corner@Qt@@W4DockWidgetArea@3@@Z']
+        @fn_set_corner = Fiddle::Function.new(
+          sym_corner,
+          [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT, Fiddle::TYPE_INT],
+          Fiddle::TYPE_VOID
+        )
+      rescue StandardError
+        @fn_set_corner = nil
+      end
+
       @available = true
       puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Paleta + QSS).'
       true
@@ -128,6 +140,22 @@ module SketchupDarkMode
       hwnd.to_i
     rescue StandardError
       nil
+    end
+
+    # Konfiguruje narożniki QMainWindow, aby górny pasek narzędzi miał pełną szerokość
+    # i nie był ucinany przez prawy zasobnik (TopRightCorner -> TopDockWidgetArea)
+    def adjust_toolbar_corners
+      return unless available? && @fn_set_corner && @fn_active_window
+
+      w = @fn_active_window.call
+      return if w.nil? || w.to_i == 0
+
+      # Corner 2 = TopRightCorner, DockWidgetArea 4 = TopDockWidgetArea
+      @fn_set_corner.call(w, 2, 4)
+      # Corner 0 = TopLeftCorner, DockWidgetArea 4 = TopDockWidgetArea
+      @fn_set_corner.call(w, 0, 4)
+    rescue StandardError
+      # Ignorujemy, jeśli aktywne okno nie jest QMainWindow
     end
 
     # Nakłada ciemną paletę systemową na całą aplikację Qt
@@ -251,6 +279,9 @@ module SketchupDarkMode
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
+
+      # 3. Zapewnij pełną szerokość górnego paska narzędzi
+      adjust_toolbar_corners
 
       true
     rescue StandardError => e
