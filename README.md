@@ -11,6 +11,8 @@ A modern, high-performance **Dark Mode extension** for **Trimble SketchUp 2025 a
 
 It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **Windows DWM title bar**, and the **3D modeling viewport**, while preserving pixel-perfect native toolbar dimensions and professional material swatch legibility.
 
+![SketchUp Dark Mode Preview](docs/screenshot.png)
+
 ---
 
 ## ✨ Features

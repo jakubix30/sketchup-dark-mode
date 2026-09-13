@@ -11,6 +11,8 @@ Nowoczesne, zaawansowane rozszerzenie dodające pełny, profesjonalny **Tryb Cie
 
 Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obszar roboczy modelowania 3D**, zachowując w 100% natywne proporcje pasków narzędzi (brak uciętych ikon) i pełną czytelność miniatur materiałów architektonicznych.
 
+![Podgląd SketchUp Dark Mode](docs/screenshot.png)
+
 ---
 
 ## ✨ Główne Funkcje
