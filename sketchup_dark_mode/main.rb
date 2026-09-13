@@ -12,6 +12,7 @@ module SketchupDarkMode
     @app_observer = nil
     @toolbar = nil
     @cmd_toggle = nil
+    @cmd_restore = nil
 
     class DarkModeAppObserver < Sketchup::AppObserver
       def onNewModel(model)
@@ -36,7 +37,6 @@ module SketchupDarkMode
       setup_ui
       setup_observers
 
-      # Zastosuj początkowy stan po załadowaniu interfejsu SketchUp
       UI.start_timer(0.3, false) do
         update_state
       end
@@ -60,7 +60,7 @@ module SketchupDarkMode
       # 1. Pasek tytułu Windows (DWM)
       DwmStyler.set_dark_titlebar(true) if Config['style_titlebar']
 
-      # 2. Interfejs Qt 6 (QSS)
+      # 2. Interfejs Qt 6 (Ciemna paleta + QSS)
       if Config['style_ui']
         apply_current_qss
       else
@@ -75,6 +75,7 @@ module SketchupDarkMode
       end
 
       update_ui_elements
+      puts '[Dark Mode] Tryb ciemny został WŁĄCZONY.'
     end
 
     def disable_dark_mode
@@ -83,13 +84,14 @@ module SketchupDarkMode
       # 1. Pasek tytułu Windows (DWM)
       DwmStyler.set_dark_titlebar(false)
 
-      # 2. Interfejs Qt 6
+      # 2. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS)
       QtStyler.clear_stylesheet
 
-      # 3. Widok 3D
+      # 3. Widok 3D (Przywrócenie domyślnych kolorów canvas)
       ViewportStyler.restore_viewport(Sketchup.active_model)
 
       update_ui_elements
+      puts '[Dark Mode] Przywrócono domyślny jasny motyw SketchUp.'
     end
 
     def update_state
@@ -135,10 +137,9 @@ module SketchupDarkMode
       is_dark = dark_mode_active?
       icon_suffix = is_dark ? '_active' : ''
 
-      # Ikony dla SketchUp 2025 (SVG lub PNG)
       svg_icon = File.join(ICONS_DIR, "dark_mode#{icon_suffix}.svg")
-      png_24 = File.join(ICONS_DIR, "dark_mode#{icon_suffix}_24.png")
-      png_32 = File.join(ICONS_DIR, "dark_mode#{icon_suffix}_32.png")
+      png_24   = File.join(ICONS_DIR, "dark_mode#{icon_suffix}_24.png")
+      png_32   = File.join(ICONS_DIR, "dark_mode#{icon_suffix}_32.png")
 
       if File.exist?(svg_icon)
         @cmd_toggle.small_icon = svg_icon
@@ -154,25 +155,44 @@ module SketchupDarkMode
     end
 
     def setup_ui
-      # Tworzenie komendy Toggle
+      # 1. Komenda Toggle
       @cmd_toggle = UI::Command.new('Przełącz tryb ciemny') do
         Main.toggle
       end
-
-      @cmd_toggle.menu_text = 'Przełącz tryb ciemny'
+      @cmd_toggle.menu_text = 'Przełącz tryb ciemny (Włącz / Wyłącz)'
       @cmd_toggle.tooltip = 'Przełącz tryb ciemny (Dark Mode)'
-      @cmd_toggle.status_bar_text = 'Włącza lub wyłącza tryb ciemny interfejsu i widoku 3D'
+      @cmd_toggle.status_bar_text = 'Włącza lub wyłącza tryb ciemny'
 
       update_ui_elements
 
-      # Komenda Ustawienia
+      # 2. Komenda Przywróć domyślne (Jasny motyw)
+      @cmd_restore = UI::Command.new('Przywróć domyślny wygląd') do
+        Main.disable_dark_mode
+      end
+      @cmd_restore.menu_text = 'Przywróć domyślny wygląd (Jasny motyw)'
+      @cmd_restore.tooltip = 'Wyłącza tryb ciemny i przywraca standardowy jasny motyw SketchUp'
+      @cmd_restore.status_bar_text = 'Przywraca domyślny jasny motyw interfejsu i widoku 3D'
+
+      sun_svg = File.join(ICONS_DIR, 'light_mode.svg')
+      sun_24  = File.join(ICONS_DIR, 'light_mode_24.png')
+      sun_32  = File.join(ICONS_DIR, 'light_mode_32.png')
+
+      if File.exist?(sun_svg)
+        @cmd_restore.small_icon = sun_svg
+        @cmd_restore.large_icon = sun_svg
+      elsif File.exist?(sun_24) && File.exist?(sun_32)
+        @cmd_restore.small_icon = sun_24
+        @cmd_restore.large_icon = sun_32
+      end
+
+      # 3. Komenda Ustawienia
       cmd_settings = UI::Command.new('Ustawienia trybu ciemnego') do
         SettingsDialog.show
       end
       cmd_settings.menu_text = 'Ustawienia trybu ciemnego...'
       cmd_settings.tooltip = 'Konfiguracja trybu ciemnego'
 
-      # Komenda Przeładuj styl (Hot-Reload)
+      # 4. Komenda Przeładuj styl (Hot-Reload)
       cmd_reload = UI::Command.new('Przeładuj styl CSS') do
         Main.reload_stylesheet
       end
@@ -182,6 +202,7 @@ module SketchupDarkMode
       # Menu w Extensions / Rozszerzenia
       menu = UI.menu('Plugins').add_submenu('Tryb ciemny (Dark Mode)')
       menu.add_item(@cmd_toggle)
+      menu.add_item(@cmd_restore)
       menu.add_item(cmd_settings)
       menu.add_separator
       menu.add_item(cmd_reload)
@@ -189,6 +210,7 @@ module SketchupDarkMode
       # Pasek narzędzi (Toolbar)
       @toolbar = UI::Toolbar.new('Tryb ciemny')
       @toolbar.add_item(@cmd_toggle)
+      @toolbar.add_item(@cmd_restore)
       @toolbar.add_item(cmd_settings)
       @toolbar.restore
     end

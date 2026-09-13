@@ -5,15 +5,19 @@ require 'sketchup.rb'
 module SketchupDarkMode
   loader_dir = File.dirname(__FILE__)
 
-  require File.join(loader_dir, 'config')
-  require File.join(loader_dir, 'qt_styler')
-  require File.join(loader_dir, 'dwm_styler')
-  require File.join(loader_dir, 'viewport_styler')
-  require File.join(loader_dir, 'settings_dialog')
-  require File.join(loader_dir, 'main')
+  # Użycie load zamiast require umożliwia bezproblemowe przeładowywanie zmian w Konsoli Ruby
+  load File.join(loader_dir, 'config.rb')
+  load File.join(loader_dir, 'qt_styler.rb')
+  load File.join(loader_dir, 'dwm_styler.rb')
+  load File.join(loader_dir, 'viewport_styler.rb')
+  load File.join(loader_dir, 'settings_dialog.rb')
+  load File.join(loader_dir, 'main.rb')
 
   unless file_loaded?(__FILE__)
     Main.init
     file_loaded(__FILE__)
+  else
+    # Jeśli plik jest ładowany ponownie, odśwież stan
+    Main.update_state
   end
 end

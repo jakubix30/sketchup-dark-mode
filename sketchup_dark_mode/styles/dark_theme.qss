@@ -152,7 +152,6 @@ QDockWidget::title {
     font-weight: 600;
 }
 
-/* KDDockWidgets używane w SketchUp 2025 */
 KDDockWidgets--DockWidget,
 KDDockWidgets--FrameWidget,
 KDDockWidgets--SideBarWidget,
@@ -221,53 +220,63 @@ QWidget[class*="Dlg"] {
 }
 
 /* --------------------------------------------------------------------------
-   Widoki list, miniatur i drzew (Lista folderów materiałów, Outliner, Tagi)
+   Przeglądarka materiałów, komponentów i stylów (ContentBrowserListCtrl)
+   Kafelki folderów i miniatur materiałów
    -------------------------------------------------------------------------- */
-QAbstractItemView,
-QAbstractItemView::viewport,
+ContentBrowserListCtrl,
+ContentBrowserListCtrl::viewport,
+ContentBrowserListCtrl QWidget,
 QListView,
 QListView::viewport,
-QTreeView,
-QTreeView::viewport,
+QAbstractItemView,
+QAbstractItemView::viewport,
 QTableView,
 QTableView::viewport,
+QTreeView,
+QTreeView::viewport,
 QListWidget,
 QListWidget::viewport,
 QTreeWidget,
-QTreeWidget::viewport,
-QTableWidget,
-QTableWidget::viewport {
+QTreeWidget::viewport {
     background-color: #1e1e1e !important;
-    color: #d4d4d4 !important;
+    color: #ffffff !important;
     border: 1px solid #38383b;
-    alternate-background-color: #252526;
     outline: none;
 }
 
-QAbstractItemView::item,
+/* Każdy pojedynczy kafelek / folder w liście (zapobiega białym kwadratom!) */
+ContentBrowserListCtrl::item,
 QListView::item,
+QListWidget::item,
+QTableView::item,
 QTreeView::item,
-QTableView::item {
-    color: #d4d4d4 !important;
-    background-color: transparent;
-    padding: 3px 5px;
-    border-radius: 3px;
+QAbstractItemView::item {
+    background-color: #2d2d30 !important;
+    color: #ffffff !important;
+    border: 1px solid #3f3f46;
+    border-radius: 4px;
+    padding: 3px;
 }
 
-QAbstractItemView::item:hover,
+ContentBrowserListCtrl::item:hover,
 QListView::item:hover,
+QAbstractItemView::item:hover,
 QTreeView::item:hover {
-    background-color: #2a2d2e !important;
+    background-color: #38383c !important;
+    border: 1px solid #007acc !important;
     color: #ffffff !important;
 }
 
-QAbstractItemView::item:selected,
+ContentBrowserListCtrl::item:selected,
 QListView::item:selected,
+QAbstractItemView::item:selected,
 QTreeView::item:selected {
     background-color: #094771 !important;
+    border: 1px solid #007acc !important;
     color: #ffffff !important;
 }
 
+/* Nagłówki tabel i widoków drzew */
 QHeaderView::section {
     background-color: #2d2d30;
     color: #cccccc;
@@ -284,7 +293,7 @@ QTextEdit::viewport,
 QPlainTextEdit,
 QPlainTextEdit::viewport {
     background-color: #1e1e1e !important;
-    color: #d4d4d4 !important;
+    color: #f1f1f1 !important;
     border: 1px solid #3e3e42;
     selection-background-color: #264f78;
     selection-color: #ffffff;

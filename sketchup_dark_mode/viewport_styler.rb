@@ -69,14 +69,25 @@ module SketchupDarkMode
       return unless model && model.valid?
 
       key = model.object_id
+      ro = model.rendering_options
       if @saved_styles.key?(key)
-        ro = model.rendering_options
         @saved_styles[key].each do |k, v|
           ro[k] = v if ro.keys.include?(k)
         end
         @saved_styles.delete(key)
-        model.active_view.invalidate if model.active_view
+      else
+        # Domyślne wartości SketchUp jeśli brak zapisanego stanu
+        ro['BackgroundColor']   = Sketchup::Color.new(255, 255, 255)
+        ro['ForegroundColor']   = Sketchup::Color.new(0, 0, 0)
+        ro['DrawGround']        = true
+        ro['GroundColor']       = Sketchup::Color.new(208, 204, 180)
+        ro['DrawHorizon']       = true
+        ro['SkyColor']          = Sketchup::Color.new(198, 218, 238)
+        ro['EdgeColorMode']     = 0
+        ro['ConstructionColor'] = Sketchup::Color.new(0, 0, 0)
       end
+
+      model.active_view.invalidate if model.active_view
       true
     rescue StandardError => e
       puts "[Dark Mode] Błąd przywracania widoku: #{e.message}"

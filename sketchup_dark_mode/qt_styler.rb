@@ -6,21 +6,19 @@ module SketchupDarkMode
   module QtStyler
     extend self
 
-    @initialized = false
     @available = false
-    @default_palette_saved = false
-    @default_palette_mem = nil
 
     # Inicjalizuje wskaźniki do funkcji Qt 6 przez Fiddle
     def initialize_qt
-      return @available if @initialized
-      @initialized = true
+      if @available && @fn_set_palette && @fn_palette_ctor && @fn_qcolor_ctor && @fn_palette_set_color
+        return true
+      end
 
       su_dir = File.dirname(Sketchup.find_support_file('sketchup.exe'))
 
       # Załaduj biblioteki Qt 6
-      qt_core_handle = load_dll('Qt6Core.dll', su_dir)
-      qt_gui_handle = load_dll('Qt6Gui.dll', su_dir)
+      qt_core_handle    = load_dll('Qt6Core.dll', su_dir)
+      qt_gui_handle     = load_dll('Qt6Gui.dll', su_dir)
       qt_widgets_handle = load_dll('Qt6Widgets.dll', su_dir)
 
       unless qt_core_handle && qt_gui_handle && qt_widgets_handle
@@ -64,60 +62,50 @@ module SketchupDarkMode
         Fiddle::TYPE_VOID
       )
 
-      # 6. QPalette QGuiApplication::palette()
-      @fn_get_palette = Fiddle::Function.new(
-        qt_gui_handle['?palette@QGuiApplication@@SA?AVQPalette@@XZ'],
-        [Fiddle::TYPE_VOIDP],
-        Fiddle::TYPE_VOIDP
-      )
-
-      # 7. QPalette::QPalette()
+      # 6. QPalette::QPalette()
       @fn_palette_ctor = Fiddle::Function.new(
         qt_gui_handle['??0QPalette@@QEAA@XZ'],
         [Fiddle::TYPE_VOIDP],
         Fiddle::TYPE_VOIDP
       )
 
-      # 8. QPalette::~QPalette()
+      # 7. QPalette::~QPalette()
       @fn_palette_dtor = Fiddle::Function.new(
         qt_gui_handle['??1QPalette@@QEAA@XZ'],
         [Fiddle::TYPE_VOIDP],
         Fiddle::TYPE_VOID
       )
 
-      # 9. void QPalette::setColor(ColorRole, const QColor&)
+      # 8. void QPalette::setColor(ColorRole, const QColor&)
       @fn_palette_set_color = Fiddle::Function.new(
         qt_gui_handle['?setColor@QPalette@@QEAAXW4ColorRole@1@AEBVQColor@@@Z'],
         [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT, Fiddle::TYPE_VOIDP],
         Fiddle::TYPE_VOID
       )
 
-      # 10. QColor::QColor(const char*)
+      # 9. QColor::QColor(const char*)
       @fn_qcolor_ctor = Fiddle::Function.new(
         qt_gui_handle['??0QColor@@QEAA@PEBD@Z'],
         [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP],
         Fiddle::TYPE_VOIDP
       )
 
-      # 11. QWidget* QApplication::activeWindow()
+      # 10. QWidget* QApplication::activeWindow()
       @fn_active_window = Fiddle::Function.new(
         qt_widgets_handle['?activeWindow@QApplication@@SAPEAVQWidget@@XZ'],
         [],
         Fiddle::TYPE_VOIDP
       )
 
-      # 12. WId QWidget::winId()
+      # 11. WId QWidget::winId()
       @fn_widget_winid = Fiddle::Function.new(
         qt_widgets_handle['?winId@QWidget@@QEBA_KXZ'],
         [Fiddle::TYPE_VOIDP],
         Fiddle::TYPE_LONG_LONG
       )
 
-      # Zachowaj domyślną paletę przy pierwszym uruchomieniu
-      save_default_palette
-
       @available = true
-      puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Palette + Stylesheet + WinId).'
+      puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Paleta + QSS).'
       true
     rescue StandardError => e
       puts "[Dark Mode] Błąd Fiddle podczas ładowania Qt: #{e.message}"
@@ -130,7 +118,6 @@ module SketchupDarkMode
       @available
     end
 
-    # Pobiera HWND aktywnego okna Qt
     def active_window_hwnd
       return nil unless available?
 
@@ -153,11 +140,7 @@ module SketchupDarkMode
 
       color_mem = Fiddle::Pointer.malloc(32)
 
-      # Role barw w Qt::ColorRole:
-      # WindowText=0, Button=1, Light=2, Midlight=3, Dark=4, Mid=5,
-      # Text=6, BrightText=7, ButtonText=8, Base=9, Window=10, Shadow=11,
-      # Highlight=12, HighlightedText=13, Link=14, AlternateBase=16,
-      # ToolTipBase=18, ToolTipText=19, PlaceholderText=20
+      # Definicje barw ciemnego motywu w Qt
       dark_roles = {
         0  => '#d4d4d4', # WindowText
         1  => '#2d2d30', # Button
@@ -165,13 +148,13 @@ module SketchupDarkMode
         3  => '#2d2d30', # Midlight
         4  => '#1a1a1c', # Dark
         5  => '#282828', # Mid
-        6  => '#d4d4d4', # Text
+        6  => '#ffffff', # Text (biały/jasny tekst)
         7  => '#ffffff', # BrightText
-        8  => '#d4d4d4', # ButtonText
-        9  => '#1e1e1e', # Base (tło widoków list, ikon, edytorów)
-        10 => '#252526', # Window (tło tacek, okien, paneli)
+        8  => '#ffffff', # ButtonText
+        9  => '#1e1e1e', # Base (tło kafelków, miniatur, list)
+        10 => '#252526', # Window (tło okien, paneli, tacek)
         11 => '#141414', # Shadow
-        12 => '#094771', # Highlight
+        12 => '#094771', # Highlight (zaznaczenie)
         13 => '#ffffff', # HighlightedText
         14 => '#3794ff', # Link
         16 => '#252526', # AlternateBase
@@ -187,24 +170,62 @@ module SketchupDarkMode
         @fn_palette_set_color.call(pal_mem, role, color_mem)
       end
 
-      # Zastosuj paletę globalnie do całej aplikacji
+      # Zastosuj paletę globalnie
       @fn_set_palette.call(pal_mem, 0)
     rescue StandardError => e
-      puts "[Dark Mode] Błąd ustawiania ciemnej palety Qt: #{e.message}"
+      puts "[Dark Mode] Błąd ustawiania ciemnej palety: #{e.message}"
     ensure
       @fn_palette_dtor.call(pal_mem) if pal_mem
     end
 
-    # Przywraca oryginalną paletę
+    # Przywraca standardową jasną paletę systemową Windows
     def restore_default_palette
-      return unless available? && @default_palette_saved && @default_palette_mem
+      return unless available?
 
-      @fn_set_palette.call(@default_palette_mem, 0)
+      pal_mem = Fiddle::Pointer.malloc(128)
+      128.times { |i| pal_mem[i] = 0 }
+      @fn_palette_ctor.call(pal_mem)
+
+      color_mem = Fiddle::Pointer.malloc(32)
+
+      # Domyślne jasne barwy Windows
+      light_roles = {
+        0  => '#000000', # WindowText
+        1  => '#f0f0f0', # Button
+        2  => '#ffffff', # Light
+        3  => '#e0e0e0', # Midlight
+        4  => '#a0a0a0', # Dark
+        5  => '#808080', # Mid
+        6  => '#000000', # Text
+        7  => '#ffffff', # BrightText
+        8  => '#000000', # ButtonText
+        9  => '#ffffff', # Base (białe tło)
+        10 => '#f0f0f0', # Window (jasnoszary)
+        11 => '#696969', # Shadow
+        12 => '#0078d7', # Highlight
+        13 => '#ffffff', # HighlightedText
+        14 => '#0066cc', # Link
+        16 => '#f7f7f7', # AlternateBase
+        18 => '#ffffdc', # ToolTipBase
+        19 => '#000000', # ToolTipText
+        20 => '#767676'  # PlaceholderText
+      }
+
+      light_roles.each do |role, hex|
+        32.times { |i| color_mem[i] = 0 }
+        cstr = Fiddle::Pointer.to_ptr(hex + "\0")
+        @fn_qcolor_ctor.call(color_mem, cstr)
+        @fn_palette_set_color.call(pal_mem, role, color_mem)
+      end
+
+      @fn_set_palette.call(pal_mem, 0)
     rescue StandardError => e
-      puts "[Dark Mode] Błąd przywracania palety: #{e.message}"
+      puts "[Dark Mode] Błąd przywracania jasnej palety: #{e.message}"
+    ensure
+      @fn_palette_dtor.call(pal_mem) if pal_mem
     end
 
-    # Aplikuje arkusz stylów CSS oraz ciemną paletę do całej aplikacji Qt
+    # Aplikuje arkusz stylów CSS oraz ciemną paletę
     def apply_stylesheet(css_text)
       return false unless available?
 
@@ -214,7 +235,7 @@ module SketchupDarkMode
       # 2. Zastosuj arkusz stylów QSS
       qapp = @fn_instance.call
       if qapp.nil? || qapp.to_i == 0
-        puts '[Dark Mode] Wskaźnik QApplication jest pusty (NULL).'
+        puts '[Dark Mode] Wskaźnik QApplication jest NULL.'
         return false
       end
 
@@ -237,7 +258,7 @@ module SketchupDarkMode
       false
     end
 
-    # Przywraca domyślny wygląd (czyści arkusz stylów i przywraca jasną paletę)
+    # Przywraca domyślny wygląd (czyści styl i przywraca jasną paletę)
     def clear_stylesheet
       return false unless available?
 
@@ -272,17 +293,6 @@ module SketchupDarkMode
         full_path = File.join(su_dir, dll_name)
         File.exist?(full_path) ? Fiddle.dlopen(full_path) : nil
       end
-    end
-
-    def save_default_palette
-      return if @default_palette_saved
-
-      @default_palette_mem = Fiddle::Pointer.malloc(128)
-      128.times { |i| @default_palette_mem[i] = 0 }
-      @fn_get_palette.call(@default_palette_mem)
-      @default_palette_saved = true
-    rescue StandardError => e
-      puts "[Dark Mode] Nie udało się zachować domyślnej palety: #{e.message}"
     end
   end
 end
