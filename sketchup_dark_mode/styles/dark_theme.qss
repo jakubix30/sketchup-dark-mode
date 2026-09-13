@@ -1,0 +1,509 @@
+/* ==========================================================================
+   SketchUp 2025 Modern Dark Theme (Qt 6 QSS)
+   Designed for professional 3D CAD modeling
+   ========================================================================== */
+
+/* Podstawowy reset tekstu i czcionki */
+QWidget {
+    color: #d4d4d4;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    font-size: 9pt;
+    outline: none;
+}
+
+/* Ochrona widoku 3D OpenGL przed przesłanianiem */
+QOpenGLWidget,
+QQuickWidget,
+QGLWidget {
+    background-color: transparent;
+    border: none;
+}
+
+/* Główne kontenery okna */
+QMainWindow,
+QDialog,
+QFrame#centralWidget {
+    background-color: #1e1e1e;
+}
+
+/* --------------------------------------------------------------------------
+   Pasek menu i menu kontekstowe
+   -------------------------------------------------------------------------- */
+QMenuBar {
+    background-color: #252526;
+    color: #cccccc;
+    border-bottom: 1px solid #333333;
+    padding: 2px 6px;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+QMenuBar::item:selected {
+    background-color: #37373d;
+    color: #ffffff;
+}
+
+QMenuBar::item:pressed {
+    background-color: #094771;
+    color: #ffffff;
+}
+
+QMenu {
+    background-color: #252526;
+    color: #cccccc;
+    border: 1px solid #3e3e42;
+    padding: 4px;
+    border-radius: 5px;
+}
+
+QMenu::item {
+    padding: 5px 24px 5px 24px;
+    border-radius: 3px;
+}
+
+QMenu::item:selected {
+    background-color: #094771;
+    color: #ffffff;
+}
+
+QMenu::item:disabled {
+    color: #656565;
+    background-color: transparent;
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: #3e3e42;
+    margin: 4px 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Paski narzędzi (Toolbars) i przyciski (ToolButtons)
+   -------------------------------------------------------------------------- */
+QToolBar {
+    background-color: #252526;
+    border: none;
+    border-bottom: 1px solid #2d2d30;
+    spacing: 3px;
+    padding: 3px;
+}
+
+QToolBar::separator {
+    width: 1px;
+    background-color: #3e3e42;
+    margin: 4px 6px;
+}
+
+QToolButton {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 3px;
+    color: #cccccc;
+}
+
+QToolButton:hover {
+    background-color: #3e3e42;
+    border-color: #4f4f54;
+}
+
+QToolButton:pressed {
+    background-color: #0e639c;
+    border-color: #1177bb;
+    color: #ffffff;
+}
+
+QToolButton:checked {
+    background-color: #264f78;
+    border: 1px solid #007acc;
+    color: #ffffff;
+}
+
+QToolButton:checked:hover {
+    background-color: #32669a;
+    border-color: #1c97ea;
+}
+
+QToolButton:disabled {
+    color: #555555;
+}
+
+/* --------------------------------------------------------------------------
+   Tacki boczne i dokowanie (KDDockWidgets & QDockWidget)
+   -------------------------------------------------------------------------- */
+QDockWidget {
+    background-color: #252526;
+    color: #ffffff;
+    border: 1px solid #333333;
+    titlebar-close-icon: none;
+    titlebar-normal-icon: none;
+}
+
+QDockWidget::title {
+    background-color: #2d2d30;
+    color: #ffffff;
+    padding: 6px;
+    border-bottom: 1px solid #3a3a3d;
+    font-weight: 600;
+}
+
+/* Klasy z biblioteki KDDockWidgets używanej w SketchUp 2025 */
+KDDockWidgets--TitleBarWidget,
+KDDockWidgets--TitleBar {
+    background-color: #2d2d30;
+    color: #ffffff;
+    border-bottom: 1px solid #3a3a3d;
+    padding: 4px 6px;
+    font-weight: 600;
+}
+
+KDDockWidgets--SideBarWidget,
+KDDockWidgets--SideBar {
+    background-color: #252526;
+    border-right: 1px solid #333333;
+    border-left: 1px solid #333333;
+}
+
+KDDockWidgets--FrameWidget,
+KDDockWidgets--Frame {
+    background-color: #252526;
+    border: 1px solid #3a3a3d;
+}
+
+KDDockWidgets--TabBarWidget,
+KDDockWidgets--TabWidgetWidget {
+    background-color: #252526;
+}
+
+KDDockWidgets--Button,
+KDDockWidgets--SideBarButton {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+KDDockWidgets--Button:hover,
+KDDockWidgets--SideBarButton:hover {
+    background-color: #3e3e42;
+    border-color: #555555;
+}
+
+/* --------------------------------------------------------------------------
+   Zakładki (Tabs)
+   -------------------------------------------------------------------------- */
+QTabWidget::pane {
+    border: 1px solid #3a3a3d;
+    background-color: #252526;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background-color: #2d2d30;
+    color: #969696;
+    border: 1px solid #3a3a3d;
+    border-bottom: none;
+    padding: 5px 12px;
+    margin-right: 2px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    background-color: #252526;
+    color: #ffffff;
+    border-top: 2px solid #007acc;
+    border-bottom: 1px solid #252526;
+}
+
+QTabBar::tab:hover:!selected {
+    background-color: #38383c;
+    color: #d4d4d4;
+}
+
+/* --------------------------------------------------------------------------
+   Kontrolki wejściowe (Pola tekstowe, SpinBoxy, ComboBoxy)
+   -------------------------------------------------------------------------- */
+QLineEdit,
+QSpinBox,
+QDoubleSpinBox,
+QDateTimeEdit {
+    background-color: #2d2d30;
+    color: #f1f1f1;
+    border: 1px solid #3e3e42;
+    border-radius: 4px;
+    padding: 3px 6px;
+    selection-background-color: #264f78;
+    selection-color: #ffffff;
+}
+
+QLineEdit:focus,
+QSpinBox:focus,
+QDoubleSpinBox:focus {
+    border: 1px solid #007acc;
+    background-color: #333337;
+}
+
+QLineEdit:disabled,
+QSpinBox:disabled {
+    background-color: #222222;
+    color: #555555;
+    border-color: #2e2e2e;
+}
+
+QComboBox {
+    background-color: #2d2d30;
+    color: #f1f1f1;
+    border: 1px solid #3e3e42;
+    border-radius: 4px;
+    padding: 3px 8px;
+    min-height: 18px;
+}
+
+QComboBox:hover {
+    border-color: #555555;
+    background-color: #333337;
+}
+
+QComboBox:focus {
+    border-color: #007acc;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #3e3e42;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #252526;
+    color: #d4d4d4;
+    border: 1px solid #454545;
+    selection-background-color: #094771;
+    selection-color: #ffffff;
+    padding: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Przyciski standardowe
+   -------------------------------------------------------------------------- */
+QPushButton {
+    background-color: #333337;
+    color: #cccccc;
+    border: 1px solid #454549;
+    border-radius: 4px;
+    padding: 5px 14px;
+    min-width: 60px;
+}
+
+QPushButton:hover {
+    background-color: #3e3e42;
+    border-color: #55555a;
+    color: #ffffff;
+}
+
+QPushButton:pressed {
+    background-color: #0e639c;
+    border-color: #1177bb;
+    color: #ffffff;
+}
+
+QPushButton:disabled {
+    background-color: #252526;
+    color: #555555;
+    border-color: #333333;
+}
+
+/* --------------------------------------------------------------------------
+   Pola wyboru i przyciski opcji (Checkbox & RadioButton)
+   -------------------------------------------------------------------------- */
+QCheckBox,
+QRadioButton {
+    spacing: 6px;
+    color: #cccccc;
+}
+
+QCheckBox:hover,
+QRadioButton:hover {
+    color: #ffffff;
+}
+
+QCheckBox::indicator,
+QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #4e4e52;
+    background-color: #2d2d30;
+    border-radius: 3px;
+}
+
+QRadioButton::indicator {
+    border-radius: 7px;
+}
+
+QCheckBox::indicator:hover,
+QRadioButton::indicator:hover {
+    border-color: #007acc;
+}
+
+QCheckBox::indicator:checked,
+QRadioButton::indicator:checked {
+    background-color: #007acc;
+    border-color: #007acc;
+}
+
+/* --------------------------------------------------------------------------
+   Widoki list, drzew i tabel (Outliner, Tagi, Materiały, Komponenty)
+   -------------------------------------------------------------------------- */
+QTreeView,
+QListView,
+QTableView {
+    background-color: #252526;
+    color: #cccccc;
+    border: 1px solid #333333;
+    alternate-background-color: #2a2a2d;
+    selection-background-color: #094771;
+    selection-color: #ffffff;
+    gridline-color: #333333;
+}
+
+QTreeView::item:hover,
+QListView::item:hover,
+QTableView::item:hover {
+    background-color: #2a2d2e;
+}
+
+QTreeView::item:selected,
+QListView::item:selected,
+QTableView::item:selected {
+    background-color: #094771;
+    color: #ffffff;
+}
+
+QHeaderView::section {
+    background-color: #2d2d30;
+    color: #cccccc;
+    border: 1px solid #333333;
+    padding: 3px 6px;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Paski przewijania (ScrollBars)
+   -------------------------------------------------------------------------- */
+QScrollBar:vertical {
+    background-color: #1e1e1e;
+    width: 12px;
+    margin: 0;
+    border: none;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #424242;
+    min-height: 24px;
+    border-radius: 5px;
+    margin: 2px 2px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #4f4f4f;
+}
+
+QScrollBar::handle:vertical:pressed {
+    background-color: #606060;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    border: none;
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background-color: #1e1e1e;
+    height: 12px;
+    margin: 0;
+    border: none;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #424242;
+    min-width: 24px;
+    border-radius: 5px;
+    margin: 2px 2px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #4f4f4f;
+}
+
+QScrollBar::handle:horizontal:pressed {
+    background-color: #606060;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+    border: none;
+    background: none;
+}
+
+/* --------------------------------------------------------------------------
+   Pasek stanu (StatusBar) i pole pomiarów (VCB)
+   -------------------------------------------------------------------------- */
+QStatusBar {
+    background-color: #007acc;
+    color: #ffffff;
+    border-top: 1px solid #005a9e;
+}
+
+QStatusBar QLabel {
+    color: #ffffff;
+    padding: 2px 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Etykiety narzędzi (ToolTips)
+   -------------------------------------------------------------------------- */
+QToolTip {
+    background-color: #2d2d30;
+    color: #f1f1f1;
+    border: 1px solid #454545;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Rozdzielacze okien (Splitters)
+   -------------------------------------------------------------------------- */
+QSplitter::handle {
+    background-color: #2d2d30;
+}
+
+QSplitter::handle:hover {
+    background-color: #007acc;
+}
+
+QGroupBox {
+    border: 1px solid #3e3e42;
+    border-radius: 4px;
+    margin-top: 8px;
+    padding-top: 12px;
+    color: #e0e0e0;
+    font-weight: 600;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
+    background-color: #252526;
+}
