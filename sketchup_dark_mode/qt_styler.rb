@@ -142,22 +142,6 @@ module SketchupDarkMode
       nil
     end
 
-    # Konfiguruje narożniki QMainWindow, aby górny pasek narzędzi miał pełną szerokość
-    # i nie był ucinany przez prawy zasobnik (TopRightCorner -> TopDockWidgetArea)
-    def adjust_toolbar_corners
-      return unless available? && @fn_set_corner && @fn_active_window
-
-      w = @fn_active_window.call
-      return if w.nil? || w.to_i == 0
-
-      # Corner 2 = TopRightCorner, DockWidgetArea 4 = TopDockWidgetArea
-      @fn_set_corner.call(w, 2, 4)
-      # Corner 0 = TopLeftCorner, DockWidgetArea 4 = TopDockWidgetArea
-      @fn_set_corner.call(w, 0, 4)
-    rescue StandardError
-      # Ignorujemy, jeśli aktywne okno nie jest QMainWindow
-    end
-
     # Nakłada ciemną paletę systemową na całą aplikację Qt
     def apply_dark_palette
       return unless available?
@@ -279,9 +263,6 @@ module SketchupDarkMode
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
-
-      # 3. Zapewnij pełną szerokość górnego paska narzędzi
-      adjust_toolbar_corners
 
       true
     rescue StandardError => e

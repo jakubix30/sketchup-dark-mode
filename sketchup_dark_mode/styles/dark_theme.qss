@@ -83,62 +83,57 @@ QMenu::separator {
 }
 
 /* --------------------------------------------------------------------------
-   Paski narzędzi (Toolbars) - Naturalna skala dopasowana do ikon SketchUp
+   Paski narzędzi (Toolbars) - Dokładna, natywna skala 1:1 (jak w trybie jasnym)
+   Zero sztucznych paddingów, marginesów i min-height, aby ikony nie uciekały z ekranu!
    -------------------------------------------------------------------------- */
 QToolBar {
     background-color: #252526;
     border: none;
-    spacing: 1px;
-    padding: 2px 1px;
+    spacing: 0px;
+    padding: 0px;
     margin: 0px;
 }
 
 QToolBar::separator {
     width: 1px;
     background-color: #3e3e42;
-    margin: 2px 3px;
+    margin: 1px 2px;
 }
 
-/* Przyciski narzędzi - naturalna wielkość i wygodne klikanie */
+/* Przyciski narzędzi - zachowują idealnie natywny rozmiar bez rozpychania paska */
 QToolButton {
     background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 3px;
+    border: none;
     margin: 0px;
-    padding: 3px 2px;
+    padding: 0px;
     color: #cccccc;
-    min-height: 26px;
-    min-width: 24px;
 }
 
 QToolButton:hover {
     background-color: #3e3e42;
-    border: 1px solid #4f4f54;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 QToolButton:pressed {
     background-color: #0e639c;
-    border: 1px solid #1177bb;
-    border-radius: 3px;
+    border-radius: 2px;
     color: #ffffff;
 }
 
 QToolButton:checked {
     background-color: #264f78;
-    border: 1px solid #007acc;
-    border-radius: 3px;
+    border-radius: 2px;
     color: #ffffff;
 }
 
 QToolButton:checked:hover {
     background-color: #32669a;
-    border: 1px solid #1c97ea;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 QToolButton:disabled {
     color: #555555;
+    background-color: transparent;
 }
 
 /* --------------------------------------------------------------------------
