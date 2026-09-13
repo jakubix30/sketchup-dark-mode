@@ -38,6 +38,7 @@ module SketchupDarkMode
     # Nakłada ciemny styl na widok 3D wskazanego modelu
     def apply_dark_viewport(model = Sketchup.active_model)
       return unless model && model.valid?
+      return unless Config['style_viewport']
 
       ro = model.rendering_options
       key = model.object_id
@@ -70,21 +71,27 @@ module SketchupDarkMode
 
       key = model.object_id
       ro = model.rendering_options
+
+      # 1. Przywróć z pamięci sesji jeśli istnieje kopia
       if @saved_styles.key?(key)
         @saved_styles[key].each do |k, v|
           ro[k] = v if ro.keys.include?(k)
         end
         @saved_styles.delete(key)
-      else
-        # Domyślne wartości SketchUp jeśli brak zapisanego stanu
-        ro['BackgroundColor']   = Sketchup::Color.new(255, 255, 255)
-        ro['ForegroundColor']   = Sketchup::Color.new(0, 0, 0)
-        ro['DrawGround']        = true
-        ro['GroundColor']       = Sketchup::Color.new(208, 204, 180)
-        ro['DrawHorizon']       = true
-        ro['SkyColor']          = Sketchup::Color.new(198, 218, 238)
-        ro['EdgeColorMode']     = 0
-        ro['ConstructionColor'] = Sketchup::Color.new(0, 0, 0)
+      end
+
+      # 2. Przeładuj aktywny styl z modelu (przywraca 100% natywnych parametrów szablonu użytkownika)
+      if model.styles && model.styles.selected_style
+        model.styles.selected_style = model.styles.selected_style
+      end
+
+      # 3. Zabezpieczenie przed sztucznym podłożem: usuń ewentualne beżowe tło i przywróć czysty neutralny widok
+      if ro['GroundColor'] == Sketchup::Color.new(208, 204, 180) || ro['DrawGround'] == true
+        ro['DrawGround']      = false
+        ro['DrawHorizon']     = false
+        ro['BackgroundColor'] = Sketchup::Color.new(218, 216, 212)
+        ro['ForegroundColor'] = Sketchup::Color.new(0, 0, 0)
+        ro['EdgeColorMode']   = 0
       end
 
       model.active_view.invalidate if model.active_view
