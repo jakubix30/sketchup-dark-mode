@@ -1,9 +1,11 @@
 /* ==========================================================================
    SketchUp 2025 Modern Dark Theme (Qt 6 QSS)
-   Designed for professional 3D CAD modeling
+   Comprehensive Dark Theme for UI, Trays, Toolbars, and Dialogs
    ========================================================================== */
 
-/* Podstawowy reset tekstu i czcionki */
+/* --------------------------------------------------------------------------
+   Podstawowy reset czcionki i kolorów
+   -------------------------------------------------------------------------- */
 QWidget {
     color: #d4d4d4;
     font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
@@ -15,15 +17,16 @@ QWidget {
 QOpenGLWidget,
 QQuickWidget,
 QGLWidget {
-    background-color: transparent;
-    border: none;
+    background-color: transparent !important;
+    border: none !important;
 }
 
-/* Główne kontenery okna */
+/* Główne kontenery aplikacji */
 QMainWindow,
 QDialog,
 QFrame#centralWidget {
     background-color: #1e1e1e;
+    color: #d4d4d4;
 }
 
 /* --------------------------------------------------------------------------
@@ -133,14 +136,12 @@ QToolButton:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   Tacki boczne i dokowanie (KDDockWidgets & QDockWidget)
+   Tacki boczne (Zasobnik domyślny, panele KDDockWidgets i QDockWidget)
    -------------------------------------------------------------------------- */
 QDockWidget {
     background-color: #252526;
     color: #ffffff;
     border: 1px solid #333333;
-    titlebar-close-icon: none;
-    titlebar-normal-icon: none;
 }
 
 QDockWidget::title {
@@ -151,32 +152,28 @@ QDockWidget::title {
     font-weight: 600;
 }
 
-/* Klasy z biblioteki KDDockWidgets używanej w SketchUp 2025 */
+/* KDDockWidgets używane w SketchUp 2025 */
+KDDockWidgets--DockWidget,
+KDDockWidgets--FrameWidget,
+KDDockWidgets--SideBarWidget,
+KDDockWidgets--TabBarWidget,
+KDDockWidgets--TabWidgetWidget {
+    background-color: #252526;
+    color: #d4d4d4;
+}
+
 KDDockWidgets--TitleBarWidget,
 KDDockWidgets--TitleBar {
     background-color: #2d2d30;
     color: #ffffff;
     border-bottom: 1px solid #3a3a3d;
     padding: 4px 6px;
+}
+
+KDDockWidgets--TitleBarWidget QLabel,
+KDDockWidgets--TitleBar QLabel {
+    color: #ffffff !important;
     font-weight: 600;
-}
-
-KDDockWidgets--SideBarWidget,
-KDDockWidgets--SideBar {
-    background-color: #252526;
-    border-right: 1px solid #333333;
-    border-left: 1px solid #333333;
-}
-
-KDDockWidgets--FrameWidget,
-KDDockWidgets--Frame {
-    background-color: #252526;
-    border: 1px solid #3a3a3d;
-}
-
-KDDockWidgets--TabBarWidget,
-KDDockWidgets--TabWidgetWidget {
-    background-color: #252526;
 }
 
 KDDockWidgets--Button,
@@ -185,6 +182,7 @@ KDDockWidgets--SideBarButton {
     border: 1px solid transparent;
     border-radius: 3px;
     padding: 3px;
+    color: #cccccc;
 }
 
 KDDockWidgets--Button:hover,
@@ -194,35 +192,102 @@ KDDockWidgets--SideBarButton:hover {
 }
 
 /* --------------------------------------------------------------------------
-   Zakładki (Tabs)
+   Kontenery paneli bocznych (Materiały, Informacje o elemencie, Style itp.)
    -------------------------------------------------------------------------- */
-QTabWidget::pane {
-    border: 1px solid #3a3a3d;
-    background-color: #252526;
-    top: -1px;
-}
-
-QTabBar::tab {
-    background-color: #2d2d30;
-    color: #969696;
-    border: 1px solid #3a3a3d;
-    border-bottom: none;
-    padding: 5px 12px;
-    margin-right: 2px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-QTabBar::tab:selected {
-    background-color: #252526;
-    color: #ffffff;
-    border-top: 2px solid #007acc;
-    border-bottom: 1px solid #252526;
-}
-
-QTabBar::tab:hover:!selected {
-    background-color: #38383c;
+QScrollArea,
+QScrollArea > QWidget,
+QScrollArea > QWidget > QWidget,
+QScrollArea::viewport,
+QWidget#qt_scrollarea_viewport,
+QAbstractScrollArea,
+QAbstractScrollArea::viewport,
+QStackedWidget {
+    background-color: #252526 !important;
     color: #d4d4d4;
+    border: none;
+}
+
+/* Sekcje rozwijane (Expander / Accordion / Nagłówki sekcji tacek) */
+QFrame#collapsibleContent,
+QWidget#collapsibleContent,
+QFrame[class*="Expander"],
+QWidget[class*="Expander"],
+QFrame[class*="Page"],
+QWidget[class*="Page"],
+QFrame[class*="Dlg"],
+QWidget[class*="Dlg"] {
+    background-color: #252526 !important;
+    color: #d4d4d4;
+}
+
+/* --------------------------------------------------------------------------
+   Widoki list, miniatur i drzew (Lista folderów materiałów, Outliner, Tagi)
+   -------------------------------------------------------------------------- */
+QAbstractItemView,
+QAbstractItemView::viewport,
+QListView,
+QListView::viewport,
+QTreeView,
+QTreeView::viewport,
+QTableView,
+QTableView::viewport,
+QListWidget,
+QListWidget::viewport,
+QTreeWidget,
+QTreeWidget::viewport,
+QTableWidget,
+QTableWidget::viewport {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #38383b;
+    alternate-background-color: #252526;
+    outline: none;
+}
+
+QAbstractItemView::item,
+QListView::item,
+QTreeView::item,
+QTableView::item {
+    color: #d4d4d4 !important;
+    background-color: transparent;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
+QAbstractItemView::item:hover,
+QListView::item:hover,
+QTreeView::item:hover {
+    background-color: #2a2d2e !important;
+    color: #ffffff !important;
+}
+
+QAbstractItemView::item:selected,
+QListView::item:selected,
+QTreeView::item:selected {
+    background-color: #094771 !important;
+    color: #ffffff !important;
+}
+
+QHeaderView::section {
+    background-color: #2d2d30;
+    color: #cccccc;
+    border: 1px solid #333333;
+    padding: 4px 6px;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Edytory tekstu i Konsola Ruby
+   -------------------------------------------------------------------------- */
+QTextEdit,
+QTextEdit::viewport,
+QPlainTextEdit,
+QPlainTextEdit::viewport {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #3e3e42;
+    selection-background-color: #264f78;
+    selection-color: #ffffff;
 }
 
 /* --------------------------------------------------------------------------
@@ -292,6 +357,38 @@ QComboBox QAbstractItemView {
 }
 
 /* --------------------------------------------------------------------------
+   Zakładki (Tabs)
+   -------------------------------------------------------------------------- */
+QTabWidget::pane {
+    border: 1px solid #3a3a3d;
+    background-color: #252526;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background-color: #2d2d30;
+    color: #969696;
+    border: 1px solid #3a3a3d;
+    border-bottom: none;
+    padding: 5px 12px;
+    margin-right: 2px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    background-color: #252526;
+    color: #ffffff;
+    border-top: 2px solid #007acc;
+    border-bottom: 1px solid #252526;
+}
+
+QTabBar::tab:hover:!selected {
+    background-color: #38383c;
+    color: #d4d4d4;
+}
+
+/* --------------------------------------------------------------------------
    Przyciski standardowe
    -------------------------------------------------------------------------- */
 QPushButton {
@@ -300,7 +397,7 @@ QPushButton {
     border: 1px solid #454549;
     border-radius: 4px;
     padding: 5px 14px;
-    min-width: 60px;
+    min-width: 50px;
 }
 
 QPushButton:hover {
@@ -315,10 +412,28 @@ QPushButton:pressed {
     color: #ffffff;
 }
 
+QPushButton:checked {
+    background-color: #264f78;
+    border: 1px solid #007acc;
+    color: #ffffff;
+}
+
 QPushButton:disabled {
     background-color: #252526;
     color: #555555;
     border-color: #333333;
+}
+
+/* --------------------------------------------------------------------------
+   Etykiety tekstowe
+   -------------------------------------------------------------------------- */
+QLabel {
+    background-color: transparent;
+    color: #d4d4d4;
+}
+
+QLabel:disabled {
+    color: #656565;
 }
 
 /* --------------------------------------------------------------------------
@@ -360,42 +475,6 @@ QRadioButton::indicator:checked {
 }
 
 /* --------------------------------------------------------------------------
-   Widoki list, drzew i tabel (Outliner, Tagi, Materiały, Komponenty)
-   -------------------------------------------------------------------------- */
-QTreeView,
-QListView,
-QTableView {
-    background-color: #252526;
-    color: #cccccc;
-    border: 1px solid #333333;
-    alternate-background-color: #2a2a2d;
-    selection-background-color: #094771;
-    selection-color: #ffffff;
-    gridline-color: #333333;
-}
-
-QTreeView::item:hover,
-QListView::item:hover,
-QTableView::item:hover {
-    background-color: #2a2d2e;
-}
-
-QTreeView::item:selected,
-QListView::item:selected,
-QTableView::item:selected {
-    background-color: #094771;
-    color: #ffffff;
-}
-
-QHeaderView::section {
-    background-color: #2d2d30;
-    color: #cccccc;
-    border: 1px solid #333333;
-    padding: 3px 6px;
-    font-weight: 600;
-}
-
-/* --------------------------------------------------------------------------
    Paski przewijania (ScrollBars)
    -------------------------------------------------------------------------- */
 QScrollBar:vertical {
@@ -409,7 +488,7 @@ QScrollBar::handle:vertical {
     background-color: #424242;
     min-height: 24px;
     border-radius: 5px;
-    margin: 2px 2px;
+    margin: 2px;
 }
 
 QScrollBar::handle:vertical:hover {
@@ -438,7 +517,7 @@ QScrollBar::handle:horizontal {
     background-color: #424242;
     min-width: 24px;
     border-radius: 5px;
-    margin: 2px 2px;
+    margin: 2px;
 }
 
 QScrollBar::handle:horizontal:hover {
@@ -457,7 +536,7 @@ QScrollBar::sub-line:horizontal {
 }
 
 /* --------------------------------------------------------------------------
-   Pasek stanu (StatusBar) i pole pomiarów (VCB)
+   Pasek stanu (StatusBar) i pomiary (VCB)
    -------------------------------------------------------------------------- */
 QStatusBar {
     background-color: #007acc;
@@ -482,7 +561,7 @@ QToolTip {
 }
 
 /* --------------------------------------------------------------------------
-   Rozdzielacze okien (Splitters)
+   Rozdzielacze okien (Splitters) i ramki grup (GroupBox)
    -------------------------------------------------------------------------- */
 QSplitter::handle {
     background-color: #2d2d30;
