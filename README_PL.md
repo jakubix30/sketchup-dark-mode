@@ -21,12 +21,11 @@ Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obs
   Spójny ciemny styl obejmujący paski narzędzi, menu rozwijane, menu kontekstowe, tacki boczne (**KDDockWidgets**), Konspekt (Outliner), Tagi, Komponenty, Informacje o elemencie i pasek stanu.
 - 📐 **Natywna skala pasków narzędzi 1:1 (Brak problemów z UI scale)**:
   Specjalnie zoptymalizowany pod kątem błędu Qt 6 `QStyleSheetStyle`. Przyciski narzędzi zachowują natywne wymiary Windows Vista (24x24 px), dzięki czemu wszystkie ikony narzędzi (zarówno na górnym pasku, jak i po lewej stronie) mieszczą się na ekranie bez żadnego ucinania.
-- 🎨 **Przeglądarka materiałów (Swatch Canvas)**:
-  W programie SketchUp ikony folderów oraz miniatury próbek materiałów są renderowane przez wewnętrzny silnik C++ bezpośrednio do rastrowej bitmapy na na stałe zakodowanym białym tle (`Qt::white`).
-  Nasza wtyczka renderuje kontener listy materiałów jako czysty, biały próbnik (swatch canvas) z mocno pogrubionym, ciemnym tekstem (`#111111`):
-  - **100% wierności kolorystycznej**: Próbki kolorów, drewna, kamienia, metalu oraz materiałów przezroczystych (szkło, woda) prezentują się na naturalnym, neutralnym tle.
-  - **Brak artefaktów i ucięć**: Miniatury folderów i próbek wtapiają się gładko w tło, a etykiety tekstowe (np. *Podłoże*, *Drewno*, *Asfalt*) znajdują się w całości na białym tle i nie są w połowie ucięte ciemnym tłem.
-  - **Ciemny panel sterujący**: Lista rozwijana kategorii (*Materiały*) oraz cała otaczająca tacka pozostają w eleganckim, ciemnym stylu z białym tekstem.
+- 🎨 **Przełączane tło listy materiałów (Ciemne lub Jasne)**:
+  Możliwość natychmiastowego przełączenia tła listy materiałów między pełną grafitową ciemnością a jasnym tłem dla próbek bezpośrednio 1 kliknięciem z menu (`Rozszerzenia -> Tryb ciemny -> Ciemna lista materiałów`) lub z okna ustawień.
+  - **Tryb ciemny**: pełne grafitowe tło z ciemnymi kafelkami i białym, wyraźnym tekstem.
+  - **Tryb jasny (swatch canvas)**: czyste białe tło dla wiernego odwzorowania próbek przezroczystych i gładkiego wtapiania ikon folderów.
+  - Lista rozwijana kategorii (*Materiały*) oraz cała tacka boczna pozostają w ciemnym stylu z białym tekstem.
 - 🪟 **Ciemny pasek tytułu Windows (Immersive Dark Titlebar)**:
   Wykorzystuje natywne Windows Desktop Window Manager API (`DwmSetWindowAttribute`, atrybuty 20/19) do automatycznego przyciemnienia paska okna głównego i okien dialogowych.
 - 🧊 **Ciemne tło obszaru roboczego 3D**:

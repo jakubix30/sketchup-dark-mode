@@ -86,7 +86,7 @@ module SketchupDarkMode
       end
 
       # 3. Zabezpieczenie przed sztucznym podłożem: usuń ewentualne beżowe tło i przywróć czysty neutralny widok
-      if ro['GroundColor'] == Sketchup::Color.new(208, 204, 180) || ro['DrawGround'] == true
+      if ro['GroundColor'] == Sketchup::Color.new(208, 204, 180)
         ro['DrawGround']      = false
         ro['DrawHorizon']     = false
         ro['BackgroundColor'] = Sketchup::Color.new(218, 216, 212)

@@ -122,16 +122,131 @@ module SketchupDarkMode
       end
     end
 
-    private
-
     def apply_current_qss
       if File.exist?(QSS_PATH)
         qss_content = File.read(QSS_PATH, encoding: 'UTF-8')
+        qss_content += materials_list_qss
         QtStyler.apply_stylesheet(qss_content)
       else
         puts "[Dark Mode] Ostrzeżenie: Plik stylów #{QSS_PATH} nie istnieje."
       end
     end
+
+    def materials_list_qss
+      if Config['dark_materials_list']
+        <<~QSS
+
+          /* ==========================================================================
+             Ciemne tło listy materiałów (Włączone)
+             ========================================================================== */
+          CMaterialListCtrl,
+          CMaterialListCtrl::viewport,
+          ContentBrowserListCtrl,
+          ContentBrowserListCtrl::viewport,
+          CBrowserListCtrl,
+          CBrowserListCtrl::viewport,
+          MaterialListCtrl,
+          MaterialListCtrl::viewport {
+              background-color: #202022 !important;
+              color: #e0e0e0 !important;
+              border: 1px solid #38383b !important;
+              outline: none;
+          }
+
+          CMaterialListCtrl *,
+          ContentBrowserListCtrl *,
+          CBrowserListCtrl *,
+          MaterialListCtrl *,
+          CMaterialListCtrl::item,
+          ContentBrowserListCtrl::item,
+          CBrowserListCtrl::item,
+          MaterialListCtrl::item,
+          MaterialListItem,
+          MaterialListItem * {
+              background-color: #2a2a2d !important;
+              color: #ffffff !important;
+              font-weight: 600 !important;
+              border: 1px solid #3f3f46 !important;
+              border-radius: 4px;
+          }
+
+          CMaterialListCtrl::item:hover,
+          ContentBrowserListCtrl::item:hover,
+          CBrowserListCtrl::item:hover,
+          MaterialListCtrl::item:hover {
+              background-color: #38383c !important;
+              border: 1px solid #007acc !important;
+              color: #ffffff !important;
+          }
+
+          CMaterialListCtrl::item:selected,
+          ContentBrowserListCtrl::item:selected,
+          CBrowserListCtrl::item:selected,
+          MaterialListCtrl::item:selected {
+              background-color: #094771 !important;
+              border: 2px solid #007acc !important;
+              color: #ffffff !important;
+          }
+        QSS
+      else
+        <<~QSS
+
+          /* ==========================================================================
+             Jasne tło listy materiałów (Biały canvas dla próbek)
+             ========================================================================== */
+          CMaterialListCtrl,
+          CMaterialListCtrl::viewport,
+          ContentBrowserListCtrl,
+          ContentBrowserListCtrl::viewport,
+          CBrowserListCtrl,
+          CBrowserListCtrl::viewport,
+          MaterialListCtrl,
+          MaterialListCtrl::viewport {
+              background-color: #ffffff !important;
+              color: #111111 !important;
+              border: 1px solid #38383b !important;
+              outline: none;
+          }
+
+          CMaterialListCtrl *,
+          ContentBrowserListCtrl *,
+          CBrowserListCtrl *,
+          MaterialListCtrl *,
+          CMaterialListCtrl::item,
+          ContentBrowserListCtrl::item,
+          CBrowserListCtrl::item,
+          MaterialListCtrl::item,
+          MaterialListItem,
+          MaterialListItem * {
+              background-color: transparent !important;
+              color: #111111 !important;
+              font-weight: 700 !important;
+              border: 1px solid transparent !important;
+              border-radius: 4px;
+          }
+
+          CMaterialListCtrl::item:hover,
+          ContentBrowserListCtrl::item:hover,
+          CBrowserListCtrl::item:hover,
+          MaterialListCtrl::item:hover {
+              background-color: #e5e5e5 !important;
+              border: 1px solid #007acc !important;
+              color: #000000 !important;
+          }
+
+          CMaterialListCtrl::item:selected,
+          ContentBrowserListCtrl::item:selected,
+          CBrowserListCtrl::item:selected,
+          MaterialListCtrl::item:selected {
+              background-color: #cce8ff !important;
+              border: 2px solid #007acc !important;
+              color: #003366 !important;
+          }
+        QSS
+      end
+    end
+
+    private
 
     def update_ui_elements
       return unless @cmd_toggle
@@ -195,14 +310,48 @@ module SketchupDarkMode
         @cmd_restore.large_icon = sun_32
       end
 
-      # 3. Komenda Ustawienia
+      # 3. Komenda Przełącz ciemny widok 3D
+      cmd_toggle_viewport = UI::Command.new('Ciemny widok 3D (Viewport)') do
+        Config['style_viewport'] = !Config['style_viewport']
+        if Config['style_viewport'] && Main.dark_mode_active?
+          ViewportStyler.apply_dark_viewport(Sketchup.active_model)
+        else
+          ViewportStyler.restore_viewport(Sketchup.active_model)
+        end
+      end
+      cmd_toggle_viewport.menu_text = 'Ciemny widok 3D (Włącz / Wyłącz)'
+      cmd_toggle_viewport.tooltip = 'Przełącza ciemny styl obszaru roboczego 3D'
+      cmd_toggle_viewport.set_validation_proc do
+        if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
+          Config['style_viewport'] ? MF_CHECKED : MF_UNCHECKED
+        else
+          Config['style_viewport'] ? 1 : 0
+        end
+      end
+
+      # 4. Komenda Przełącz ciemną listę materiałów
+      cmd_toggle_materials = UI::Command.new('Ciemne tło listy materiałów') do
+        Config['dark_materials_list'] = !Config['dark_materials_list']
+        Main.apply_current_qss if Main.dark_mode_active?
+      end
+      cmd_toggle_materials.menu_text = 'Ciemna lista materiałów (Włącz / Wyłącz)'
+      cmd_toggle_materials.tooltip = 'Przełącza ciemne / jasne tło listy materiałów i próbek'
+      cmd_toggle_materials.set_validation_proc do
+        if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
+          Config['dark_materials_list'] ? MF_CHECKED : MF_UNCHECKED
+        else
+          Config['dark_materials_list'] ? 1 : 0
+        end
+      end
+
+      # 5. Komenda Ustawienia
       cmd_settings = UI::Command.new('Ustawienia trybu ciemnego') do
         SettingsDialog.show
       end
       cmd_settings.menu_text = 'Ustawienia trybu ciemnego...'
       cmd_settings.tooltip = 'Konfiguracja trybu ciemnego'
 
-      # 4. Komenda Przeładuj styl (Hot-Reload)
+      # 6. Komenda Przeładuj styl (Hot-Reload)
       cmd_reload = UI::Command.new('Przeładuj styl CSS') do
         Main.reload_stylesheet
       end
@@ -213,6 +362,10 @@ module SketchupDarkMode
       menu = UI.menu('Plugins').add_submenu('Tryb ciemny (Dark Mode)')
       menu.add_item(@cmd_toggle)
       menu.add_item(@cmd_restore)
+      menu.add_separator
+      menu.add_item(cmd_toggle_viewport)
+      menu.add_item(cmd_toggle_materials)
+      menu.add_separator
       menu.add_item(cmd_settings)
       menu.add_separator
       menu.add_item(cmd_reload)

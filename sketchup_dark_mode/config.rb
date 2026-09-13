@@ -16,14 +16,15 @@ module SketchupDarkMode
     )
 
     DEFAULT_SETTINGS = {
-      'dark_mode_enabled' => true,
-      'style_ui'          => true,
-      'style_titlebar'    => true,
-      'style_viewport'    => false,
-      'auto_sync_windows' => false,
-      'viewport_bg_hex'   => '#1e1e20',
-      'viewport_edge_hex' => '#dedee0',
-      'auto_hot_reload'   => false
+      'dark_mode_enabled'   => true,
+      'style_ui'            => true,
+      'style_titlebar'      => true,
+      'style_viewport'      => true,
+      'dark_materials_list' => true,
+      'auto_sync_windows'   => false,
+      'viewport_bg_hex'     => '#1e1e20',
+      'viewport_edge_hex'   => '#dedee0',
+      'auto_hot_reload'     => false
     }.freeze
 
     @settings = nil

@@ -182,15 +182,11 @@ QWidget[class*="Dlg"] {
 
 /* --------------------------------------------------------------------------
    Przeglądarka materiałów (CMaterialListCtrl, ContentBrowserListCtrl, CBrowserListCtrl)
-   Lista miniatur materiałów ma czyste białe tło (swatch canvas), dzięki czemu
-   miniatury próbek i foldery z silnika C++ wtapiają się w 100% płynnie,
-   a cały tekst etykiet mieści się na białym tle i jest w pełni czytelny!
-   Napisy elementów wewnątrz listy są ciemne (#111111) z mocnym pogrubieniem.
-   Kontrolki panelu (rozwijana lista "Materiały", przyciski, zakładki)
-   pozostają w pełnym trybie ciemnym z czytelnym białym tekstem!
+   Domyślny ciemny styl listy materiałów i próbek.
+   Dynamicznie przełączany (ciemny / jasny canvas) z poziomu wtyczki.
    -------------------------------------------------------------------------- */
 
-/* Tło i ramka samej listy materiałów - biały canvas dla próbek i folderów */
+/* Tło i ramka samej listy materiałów */
 CMaterialListCtrl,
 CMaterialListCtrl::viewport,
 ContentBrowserListCtrl,
@@ -199,13 +195,13 @@ CBrowserListCtrl,
 CBrowserListCtrl::viewport,
 MaterialListCtrl,
 MaterialListCtrl::viewport {
-    background-color: #ffffff !important;
-    color: #111111 !important;
-    border: 1px solid #38383b;
+    background-color: #202022 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #38383b !important;
     outline: none;
 }
 
-/* Tekst i styl elementów wyłącznie wewnątrz listy próbek/folderów */
+/* Tekst i styl elementów wewnątrz listy próbek/folderów */
 CMaterialListCtrl *,
 ContentBrowserListCtrl *,
 CBrowserListCtrl *,
@@ -216,10 +212,10 @@ CBrowserListCtrl::item,
 MaterialListCtrl::item,
 MaterialListItem,
 MaterialListItem * {
-    background-color: transparent;
-    color: #111111 !important;
-    font-weight: 700 !important;
-    border: 1px solid transparent;
+    background-color: #2a2a2d !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border: 1px solid #3f3f46 !important;
     border-radius: 4px;
 }
 
@@ -227,18 +223,18 @@ CMaterialListCtrl::item:hover,
 ContentBrowserListCtrl::item:hover,
 CBrowserListCtrl::item:hover,
 MaterialListCtrl::item:hover {
-    background-color: #e5e5e5 !important;
+    background-color: #38383c !important;
     border: 1px solid #007acc !important;
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 CMaterialListCtrl::item:selected,
 ContentBrowserListCtrl::item:selected,
 CBrowserListCtrl::item:selected,
 MaterialListCtrl::item:selected {
-    background-color: #cce8ff !important;
+    background-color: #094771 !important;
     border: 2px solid #007acc !important;
-    color: #003366 !important;
+    color: #ffffff !important;
 }
 
 /* Kontrolki panelu materiałów (lista rozwijana "Materiały", etykiety, przyciski) - pełny ciemny motyw z białym tekstem */
