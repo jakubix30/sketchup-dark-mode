@@ -1,6 +1,6 @@
 /* ==========================================================================
    SketchUp 2025 Modern Dark Theme (Qt 6 QSS)
-   Pixel-compact theme preserving exact native toolbar scale & DPI metrics
+   Optimized for natural toolbar scale & high-contrast material thumbnails
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -28,17 +28,19 @@ QFrame#centralWidget {
 }
 
 /* --------------------------------------------------------------------------
-   Pasek menu i menu kontekstowe (Kompaktowy rozmiar)
+   Pasek menu i menu kontekstowe
    -------------------------------------------------------------------------- */
 QMenuBar {
     background-color: #252526;
     color: #cccccc;
     border-bottom: 1px solid #333333;
+    padding: 1px 4px;
 }
 
 QMenuBar::item {
     background-color: transparent;
-    padding: 2px 6px;
+    padding: 3px 8px;
+    border-radius: 3px;
 }
 
 QMenuBar::item:selected {
@@ -55,11 +57,13 @@ QMenu {
     background-color: #252526;
     color: #cccccc;
     border: 1px solid #3e3e42;
-    padding: 2px;
+    padding: 3px;
+    border-radius: 4px;
 }
 
 QMenu::item {
-    padding: 4px 20px 4px 20px;
+    padding: 4px 22px 4px 22px;
+    border-radius: 2px;
 }
 
 QMenu::item:selected {
@@ -75,53 +79,61 @@ QMenu::item:disabled {
 QMenu::separator {
     height: 1px;
     background-color: #3e3e42;
-    margin: 2px 4px;
+    margin: 3px 4px;
 }
 
 /* --------------------------------------------------------------------------
-   Paski narzędzi (Toolbars) - Dokładna skala 1:1, bez dodatkowego rozszerzania!
+   Paski narzędzi (Toolbars) - Naturalna skala dopasowana do ikon SketchUp
    -------------------------------------------------------------------------- */
 QToolBar {
     background-color: #252526;
     border: none;
-    spacing: 0px;
-    padding: 0px;
+    spacing: 1px;
+    padding: 1px 2px;
     margin: 0px;
 }
 
 QToolBar::separator {
     width: 1px;
     background-color: #3e3e42;
-    margin: 1px 2px;
+    margin: 2px 3px;
 }
 
-/* Przyciski narzędzi - zero zbędnych paddingów, aby ikony nie uciekały z ekranu */
+/* Przyciski narzędzi - naturalna wielkość i wygodne klikanie */
 QToolButton {
     background-color: transparent;
-    border: none;
+    border: 1px solid transparent;
     margin: 0px;
-    padding: 1px;
+    padding: 2px 3px;
     color: #cccccc;
+    min-height: 22px;
+    min-width: 22px;
 }
 
 QToolButton:hover {
     background-color: #3e3e42;
-    border-radius: 2px;
+    border: 1px solid #4f4f54;
+    border-radius: 3px;
 }
 
 QToolButton:pressed {
     background-color: #0e639c;
-    border-radius: 2px;
+    border: 1px solid #1177bb;
+    border-radius: 3px;
+    color: #ffffff;
 }
 
 QToolButton:checked {
     background-color: #264f78;
-    border-radius: 2px;
+    border: 1px solid #007acc;
+    border-radius: 3px;
+    color: #ffffff;
 }
 
 QToolButton:checked:hover {
     background-color: #32669a;
-    border-radius: 2px;
+    border: 1px solid #1c97ea;
+    border-radius: 3px;
 }
 
 QToolButton:disabled {
@@ -140,7 +152,7 @@ QDockWidget {
 QDockWidget::title {
     background-color: #2d2d30;
     color: #ffffff;
-    padding: 4px;
+    padding: 5px;
     border-bottom: 1px solid #3a3a3d;
     font-weight: 600;
 }
@@ -159,7 +171,7 @@ KDDockWidgets--TitleBar {
     background-color: #2d2d30;
     color: #ffffff;
     border-bottom: 1px solid #3a3a3d;
-    padding: 2px 4px;
+    padding: 3px 6px;
 }
 
 KDDockWidgets--TitleBarWidget QLabel,
@@ -171,14 +183,16 @@ KDDockWidgets--TitleBar QLabel {
 KDDockWidgets--Button,
 KDDockWidgets--SideBarButton {
     background-color: transparent;
-    border: none;
+    border: 1px solid transparent;
     padding: 2px;
     color: #cccccc;
+    border-radius: 3px;
 }
 
 KDDockWidgets--Button:hover,
 KDDockWidgets--SideBarButton:hover {
     background-color: #3e3e42;
+    border-color: #555555;
 }
 
 /* --------------------------------------------------------------------------
@@ -212,7 +226,7 @@ QWidget[class*="Dlg"] {
 
 /* --------------------------------------------------------------------------
    Przeglądarka materiałów i komponentów (ContentBrowserListCtrl)
-   Kafelki folderów i miniatur materiałów (Ciemne kafelki z czytelnym tekstem)
+   Kontenery i kafelki miniatur materiałów
    -------------------------------------------------------------------------- */
 ContentBrowserListCtrl,
 ContentBrowserListCtrl::viewport,
@@ -235,34 +249,47 @@ QTreeWidget::viewport {
     outline: none;
 }
 
-/* Kafelki folderów / miniatur (eliminuje białe kwadraty pod folderami) */
-ContentBrowserListCtrl::item,
-QListView::item,
-QListWidget::item,
-QTableView::item,
-QTreeView::item,
-QAbstractItemView::item {
-    background-color: #2d2d30 !important;
-    color: #ffffff !important;
-    border: 1px solid #3f3f46;
-    border-radius: 3px;
+/* Kafelki miniatur materiałów i folderów:
+   Ponieważ miniatury SketchUp mają białe tło podglądu, tekst jest ciemny i pogrubiony,
+   co zapewnia 100% czytelność bez zniekształcania renderu materiału! */
+ContentBrowserListCtrl::item {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+    font-weight: 600 !important;
+    border: 1px solid #b0b0b4;
+    border-radius: 4px;
+    padding: 2px;
 }
 
-ContentBrowserListCtrl::item:hover,
-QListView::item:hover,
-QAbstractItemView::item:hover,
-QTreeView::item:hover {
-    background-color: #38383c !important;
-    border: 1px solid #007acc !important;
-    color: #ffffff !important;
+ContentBrowserListCtrl::item:hover {
+    background-color: #f5f5f5 !important;
+    border: 2px solid #007acc !important;
+    color: #000000 !important;
 }
 
-ContentBrowserListCtrl::item:selected,
-QListView::item:selected,
-QAbstractItemView::item:selected,
-QTreeView::item:selected {
+ContentBrowserListCtrl::item:selected {
     background-color: #094771 !important;
-    border: 1px solid #007acc !important;
+    border: 2px solid #007acc !important;
+    color: #ffffff !important;
+}
+
+/* Pozostałe standardowe widoki list (np. Tagi, Konspekt) zachowują ciemne tło */
+QTreeView::item,
+QTableView::item {
+    color: #d4d4d4 !important;
+    background-color: transparent;
+    padding: 2px 4px;
+}
+
+QTreeView::item:hover,
+QTableView::item:hover {
+    background-color: #2a2d2e !important;
+    color: #ffffff !important;
+}
+
+QTreeView::item:selected,
+QTableView::item:selected {
+    background-color: #094771 !important;
     color: #ffffff !important;
 }
 
@@ -300,7 +327,7 @@ QDateTimeEdit {
     color: #f1f1f1;
     border: 1px solid #3e3e42;
     border-radius: 3px;
-    padding: 2px 4px;
+    padding: 2px 5px;
     selection-background-color: #264f78;
     selection-color: #ffffff;
 }
@@ -325,7 +352,7 @@ QComboBox {
     border: 1px solid #3e3e42;
     border-radius: 3px;
     padding: 2px 6px;
-    min-height: 16px;
+    min-height: 18px;
 }
 
 QComboBox:hover {
@@ -367,7 +394,7 @@ QTabBar::tab {
     color: #969696;
     border: 1px solid #3a3a3d;
     border-bottom: none;
-    padding: 4px 8px;
+    padding: 4px 10px;
     margin-right: 2px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -393,8 +420,8 @@ QPushButton {
     color: #cccccc;
     border: 1px solid #454549;
     border-radius: 3px;
-    padding: 3px 10px;
-    min-width: 45px;
+    padding: 4px 12px;
+    min-width: 48px;
 }
 
 QPushButton:hover {
@@ -438,7 +465,7 @@ QLabel:disabled {
    -------------------------------------------------------------------------- */
 QCheckBox,
 QRadioButton {
-    spacing: 4px;
+    spacing: 5px;
     color: #cccccc;
 }
 
@@ -449,15 +476,15 @@ QRadioButton:hover {
 
 QCheckBox::indicator,
 QRadioButton::indicator {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #4e4e52;
     background-color: #2d2d30;
     border-radius: 2px;
 }
 
 QRadioButton::indicator {
-    border-radius: 6px;
+    border-radius: 7px;
 }
 
 QCheckBox::indicator:hover,
@@ -476,14 +503,14 @@ QRadioButton::indicator:checked {
    -------------------------------------------------------------------------- */
 QScrollBar:vertical {
     background-color: #1e1e1e;
-    width: 10px;
+    width: 11px;
     margin: 0;
     border: none;
 }
 
 QScrollBar::handle:vertical {
     background-color: #424242;
-    min-height: 20px;
+    min-height: 22px;
     border-radius: 4px;
     margin: 1px;
 }
@@ -505,14 +532,14 @@ QScrollBar::sub-line:vertical {
 
 QScrollBar:horizontal {
     background-color: #1e1e1e;
-    height: 10px;
+    height: 11px;
     margin: 0;
     border: none;
 }
 
 QScrollBar::handle:horizontal {
     background-color: #424242;
-    min-width: 20px;
+    min-width: 22px;
     border-radius: 4px;
     margin: 1px;
 }
@@ -543,7 +570,7 @@ QStatusBar {
 
 QStatusBar QLabel {
     color: #ffffff;
-    padding: 1px 4px;
+    padding: 2px 6px;
 }
 
 /* --------------------------------------------------------------------------
@@ -553,7 +580,7 @@ QToolTip {
     background-color: #2d2d30;
     color: #f1f1f1;
     border: 1px solid #454545;
-    padding: 3px 6px;
+    padding: 4px 7px;
     border-radius: 3px;
 }
 
