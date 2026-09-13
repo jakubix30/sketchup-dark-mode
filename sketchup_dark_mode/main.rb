@@ -56,6 +56,7 @@ module SketchupDarkMode
 
     def enable_dark_mode
       Config['dark_mode_enabled'] = true
+      Config['auto_sync_windows'] = false
 
       # 1. Pasek tytułu Windows (DWM)
       DwmStyler.set_dark_titlebar(true) if Config['style_titlebar']
@@ -80,6 +81,7 @@ module SketchupDarkMode
 
     def disable_dark_mode
       Config['dark_mode_enabled'] = false
+      Config['auto_sync_windows'] = false
 
       # 1. Pasek tytułu Windows (DWM)
       DwmStyler.set_dark_titlebar(false)
