@@ -207,10 +207,9 @@ module SketchupDarkMode
       menu.add_separator
       menu.add_item(cmd_reload)
 
-      # Pasek narzędzi (Toolbar)
+      # Pasek narzędzi (Toolbar) - dokładnie dwa przyciski
       @toolbar = UI::Toolbar.new('Tryb ciemny')
       @toolbar.add_item(@cmd_toggle)
-      @toolbar.add_item(@cmd_restore)
       @toolbar.add_item(cmd_settings)
       @toolbar.restore
     end
