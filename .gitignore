@@ -2,3 +2,4 @@ crop_*.png
 *.log
 
 test_*.png
+*log*.txt
