@@ -1,3 +1,8 @@
+param(
+    [string]$tagName = "v1.1.0",
+    [string]$releaseTitle = "v1.1.0 - Vector Close Icons, Crisp Tooltips & UI Refinements"
+)
+
 $ErrorActionPreference = "Stop"
 
 # 1. Retrieve GitHub PAT from Git Credential Manager
@@ -16,8 +21,6 @@ if (-not $token) {
 }
 
 $repo = "jakubix30/sketchup-dark-mode"
-$tagName = "v1.0.0"
-$releaseTitle = "v1.0.0 - Modern Dark Mode for SketchUp 2025 (PL / EN)"
 $rbzPath = "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz"
 
 if (-not (Test-Path $rbzPath)) {
