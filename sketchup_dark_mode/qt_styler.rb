@@ -300,7 +300,7 @@ module SketchupDarkMode
       false
     end
 
-    # Całkowicie wyłącza styl Qt i przywraca oryginalną paletę (100% natywny fabryczny wygląd SketchUp bez CSS i lagów)
+    # Całkowicie wyłącza styl Qt i przywraca 100% natywny fabryczny wygląd SketchUp bez CSS i lagów
     def clear_stylesheet
       return false unless available?
 

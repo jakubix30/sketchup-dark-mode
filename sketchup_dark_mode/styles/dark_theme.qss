@@ -311,12 +311,14 @@ CMaterialBrowser QListView * {
     font-weight: 800 !important;
 }
 
-/* Kafelki miniatur materiałów i folderów na białym tle z czarnym pogrubionym tekstem */
+/* Kafelki miniatur materiałów i folderów - przezroczyste tło z czarnym pogrubionym tekstem */
 CMaterialListCtrl::item,
 ContentBrowserListCtrl::item,
 CBrowserListCtrl::item,
 MaterialListCtrl::item,
 MaterialListItem,
+CListBrowserItem,
+ListContentBrowserItem,
 MaterialsBrowser QListView::item,
 MaterialsBrowser QAbstractItemView::item,
 MaterialsBrowser2 QListView::item,
@@ -327,14 +329,12 @@ CMaterialBrowserPage QListView::item,
 CMaterialBrowserPage QAbstractItemView::item,
 CDockingTray MaterialsBrowser QListView::item,
 CDockingTray CMaterialBrowser QListView::item,
-CDockingTray CMaterialBrowserPage QListView::item,
-QListView::item {
-    background-color: #ffffff !important;
+CDockingTray CMaterialBrowserPage QListView::item {
+    background-color: transparent !important;
     color: #000000 !important;
     font-weight: 800 !important;
     font-size: 8pt !important;
-    border: 1px solid #999999 !important;
-    border-radius: 4px;
+    border: none !important;
     padding-top: 0px !important;
     padding-left: 0px !important;
     padding-right: 0px !important;
@@ -355,8 +355,7 @@ CMaterialBrowser QAbstractItemView::item:hover,
 CMaterialBrowserPage QListView::item:hover,
 CMaterialBrowserPage QAbstractItemView::item:hover,
 CDockingTray MaterialsBrowser QListView::item:hover,
-CDockingTray CMaterialBrowserPage QListView::item:hover,
-QListView::item:hover {
+CDockingTray CMaterialBrowserPage QListView::item:hover {
     background-color: #f0f0f0 !important;
     border: 2px solid #007acc !important;
     color: #000000 !important;
@@ -376,8 +375,7 @@ CMaterialBrowser QAbstractItemView::item:selected,
 CMaterialBrowserPage QListView::item:selected,
 CMaterialBrowserPage QAbstractItemView::item:selected,
 CDockingTray MaterialsBrowser QListView::item:selected,
-CDockingTray CMaterialBrowserPage QListView::item:selected,
-QListView::item:selected {
+CDockingTray CMaterialBrowserPage QListView::item:selected {
     background-color: #badcfc !important;
     border: 2px solid #007acc !important;
     color: #002244 !important;
@@ -526,13 +524,38 @@ QComboBox::drop-down {
     border-left: 1px solid #3e3e42;
 }
 
-QComboBox QAbstractItemView {
-    background-color: #252526;
-    color: #d4d4d4;
-    border: 1px solid #454545;
-    selection-background-color: #094771;
-    selection-color: #ffffff;
-    padding: 2px;
+QComboBox QAbstractItemView,
+QComboBox QListView {
+    background-color: #252526 !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #454545 !important;
+    selection-background-color: #094771 !important;
+    selection-color: #ffffff !important;
+    padding: 2px !important;
+    outline: none !important;
+}
+
+QComboBox QAbstractItemView::item,
+QComboBox QListView::item {
+    background-color: transparent !important;
+    color: #d4d4d4 !important;
+    border: none !important;
+    border-radius: 2px !important;
+    padding: 3px 8px !important;
+    min-height: 20px !important;
+    font-weight: normal !important;
+}
+
+QComboBox QAbstractItemView::item:hover,
+QComboBox QListView::item:hover {
+    background-color: #37373d !important;
+    color: #ffffff !important;
+}
+
+QComboBox QAbstractItemView::item:selected,
+QComboBox QListView::item:selected {
+    background-color: #094771 !important;
+    color: #ffffff !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -789,4 +812,126 @@ QGroupBox::title {
     subcontrol-position: top left;
     padding: 0 4px;
     background-color: #252526;
+}
+
+/* ==========================================================================
+   ETYKIETY FOLDERÓW I MINIATUR MATERIAŁÓW (CMaterialListCtrl)
+   Wymuszenie czarnej, grubej czcionki (color: #000000 !important, font-weight: 800 !important)
+   oraz lekkiego uniesienia tekstu (padding-bottom: 2px !important)
+   na białym tle kafelków próbek i folderów w panelu Materiały.
+   Umieszczone na samym końcu arkusza QSS, aby żadna ogólna reguła nie nadpisała etykiet!
+   ========================================================================== */
+CMaterialListCtrl,
+CMaterialListCtrl *,
+CMaterialListCtrl::item,
+ContentBrowserListCtrl,
+ContentBrowserListCtrl *,
+ContentBrowserListCtrl::item,
+CBrowserListCtrl,
+CBrowserListCtrl *,
+CBrowserListCtrl::item,
+MaterialListCtrl,
+MaterialListCtrl *,
+MaterialListCtrl::item,
+MaterialListItem,
+MaterialListItem *,
+CListBrowserItem,
+CListBrowserItem *,
+ListContentBrowserItem,
+ListContentBrowserItem *,
+QWidget#materialsCtrl,
+QWidget#materialsCtrl *,
+QWidget#materialsCtrl QAbstractItemView,
+QWidget#materialsCtrl QAbstractItemView *,
+QWidget#materialsCtrl QAbstractItemView::item,
+QWidget#materialsCtrl QListView,
+QWidget#materialsCtrl QListView *,
+QWidget#materialsCtrl QListView::item,
+CMaterialBrowserPage QAbstractItemView,
+CMaterialBrowserPage QAbstractItemView *,
+CMaterialBrowserPage QAbstractItemView::item,
+CMaterialBrowserPage QListView,
+CMaterialBrowserPage QListView *,
+CMaterialBrowserPage QListView::item,
+MaterialsBrowser QAbstractItemView,
+MaterialsBrowser QAbstractItemView *,
+MaterialsBrowser QAbstractItemView::item,
+MaterialsBrowser QListView,
+MaterialsBrowser QListView *,
+MaterialsBrowser QListView::item,
+MaterialsBrowser2 QAbstractItemView,
+MaterialsBrowser2 QAbstractItemView *,
+MaterialsBrowser2 QAbstractItemView::item,
+MaterialsBrowser2 QListView,
+MaterialsBrowser2 QListView *,
+MaterialsBrowser2 QListView::item,
+CMaterialBrowser QAbstractItemView,
+CMaterialBrowser QAbstractItemView *,
+CMaterialBrowser QAbstractItemView::item,
+CMaterialBrowser QListView,
+CMaterialBrowser QListView *,
+CMaterialBrowser QListView::item,
+CDockingTray CMaterialBrowserPage QAbstractItemView,
+CDockingTray CMaterialBrowserPage QAbstractItemView *,
+CDockingTray CMaterialBrowserPage QAbstractItemView::item,
+CDockingTray MaterialsBrowser QAbstractItemView,
+CDockingTray MaterialsBrowser QAbstractItemView *,
+CDockingTray MaterialsBrowser QAbstractItemView::item {
+    color: #000000 !important;
+    font-weight: 800 !important;
+    padding-bottom: 2px !important;
+}
+
+/* Interakcje (hover i zaznaczenie) kafelków materiałów */
+CMaterialListCtrl::item:hover,
+ContentBrowserListCtrl::item:hover,
+CBrowserListCtrl::item:hover,
+MaterialListCtrl::item:hover,
+QWidget#materialsCtrl QAbstractItemView::item:hover,
+CMaterialBrowserPage QAbstractItemView::item:hover,
+MaterialsBrowser QAbstractItemView::item:hover {
+    background-color: #f0f0f0 !important;
+    border: 2px solid #007acc !important;
+    color: #000000 !important;
+    font-weight: 800 !important;
+}
+
+CMaterialListCtrl::item:selected,
+ContentBrowserListCtrl::item:selected,
+CBrowserListCtrl::item:selected,
+MaterialListCtrl::item:selected,
+QWidget#materialsCtrl QAbstractItemView::item:selected,
+CMaterialBrowserPage QAbstractItemView::item:selected,
+MaterialsBrowser QAbstractItemView::item:selected {
+    background-color: #dbeafe !important;
+    border: 2px solid #007acc !important;
+    color: #002244 !important;
+    font-weight: 800 !important;
+}
+
+/* Ochrona kontrolek nawigacji panelu materiałów - lista rozwijana i pole tekstowe pozostają jasne */
+CMaterialBrowserPage QComboBox,
+CMaterialBrowserPage QComboBox *,
+CMaterialBrowserPage QComboBox QAbstractItemView,
+CMaterialBrowserPage QComboBox QAbstractItemView *,
+CMaterialBrowserPage QComboBox QAbstractItemView::item,
+CMaterialBrowserPage QComboBox QListView,
+CMaterialBrowserPage QComboBox QListView *,
+CMaterialBrowserPage QComboBox QListView::item,
+CMaterialBrowserPage QLineEdit,
+CMaterialBrowserPage QLineEdit *,
+CMaterialBrowserPage QToolButton,
+CMaterialBrowserPage QPushButton,
+CMaterialBrowserPage QLabel#materialNameLabel,
+QWidget#materialsCtrl QComboBox,
+QWidget#materialsCtrl QComboBox *,
+QWidget#materialsCtrl QComboBox QAbstractItemView,
+QWidget#materialsCtrl QComboBox QAbstractItemView *,
+QWidget#materialsCtrl QComboBox QAbstractItemView::item,
+QWidget#materialsCtrl QComboBox QListView,
+QWidget#materialsCtrl QComboBox QListView *,
+QWidget#materialsCtrl QComboBox QListView::item,
+QWidget#materialsCtrl QLineEdit {
+    color: #d4d4d4 !important;
+    font-weight: normal !important;
 }
