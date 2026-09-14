@@ -123,6 +123,22 @@ module SketchupDarkMode
         @fn_get_palette = nil
       end
 
+      # 13. void QToolTip::setPalette(const QPalette&)
+      begin
+        sym_tt_set_pal = qt_widgets_handle['?setPalette@QToolTip@@SAXAEBVQPalette@@@Z']
+        @fn_tooltip_set_palette = Fiddle::Function.new(sym_tt_set_pal, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID) if sym_tt_set_pal
+      rescue StandardError
+        @fn_tooltip_set_palette = nil
+      end
+
+      # 14. QPalette QToolTip::palette()
+      begin
+        sym_tt_get_pal = qt_widgets_handle['?palette@QToolTip@@SA?AVQPalette@@XZ']
+        @fn_tooltip_get_palette = Fiddle::Function.new(sym_tt_get_pal, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP) if sym_tt_get_pal
+      rescue StandardError
+        @fn_tooltip_get_palette = nil
+      end
+
       @available = true
       capture_original_palette
       puts '[Dark Mode] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).'
@@ -146,8 +162,15 @@ module SketchupDarkMode
         @fn_get_palette.call(@orig_palette_mem)
         @orig_palette_saved = true
       end
+      if @fn_tooltip_get_palette && !@orig_tooltip_palette_saved
+        @orig_tooltip_palette_mem = Fiddle::Pointer.malloc(128)
+        128.times { |i| @orig_tooltip_palette_mem[i] = 0 }
+        @fn_tooltip_get_palette.call(@orig_tooltip_palette_mem)
+        @orig_tooltip_palette_saved = true
+      end
     rescue StandardError => e
       @orig_palette_mem = nil
+      @orig_tooltip_palette_mem = nil
     end
 
     def active_window_hwnd
@@ -206,6 +229,39 @@ module SketchupDarkMode
 
       # Apply palette globally
       @fn_set_palette.call(pal_mem, 0)
+
+      # Explicitly apply dark palette to QToolTip with white text
+      if @fn_tooltip_set_palette
+        tt_pal_mem = Fiddle::Pointer.malloc(128)
+        128.times { |i| tt_pal_mem[i] = 0 }
+        @fn_palette_ctor.call(tt_pal_mem)
+
+        tt_roles = {
+          0  => '#ffffff', # WindowText
+          1  => '#252526', # Button
+          6  => '#ffffff', # Text
+          7  => '#ffffff', # BrightText
+          8  => '#ffffff', # ButtonText
+          9  => '#252526', # Base
+          10 => '#252526', # Window
+          12 => '#ffffff', # Highlight
+          13 => '#ffffff', # HighlightedText
+          14 => '#ffffff', # Link
+          18 => '#252526', # ToolTipBase
+          19 => '#ffffff'  # ToolTipText
+        }
+
+        tt_roles.each do |role, hex|
+          32.times { |i| color_mem[i] = 0 }
+          cstr = Fiddle::Pointer.to_ptr(hex + "\0")
+          @fn_qcolor_ctor.call(color_mem, cstr)
+          @fn_palette_set_color.call(tt_pal_mem, role, color_mem)
+        end
+
+        @fn_tooltip_set_palette.call(tt_pal_mem)
+        @fn_palette_dtor.call(tt_pal_mem)
+      end
+
       @dark_palette_applied = true
     rescue StandardError => e
       puts "[Dark Mode] Error applying dark palette: #{e.message}"
@@ -220,6 +276,9 @@ module SketchupDarkMode
 
       if @orig_palette_saved && @orig_palette_mem
         @fn_set_palette.call(@orig_palette_mem, 0)
+        if @orig_tooltip_palette_saved && @orig_tooltip_palette_mem && @fn_tooltip_set_palette
+          @fn_tooltip_set_palette.call(@orig_tooltip_palette_mem)
+        end
         @dark_palette_applied = false
         return
       end

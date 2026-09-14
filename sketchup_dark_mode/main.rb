@@ -105,6 +105,8 @@ module SketchupDarkMode
     end
 
     def reload_stylesheet
+      loader_dir = File.dirname(__FILE__)
+      load File.join(loader_dir, 'qt_styler.rb')
       if File.exist?(QSS_PATH)
         puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
         if dark_mode_active? && Config['style_ui']
