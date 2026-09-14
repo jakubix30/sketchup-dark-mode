@@ -107,6 +107,7 @@ module SketchupDarkMode
     def reload_stylesheet
       loader_dir = File.dirname(__FILE__)
       load File.join(loader_dir, 'qt_styler.rb')
+      load File.join(loader_dir, 'main.rb')
       if File.exist?(QSS_PATH)
         puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
         if dark_mode_active? && Config['style_ui']
@@ -127,6 +128,8 @@ module SketchupDarkMode
     def apply_current_qss
       if File.exist?(QSS_PATH)
         qss_content = File.read(QSS_PATH, encoding: 'UTF-8')
+        icons_dir = ICONS_DIR.tr('\\', '/')
+        qss_content = qss_content.gsub('{{ICONS_DIR}}', icons_dir)
         QtStyler.apply_stylesheet(qss_content)
       else
         puts "[Dark Mode] Warning: Stylesheet #{QSS_PATH} does not exist."

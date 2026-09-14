@@ -340,10 +340,13 @@ module SketchupDarkMode
         return false
       end
 
+      icons_dir = File.join(File.dirname(__FILE__), 'icons').tr('\\', '/')
+      processed_css = (css_text || '').gsub('{{ICONS_DIR}}', icons_dir)
+
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
 
-      c_text = (css_text || '').encode('UTF-8') + "\0"
+      c_text = processed_css.encode('UTF-8') + "\0"
       c_ptr = Fiddle::Pointer.to_ptr(c_text)
 
       begin
