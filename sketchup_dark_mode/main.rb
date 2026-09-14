@@ -137,7 +137,7 @@ module SketchupDarkMode
         <<~QSS
 
           /* ==========================================================================
-             Ciemne tło listy materiałów (Włączone)
+             Ciemne tło listy materiałów (Włączone) z grubym czarnym tekstem folderów
              ========================================================================== */
           CMaterialListCtrl,
           CMaterialListCtrl::viewport,
@@ -146,10 +146,18 @@ module SketchupDarkMode
           CBrowserListCtrl,
           CBrowserListCtrl::viewport,
           MaterialListCtrl,
-          MaterialListCtrl::viewport {
+          MaterialListCtrl::viewport,
+          MaterialsBrowser QListView,
+          MaterialsBrowser QListView::viewport,
+          MaterialsBrowser2 QListView,
+          MaterialsBrowser2 QListView::viewport,
+          CMaterialBrowser QListView,
+          CMaterialBrowser QListView::viewport,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView::viewport {
               background-color: #202022 !important;
               color: #000000 !important;
-              font-weight: bold !important;
+              font-weight: 800 !important;
               border: 1px solid #38383b !important;
               outline: none;
               min-width: 0px !important;
@@ -166,30 +174,82 @@ module SketchupDarkMode
           MaterialListItem,
           MaterialListItem *,
           CMaterialListCtrl QLabel,
-          CMaterialListCtrl::item,
-          ContentBrowserListCtrl::item,
-          CBrowserListCtrl::item,
-          MaterialListCtrl::item,
+          ContentBrowserListCtrl QLabel,
+          CBrowserListCtrl QLabel,
+          MaterialListCtrl QLabel,
+          MaterialsBrowser QListView,
+          MaterialsBrowser QListView *,
+          MaterialsBrowser QListView QLabel,
+          MaterialsBrowser QAbstractItemView,
+          MaterialsBrowser QAbstractItemView *,
+          MaterialsBrowser2 QListView,
+          MaterialsBrowser2 QListView *,
+          MaterialsBrowser2 QAbstractItemView,
+          MaterialsBrowser2 QAbstractItemView *,
+          CMaterialBrowser QListView,
+          CMaterialBrowser QListView *,
+          CMaterialBrowser QAbstractItemView,
+          CMaterialBrowser QAbstractItemView *,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView *,
+          CMaterialBrowserPage QListView QLabel,
           CMaterialBrowserPage QAbstractItemView,
           CMaterialBrowserPage QAbstractItemView *,
-          CMaterialBrowserPage QListView,
-          CMaterialBrowserPage QListView * {
+          CDockingTray MaterialsBrowser QListView,
+          CDockingTray MaterialsBrowser QListView *,
+          CDockingTray CMaterialBrowserPage QListView,
+          CDockingTray CMaterialBrowserPage QListView *,
+          QListView[class*="Material"],
+          QListView[class*="Material"] *,
+          QAbstractItemView[class*="Material"],
+          QAbstractItemView[class*="Material"] * {
               color: #000000 !important;
-              font-weight: bold !important;
+              font-weight: 800 !important;
               font-size: 8pt !important;
           }
 
+          MaterialsBrowser QListView::item,
+          MaterialsBrowser QAbstractItemView::item,
+          MaterialsBrowser2 QListView::item,
+          MaterialsBrowser2 QAbstractItemView::item,
+          CMaterialBrowser QListView::item,
+          CMaterialBrowser QAbstractItemView::item,
+          CMaterialBrowserPage QListView::item,
+          CMaterialBrowserPage QAbstractItemView::item,
+          CDockingTray MaterialsBrowser QListView::item,
+          CDockingTray CMaterialBrowser QListView::item,
+          CDockingTray CMaterialBrowserPage QListView::item,
+          QListView[class*="Material"]::item,
+          QAbstractItemView[class*="Material"]::item,
           CMaterialListCtrl::item,
           ContentBrowserListCtrl::item,
           CBrowserListCtrl::item,
           MaterialListCtrl::item,
           MaterialListItem {
+              color: #000000 !important;
+              font-weight: 800 !important;
+              font-size: 8pt !important;
               background-color: transparent !important;
               border: none !important;
-              padding: 0px !important;
+              padding-top: 0px !important;
+              padding-left: 0px !important;
+              padding-right: 0px !important;
+              padding-bottom: 2px !important;
               margin: 0px !important;
           }
 
+          MaterialsBrowser QListView::item:hover,
+          MaterialsBrowser QAbstractItemView::item:hover,
+          MaterialsBrowser2 QListView::item:hover,
+          MaterialsBrowser2 QAbstractItemView::item:hover,
+          CMaterialBrowser QListView::item:hover,
+          CMaterialBrowser QAbstractItemView::item:hover,
+          CMaterialBrowserPage QListView::item:hover,
+          CMaterialBrowserPage QAbstractItemView::item:hover,
+          CDockingTray MaterialsBrowser QListView::item:hover,
+          CDockingTray CMaterialBrowserPage QListView::item:hover,
+          QListView[class*="Material"]::item:hover,
+          QAbstractItemView[class*="Material"]::item:hover,
           CMaterialListCtrl::item:hover,
           ContentBrowserListCtrl::item:hover,
           CBrowserListCtrl::item:hover,
@@ -197,8 +257,21 @@ module SketchupDarkMode
               background-color: #38383c !important;
               border: 1px solid #007acc !important;
               color: #000000 !important;
+              font-weight: 800 !important;
           }
 
+          MaterialsBrowser QListView::item:selected,
+          MaterialsBrowser QAbstractItemView::item:selected,
+          MaterialsBrowser2 QListView::item:selected,
+          MaterialsBrowser2 QAbstractItemView::item:selected,
+          CMaterialBrowser QListView::item:selected,
+          CMaterialBrowser QAbstractItemView::item:selected,
+          CMaterialBrowserPage QListView::item:selected,
+          CMaterialBrowserPage QAbstractItemView::item:selected,
+          CDockingTray MaterialsBrowser QListView::item:selected,
+          CDockingTray CMaterialBrowserPage QListView::item:selected,
+          QListView[class*="Material"]::item:selected,
+          QAbstractItemView[class*="Material"]::item:selected,
           CMaterialListCtrl::item:selected,
           ContentBrowserListCtrl::item:selected,
           CBrowserListCtrl::item:selected,
@@ -206,6 +279,7 @@ module SketchupDarkMode
               background-color: #094771 !important;
               border: 2px solid #007acc !important;
               color: #000000 !important;
+              font-weight: 800 !important;
           }
         QSS
       else
@@ -221,9 +295,18 @@ module SketchupDarkMode
           CBrowserListCtrl,
           CBrowserListCtrl::viewport,
           MaterialListCtrl,
-          MaterialListCtrl::viewport {
+          MaterialListCtrl::viewport,
+          MaterialsBrowser QListView,
+          MaterialsBrowser QListView::viewport,
+          MaterialsBrowser2 QListView,
+          MaterialsBrowser2 QListView::viewport,
+          CMaterialBrowser QListView,
+          CMaterialBrowser QListView::viewport,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView::viewport {
               background-color: #ffffff !important;
               color: #000000 !important;
+              font-weight: 800 !important;
               border: 1px solid #38383b !important;
               outline: none;
               min-width: 0px !important;
@@ -240,30 +323,82 @@ module SketchupDarkMode
           MaterialListItem,
           MaterialListItem *,
           CMaterialListCtrl QLabel,
-          CMaterialListCtrl::item,
-          ContentBrowserListCtrl::item,
-          CBrowserListCtrl::item,
-          MaterialListCtrl::item,
+          ContentBrowserListCtrl QLabel,
+          CBrowserListCtrl QLabel,
+          MaterialListCtrl QLabel,
+          MaterialsBrowser QListView,
+          MaterialsBrowser QListView *,
+          MaterialsBrowser QListView QLabel,
+          MaterialsBrowser QAbstractItemView,
+          MaterialsBrowser QAbstractItemView *,
+          MaterialsBrowser2 QListView,
+          MaterialsBrowser2 QListView *,
+          MaterialsBrowser2 QAbstractItemView,
+          MaterialsBrowser2 QAbstractItemView *,
+          CMaterialBrowser QListView,
+          CMaterialBrowser QListView *,
+          CMaterialBrowser QAbstractItemView,
+          CMaterialBrowser QAbstractItemView *,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView *,
+          CMaterialBrowserPage QListView QLabel,
           CMaterialBrowserPage QAbstractItemView,
           CMaterialBrowserPage QAbstractItemView *,
-          CMaterialBrowserPage QListView,
-          CMaterialBrowserPage QListView * {
+          CDockingTray MaterialsBrowser QListView,
+          CDockingTray MaterialsBrowser QListView *,
+          CDockingTray CMaterialBrowserPage QListView,
+          CDockingTray CMaterialBrowserPage QListView *,
+          QListView[class*="Material"],
+          QListView[class*="Material"] *,
+          QAbstractItemView[class*="Material"],
+          QAbstractItemView[class*="Material"] * {
               color: #000000 !important;
-              font-weight: bold !important;
+              font-weight: 800 !important;
               font-size: 8pt !important;
           }
 
+          MaterialsBrowser QListView::item,
+          MaterialsBrowser QAbstractItemView::item,
+          MaterialsBrowser2 QListView::item,
+          MaterialsBrowser2 QAbstractItemView::item,
+          CMaterialBrowser QListView::item,
+          CMaterialBrowser QAbstractItemView::item,
+          CMaterialBrowserPage QListView::item,
+          CMaterialBrowserPage QAbstractItemView::item,
+          CDockingTray MaterialsBrowser QListView::item,
+          CDockingTray CMaterialBrowser QListView::item,
+          CDockingTray CMaterialBrowserPage QListView::item,
+          QListView[class*="Material"]::item,
+          QAbstractItemView[class*="Material"]::item,
           CMaterialListCtrl::item,
           ContentBrowserListCtrl::item,
           CBrowserListCtrl::item,
           MaterialListCtrl::item,
           MaterialListItem {
+              color: #000000 !important;
+              font-weight: 800 !important;
+              font-size: 8pt !important;
               background-color: transparent !important;
               border: none !important;
-              padding: 0px !important;
+              padding-top: 0px !important;
+              padding-left: 0px !important;
+              padding-right: 0px !important;
+              padding-bottom: 2px !important;
               margin: 0px !important;
           }
 
+          MaterialsBrowser QListView::item:hover,
+          MaterialsBrowser QAbstractItemView::item:hover,
+          MaterialsBrowser2 QListView::item:hover,
+          MaterialsBrowser2 QAbstractItemView::item:hover,
+          CMaterialBrowser QListView::item:hover,
+          CMaterialBrowser QAbstractItemView::item:hover,
+          CMaterialBrowserPage QListView::item:hover,
+          CMaterialBrowserPage QAbstractItemView::item:hover,
+          CDockingTray MaterialsBrowser QListView::item:hover,
+          CDockingTray CMaterialBrowserPage QListView::item:hover,
+          QListView[class*="Material"]::item:hover,
+          QAbstractItemView[class*="Material"]::item:hover,
           CMaterialListCtrl::item:hover,
           ContentBrowserListCtrl::item:hover,
           CBrowserListCtrl::item:hover,
@@ -271,8 +406,21 @@ module SketchupDarkMode
               background-color: #e5e5e5 !important;
               border: 1px solid #007acc !important;
               color: #000000 !important;
+              font-weight: 800 !important;
           }
 
+          MaterialsBrowser QListView::item:selected,
+          MaterialsBrowser QAbstractItemView::item:selected,
+          MaterialsBrowser2 QListView::item:selected,
+          MaterialsBrowser2 QAbstractItemView::item:selected,
+          CMaterialBrowser QListView::item:selected,
+          CMaterialBrowser QAbstractItemView::item:selected,
+          CMaterialBrowserPage QListView::item:selected,
+          CMaterialBrowserPage QAbstractItemView::item:selected,
+          CDockingTray MaterialsBrowser QListView::item:selected,
+          CDockingTray CMaterialBrowserPage QListView::item:selected,
+          QListView[class*="Material"]::item:selected,
+          QAbstractItemView[class*="Material"]::item:selected,
           CMaterialListCtrl::item:selected,
           ContentBrowserListCtrl::item:selected,
           CBrowserListCtrl::item:selected,
@@ -280,6 +428,7 @@ module SketchupDarkMode
               background-color: #cce8ff !important;
               border: 2px solid #007acc !important;
               color: #003366 !important;
+              font-weight: 800 !important;
           }
         QSS
       end

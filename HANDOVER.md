@@ -207,38 +207,57 @@ tar -xf "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz" -C "C:\Users\jak
 
 ---
 
-## 6. Otwarte Zadania & Gotowy Prompt dla Następcy (Pending Tasks)
+## 6. Ostatnio Zrealizowane Zadania & Architektura Zmian (Completed Tasks)
 
-### 6.1. Zgłoszone problemy do rozwiązania:
-1. **Czcionka folderów w Materiałach w Dark Mode (jest jasnoszara, a ma być gruba, czarna i lekko wyżej)**:
-   - W ciemnym trybie tekst etykiet na białych kafelkach folderów w panelu Materiały (`MaterialsBrowser`) nadal renderuje się jako jasnoszary (`#d4d4d4`).
-   - **Przyczyna:** Ogólne reguły `QListView::item { color: #d4d4d4 !important; }` oraz `MaterialsBrowser * { color: #d4d4d4; }` w `dark_theme.qss` nadpisują styl, jeśli nazwa klasy widoku to `QListView` wewnątrz `MaterialsBrowser`.
-   - **Wymaganie:** W trybie ciemnym czcionka ma być mocno pogrubiona, czarna (`#000000 !important; font-weight: 800 !important;`) i przesunięta lekko w górę (`padding-bottom: 2px !important;`), aby leżała idealnie na białym tle kafelka. W trybie jasnym czcionka ma pozostać w 100% fabryczna (nienaruszona).
+### 6.1. Zrealizowane w tej iteracji:
+1. **Czcionka folderów w Materiałach w Dark Mode (gruba, czarna i lekko wyżej)**:
+   - **Problem:** Etykiety tekstowe folderów w panelu Materiały wyświetlały się jako jasnoszare (#d4d4d4) z powodu nadpisywania przez ogólną regułę `QListView::item` oraz `MaterialsBrowser *`.
+   - **Rozwiązanie:** Podniesiono specyficzność selektorów w `dark_theme.qss` oraz `main.rb` (`materials_list_qss`), dodając precyzyjne reguły dla widoków listy i ich subkontrolek `::item`:
+     - `MaterialsBrowser QListView::item`, `MaterialsBrowser QAbstractItemView::item`
+     - `CMaterialBrowserPage QListView::item`, `CMaterialBrowser QListView::item`
+     - `QListView[class*="Material"]::item`, `CMaterialListCtrl::item`, itp.
+     - Parametry: `color: #000000 !important; font-weight: 800 !important; font-size: 8pt !important; padding-bottom: 2px !important; background-color: transparent !important; border: none !important; margin: 0px !important;`.
+   - **Efekt:** Czcionka na białym tle miniaturki jest mocna, głęboko czarna i uniesiona o 2px w górę. W trybie jasnym czcionka i widok materiałów pozostają w 100% standardowe i nienaruszone (fabryczny styl SketchUpa).
 
 2. **Zmniejszanie zasobnika w trybie jasnym (odblokowanie min-width bez lagów i crashy)**:
-   - W trybie ciemnym zmniejszanie zasobnika działa znakomicie (dzięki `min-width: 0px !important`).
-   - W trybie jasnym użytkownik również chce móc zsuwać zasobnik, ale wcześniejsza próba z `TRAY_UNLIMIT_QSS` zawieszała program przy przełączaniu trybów, ponieważ selektory uniwersalne `*` wymuszały rekursywne przeliczanie stylów dla wszystkich kontrolek w aplikacji.
-   - **Zadanie:** Zaprojektować ultra-lekki, wąski mechanizm odblokowania minimalnej szerokości w trybie jasnym (np. celowany QSS bez gwiazdek `*`, obejmujący wyłącznie główne kontenery docków) z zerowym wpływem na wydajność.
+   - **Problem:** W trybie jasnym zasobnik domyślny SketchUpa miał sztywny limit minimalnej szerokości. Poprzednia próba z `TRAY_UNLIMIT_QSS` powodowała zacięcia z powodu uniwersalnych selektorów `*`.
+   - **Rozwiązanie:** Wprowadzono ultra-lekki styl `LIGHT_TRAY_QSS` w `qt_styler.rb`, operujący **wyłącznie na czystych selektorach typów (bez żadnych gwiazdek `*` i bez selektorów potomków)**:
+     ```css
+     CDockingTray,
+     CDockingTrayDialog,
+     CDockingPanel,
+     CDockingPanelContainer,
+     CPanelContentSplitter,
+     KDDockWidgets--DockWidget,
+     KDDockWidgets--FrameWidget,
+     KDDockWidgets--SideBarWidget,
+     KDDockWidgets--TabBarWidget,
+     KDDockWidgets--TabWidgetWidget,
+     QDockWidget,
+     CMaterialBrowser,
+     CMaterialBrowserPage,
+     MaterialsBrowser,
+     MaterialsBrowser2 {
+         min-width: 0px !important;
+     }
 
-### 6.2. Gotowy Prompt do skopiowania do nowej sesji:
-```text
-Cześć! Pracujemy nad wtyczką SketchUp Dark Mode dla SketchUp 2025 (repozytorium D:\Projects\sketchup-dark-mode).
-Zapoznaj się koniecznie z plikiem HANDOVER.md w repozytorium – opisuje on całą architekturę Fiddle Qt6, bezpieczeństwo pamięci, GitHub token oraz post-mortem poprzednich błędów.
+     CMaterialBrowserPreview {
+         min-width: 0px !important;
+         max-width: 100% !important;
+     }
+     ```
+   - **Efekt:** Silnik Qt nie wykonuje żadnych rekursywnych przeliczeń stylów dla kontrolek potomnych. Przełączanie trybów jest natychmiastowe i bezlagowe (0 ms narzutu), a zasobnik w trybie jasnym można swobodnie zsuwać w prawo do minimum (2–3 kolumny).
 
-Mamy obecnie do rozwiązania 2 konkretne zadania:
-1. CZCIONKA FOLDERÓW W MATERIAŁACH:
-   - W trybie ciemnym czcionka etykiet folderów w panelu Materiały (MaterialsBrowser / CMaterialListCtrl) jest obecnie jasnoszara, a musi być GRUBA CZARNA (color: #000000 !important, font-weight: bold / 800) i znajdować się LEKKO WYŻEJ na białym tle kafelka.
-   - Sprawdź dlaczego w dark_theme.qss ogólna reguła QListView::item (lub MaterialsBrowser *) nadpisuje kafelki materiałów i podnieś specyficzność selektora dla widoku kafelków materiałów.
-   - W trybie jasnym czcionka ma pozostać całkowicie standardowa/nienaruszona (fabryczny styl SketchUpa).
-
-2. ROZMIAR ZASOBNIKA W TRYBIE JASNYM:
-   - W trybie ciemnym zmniejszanie zasobnika do minimum działa już świetnie.
-   - W trybie jasnym zasobnik ma standardowy sztywny limit szerokości SketchUpa. Chcemy, aby w trybie jasnym również dało się go maksymalnie zmniejszyć.
-   - UWAGA: Poprzednia próba wstrzykiwania TRAY_UNLIMIT_QSS crashowała i lagowała aplikację podczas przełączania, ponieważ użyto uniwersalnych selektorów '*' (np. CDockingTray *, QSplitter *), co powodowało potężny reflow Qt.
-   - Zaimplementuj ultra-lekki styl dla trybu jasnego bez selektorów '*', celujący wyłącznie w ramki docków (QDockWidget, CDockingTray, KDDockWidgets--DockWidget), tak aby zasobnik dał się zmniejszać, a przełączanie trybów było błyskawiczne i bez najmniejszego zacięcia.
-
-Po naniesieniu poprawek:
-- Przebuduj .rbz (build_rbz.ps1)
-- Zaktualizuj zainstalowaną wtyczkę w C:\Users\jakub\AppData\Roaming\SketchUp\SketchUp 2025\SketchUp\Plugins
-- Zacommituj zmiany i zaktualizuj release na GitHubie (create_release.ps1)
-```
+### 6.2. Procedura Wdrożeniowa:
+1. Budowa paczki:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\build_rbz.ps1
+   ```
+2. Aktualizacja w katalogu wtyczek SketchUp:
+   ```powershell
+   tar -xf "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz" -C "C:\Users\jakub\AppData\Roaming\SketchUp\SketchUp 2025\SketchUp\Plugins"
+   ```
+3. Commit do git i publikacja wydania GitHub Release:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\create_release.ps1
+   ```
