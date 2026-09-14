@@ -83,13 +83,13 @@ module SketchupDarkMode
       Config['dark_mode_enabled'] = false
       Config['auto_sync_windows'] = false
 
-      # 1. Pasek tytułu Windows (DWM) — tania operacja, najpierw
+      # 1. Pasek tytułu Windows (DWM)
       DwmStyler.set_dark_titlebar(false)
 
-      # 2. Widok 3D (Przywrócenie domyślnych kolorów canvas) — przed Qt
+      # 2. Widok 3D (Przywrócenie domyślnych kolorów canvas)
       ViewportStyler.restore_viewport(Sketchup.active_model)
 
-      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS) — najcięższa operacja na końcu
+      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS)
       QtStyler.clear_stylesheet
 
       update_ui_elements

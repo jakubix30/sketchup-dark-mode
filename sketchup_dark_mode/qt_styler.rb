@@ -166,6 +166,8 @@ module SketchupDarkMode
     def apply_dark_palette
       return unless available?
 
+      capture_original_palette
+
       pal_mem = Fiddle::Pointer.malloc(128)
       128.times { |i| pal_mem[i] = 0 }
       @fn_palette_ctor.call(pal_mem)
@@ -266,11 +268,13 @@ module SketchupDarkMode
     end
 
     # Aplikuje arkusz stylów CSS oraz ciemną paletę
-    # Kolejność: najpierw QSS, potem paleta — unikamy podwójnego przeliczania layoutu
     def apply_stylesheet(css_text)
       return false unless available?
 
-      # 1. Zastosuj arkusz stylów QSS (najpierw, aby paleta nie wymuszała recalc selektorów)
+      # 1. Zastosuj ciemną paletę
+      apply_dark_palette
+
+      # 2. Zastosuj arkusz stylów QSS
       qapp = @fn_instance.call
       if qapp.nil? || qapp.to_i == 0
         puts '[Dark Mode] Wskaźnik QApplication jest NULL.'
@@ -289,9 +293,6 @@ module SketchupDarkMode
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
-
-      # 2. Zastosuj ciemną paletę (po QSS — paleta zmienia tylko wartości domyślne)
-      apply_dark_palette
 
       true
     rescue StandardError => e
