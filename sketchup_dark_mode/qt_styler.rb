@@ -347,7 +347,8 @@ module SketchupDarkMode
         # 2. Jeśli to doki, tacki, panele lub widoki materiałów - zresetuj minimumWidth i minimumSize
         if cname.include?('Splitter') || cname.include?('Dock') || cname.include?('Tray') ||
            cname.include?('Material') || cname.include?('ContentBrowser') ||
-           cname.include?('ScrollArea') || cname.include?('Page') || cname.include?('FrameWidget')
+           cname.include?('ScrollArea') || cname.include?('Page') || cname.include?('FrameWidget') ||
+           cname.include?('Button') || cname.include?('TabBar') || cname.include?('SideBar')
           @fn_set_min_w&.call(w, 0)
           @fn_set_min_size&.call(w, 0, 0)
         end
@@ -446,35 +447,10 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # Aby zapobiec zamrożeniu sztucznych limitów szerokości w natywnym Qt po wyłączeniu Dark Mode,
-      # aplikujemy regułę zerującą min-width na zasobniku i przyciskach bez zmiany barw systemu
-      reset_css = <<~QSS
-        QDockWidget,
-        KDDockWidgets--DockWidget,
-        KDDockWidgets--FrameWidget,
-        KDDockWidgets--SideBarWidget,
-        KDDockWidgets--TabBarWidget,
-        KDDockWidgets--TabWidgetWidget,
-        QScrollArea,
-        QScrollArea > QWidget,
-        QScrollArea > QWidget > QWidget,
-        QFrame[class*="Page"],
-        QWidget[class*="Page"],
-        CMaterialBrowserPage,
-        CMaterialBrowserPage *,
-        CMaterialListCtrl,
-        ContentBrowserListCtrl,
-        QSplitter {
-            min-width: 0px !important;
-        }
-        QPushButton {
-            min-width: 0px !important;
-        }
-      QSS
-
+      # Czyścimy arkusz stylów do zera (pełne przywrócenie natywnego stylu Windows)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
-      c_ptr = Fiddle::Pointer.to_ptr(reset_css.encode('UTF-8') + "\0")
+      c_ptr = Fiddle::Pointer.to_ptr("\0")
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
