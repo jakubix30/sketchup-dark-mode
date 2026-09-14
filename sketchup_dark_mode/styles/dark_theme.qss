@@ -608,6 +608,40 @@ QRadioButton::indicator:checked {
 }
 
 /* --------------------------------------------------------------------------
+   Suwaki (QSlider) oraz panel Cienie (Shadows)
+   -------------------------------------------------------------------------- */
+QSlider,
+QSlider QLabel,
+CShadowsPage,
+CShadowsPage *,
+CShadowPage,
+CShadowPage *,
+ShadowsBrowser,
+ShadowsBrowser * {
+    color: #e0e0e0 !important;
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid #3e3e42;
+    height: 6px;
+    background: #1e1e1e;
+    margin: 2px 0;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background: #007acc;
+    border: 1px solid #005a9e;
+    width: 14px;
+    margin: -4px 0;
+    border-radius: 7px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #1c97ea;
+}
+
+/* --------------------------------------------------------------------------
    Paski przewijania (ScrollBars)
    -------------------------------------------------------------------------- */
 QScrollBar:vertical {
