@@ -25,32 +25,13 @@ if (-not (Test-Path $rbzPath)) {
     exit 1
 }
 
-$releaseBody = @"
-## SketchUp Dark Mode v1.0.0 🌓
-
-A modern Dark Mode extension for **SketchUp 2025** on Windows 10/11.
-
-### 🌟 Features & Highlights
-- **Full Qt 6 Dark Theme**: Restyles menus, toolbars, docking trays, status bars, tab bars, dialogs, and panels.
-- **Windows DWM Dark Titlebar**: Native dark window titlebar matching the Windows 10/11 theme.
-- **Dark 3D Viewport**: Optional dark canvas background with clear, high-contrast model edges.
-- **Materials & Folders Readability**: Deep black, extra-bold text (font-weight: 800) elevated on folder swatches for crisp readability in dark mode.
-- **Compact Tray Layout in Both Modes**: Unconstrained tray resizing allows shrinking the default tray down to 2–3 columns in both Dark and Light modes with zero lag.
-- **Multilingual Support (PL / EN)**:
-  - Full support for Polish and English.
-  - Automatic language detection matching SketchUp's locale (`Sketchup.get_locale`).
-  - Manual language switch (`Auto | English | Polski`) in Dark Mode Settings.
-- **Hot-Reload Support**: Instant stylesheet reloading (`Reload CSS Stylesheet`) without restarting SketchUp.
-
----
-
-### 📦 Installation
-1. Download the **`sketchup_dark_mode.rbz`** file attached below.
-2. In SketchUp 2025, navigate to:  
-   **Extensions** -> **Extension Manager** (or **Rozszerzenia** -> **Menedżer rozszerzeń**).
-3. Click **Install Extension** (**Zainstaluj rozszerzenie**) and select `sketchup_dark_mode.rbz`.
-4. The extension will activate automatically and add a **Dark Mode** toolbar.
-"@
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$releaseNotesPath = Join-Path $scriptDir "RELEASE_NOTES.md"
+if (-not (Test-Path $releaseNotesPath)) {
+    Write-Error "RELEASE_NOTES.md not found at $releaseNotesPath"
+    exit 1
+}
+$releaseBody = [System.IO.File]::ReadAllText($releaseNotesPath, [System.Text.Encoding]::UTF8)
 
 $headers = @{
     "Authorization" = "Bearer $token"
