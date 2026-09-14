@@ -374,8 +374,8 @@ CDockingTray CMaterialBrowserPage QListView::item {
     padding-top: 0px !important;
     padding-left: 0px !important;
     padding-right: 0px !important;
-    padding-bottom: 22px !important;
-    margin-bottom: 6px !important;
+    padding-bottom: 2px !important;
+    margin: 0px !important;
 }
 
 CMaterialListCtrl::item:hover,
@@ -903,33 +903,6 @@ CDockingTray MaterialsBrowser QAbstractItemView::item {
     color: #000000 !important;
 }
 
-/* Uniesienie etykiet folderów i miniatur na kafelkach */
-CMaterialListCtrl::item,
-ContentBrowserListCtrl::item,
-CBrowserListCtrl::item,
-MaterialListCtrl::item,
-MaterialListItem,
-CListBrowserItem,
-ListContentBrowserItem,
-QWidget#materialsCtrl QListView::item,
-CMaterialBrowserPage QListView::item,
-MaterialsBrowser QListView::item,
-MaterialsBrowser2 QListView::item,
-CMaterialBrowser QListView::item,
-CDockingTray CMaterialBrowserPage QListView::item,
-CDockingTray MaterialsBrowser QListView::item,
-CMaterialListCtrl QLabel,
-ContentBrowserListCtrl QLabel,
-CBrowserListCtrl QLabel,
-MaterialListCtrl QLabel,
-MaterialListItem QLabel,
-CListBrowserItem QLabel,
-ListContentBrowserItem QLabel,
-QWidget#materialsCtrl QLabel,
-QWidget#materialsCtrl QListView QLabel {
-    padding-bottom: 22px !important;
-    margin-bottom: 6px !important;
-}
 
 /* Interakcje (hover i zaznaczenie) kafelków materiałów */
 CMaterialListCtrl::item:hover,
@@ -983,14 +956,3 @@ QWidget#materialsCtrl QLineEdit {
     font-weight: normal !important;
 }
 
-CMaterialBrowserPage QComboBox QAbstractItemView::item,
-CMaterialBrowserPage QComboBox QListView::item,
-QWidget#materialsCtrl QComboBox QAbstractItemView::item,
-QWidget#materialsCtrl QComboBox QListView::item,
-QComboBox QAbstractItemView::item,
-QComboBox QListView::item {
-    padding: 3px 8px !important;
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
-    min-height: 20px !important;
-}
