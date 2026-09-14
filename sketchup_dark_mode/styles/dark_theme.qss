@@ -205,6 +205,11 @@ CDockingTray QToolButton,
 CDockingTray QComboBox,
 CDockingTray QLineEdit,
 CDockingTray QTabBar::tab,
+CDockingTray QPushButton,
+CDockingTray QToolButton,
+CDockingTray QComboBox,
+CDockingTray QLineEdit,
+CDockingTray QTabBar::tab,
 CDockingTray QLabel,
 CDockingTray QWidget,
 QDockWidget QPushButton,
@@ -216,14 +221,20 @@ QDockWidget QLabel,
 QDockWidget QWidget,
 CMaterialBrowser QTabBar::tab,
 CMaterialBrowserPage QTabBar::tab,
-MaterialsBrowser QTabBar::tab {
+MaterialsBrowser QTabBar::tab,
+CMaterialBrowserPage QPushButton,
+CMaterialBrowserPage QToolButton,
+CMaterialBrowserPage QComboBox,
+CMaterialBrowserPage QLineEdit {
     padding: 1px 2px !important;
+    min-width: 0px !important;
 }
 
 CMaterialBrowserPreview,
 CMaterialBrowserPreview *,
 CMaterialBrowserPreview QLabel,
 CMaterialBrowserPreview QWidget {
+    min-width: 0px !important;
     max-width: 100% !important;
 }
 
@@ -363,8 +374,8 @@ CDockingTray CMaterialBrowserPage QListView::item {
     padding-top: 0px !important;
     padding-left: 0px !important;
     padding-right: 0px !important;
-    padding-bottom: 14px !important;
-    margin-bottom: 4px !important;
+    padding-bottom: 22px !important;
+    margin-bottom: 6px !important;
 }
 
 CMaterialListCtrl::item:hover,
@@ -616,7 +627,6 @@ QPushButton {
     min-width: 0px;
 }
 
-QDialog QPushButton,
 QMessageBox QPushButton {
     min-width: 60px;
     padding: 4px 12px;
@@ -917,8 +927,8 @@ CListBrowserItem QLabel,
 ListContentBrowserItem QLabel,
 QWidget#materialsCtrl QLabel,
 QWidget#materialsCtrl QListView QLabel {
-    padding-bottom: 14px !important;
-    margin-bottom: 4px !important;
+    padding-bottom: 22px !important;
+    margin-bottom: 6px !important;
 }
 
 /* Interakcje (hover i zaznaczenie) kafelków materiałów */
