@@ -116,6 +116,86 @@ module SketchupDarkMode
         @fn_set_corner = nil
       end
 
+      # 13. QSplitter::setChildrenCollapsible(bool)
+      begin
+        sym = qt_widgets_handle['?setChildrenCollapsible@QSplitter@@QEAAX_N@Z']
+        @fn_splitter_set_children_collapsible = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_CHAR], Fiddle::TYPE_VOID
+        )
+      rescue StandardError
+        @fn_splitter_set_children_collapsible = nil
+      end
+
+      # 14. QSplitter::setCollapsible(int, bool)
+      begin
+        sym = qt_widgets_handle['?setCollapsible@QSplitter@@QEAAXH_N@Z']
+        @fn_splitter_set_collapsible = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT, Fiddle::TYPE_CHAR], Fiddle::TYPE_VOID
+        )
+      rescue StandardError
+        @fn_splitter_set_collapsible = nil
+      end
+
+      # 15. int QSplitter::count()
+      begin
+        sym = qt_widgets_handle['?count@QSplitter@@QEBAHXZ']
+        @fn_splitter_count = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT
+        )
+      rescue StandardError
+        @fn_splitter_count = nil
+      end
+
+      # 16. void QWidget::setMinimumWidth(int)
+      begin
+        sym = qt_widgets_handle['?setMinimumWidth@QWidget@@QEAAXH@Z']
+        @fn_set_min_w = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_VOID
+        )
+      rescue StandardError
+        @fn_set_min_w = nil
+      end
+
+      # 17. void QWidget::setMinimumSize(int, int)
+      begin
+        sym = qt_widgets_handle['?setMinimumSize@QWidget@@QEAAXHH@Z']
+        @fn_set_min_size = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT, Fiddle::TYPE_INT], Fiddle::TYPE_VOID
+        )
+      rescue StandardError
+        @fn_set_min_size = nil
+      end
+
+      # 18. const QMetaObject* QObject::metaObject()
+      begin
+        sym = qt_core_handle['?metaObject@QObject@@UEBAPEBUQMetaObject@@XZ']
+        @fn_meta_object = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP
+        )
+      rescue StandardError
+        @fn_meta_object = nil
+      end
+
+      # 19. const char* QMetaObject::className()
+      begin
+        sym = qt_core_handle['?className@QMetaObject@@QEBAPEBDXZ']
+        @fn_class_name = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP
+        )
+      rescue StandardError
+        @fn_class_name = nil
+      end
+
+      # 20. const QList<QObject*>& QObject::children()
+      begin
+        sym = qt_core_handle['?children@QObject@@QEBAAEBV?$QList@PEAVQObject@@@@XZ']
+        @fn_children = Fiddle::Function.new(
+          sym, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP
+        )
+      rescue StandardError
+        @fn_children = nil
+      end
+
       @available = true
       puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Paleta + QSS).'
       true
@@ -237,6 +317,90 @@ module SketchupDarkMode
       @fn_palette_dtor.call(pal_mem) if pal_mem
     end
 
+    # Usuwa wszelkie limity minimalnej szerokości zasobnika (zarówno w trybie ciemnym, jak i domyślnym)
+    def unlock_tray_limits(root = nil)
+      return unless available?
+
+      root ||= @fn_active_window.call
+      return if root.nil? || root.to_i == 0
+
+      visited = {}
+      queue = [root]
+
+      while (w = queue.shift)
+        break if visited.size > 2000
+        addr = w.to_i
+        next if addr == 0 || visited[addr]
+        visited[addr] = true
+
+        cname = widget_class_name(w)
+
+        # 1. Jeśli to QSplitter - odblokuj pełne zwijanie i brak minimalnych limitów dzieci
+        if cname == 'QSplitter'
+          @fn_splitter_set_children_collapsible&.call(w, 1)
+          if @fn_splitter_count && @fn_splitter_set_collapsible
+            cnt = @fn_splitter_count.call(w)
+            cnt.times { |i| @fn_splitter_set_collapsible.call(w, i, 1) }
+          end
+        end
+
+        # 2. Jeśli to doki, tacki, panele lub widoki materiałów - zresetuj minimumWidth i minimumSize
+        if cname.include?('Splitter') || cname.include?('Dock') || cname.include?('Tray') ||
+           cname.include?('Material') || cname.include?('ContentBrowser') ||
+           cname.include?('ScrollArea') || cname.include?('Page') || cname.include?('FrameWidget')
+          @fn_set_min_w&.call(w, 0)
+          @fn_set_min_size&.call(w, 0, 0)
+        end
+
+        # Pobierz i dodaj dzieci do kolejki przeszukiwania
+        kids = object_children(w)
+        queue.concat(kids) unless kids.empty?
+      end
+    rescue StandardError => e
+      puts "[Dark Mode] Ostrzeżenie unlock_tray_limits: #{e.message}"
+    end
+
+    def widget_class_name(qobj)
+      return '' if qobj.nil? || qobj.to_i == 0 || @fn_meta_object.nil? || @fn_class_name.nil?
+
+      meta = @fn_meta_object.call(qobj)
+      return '' if meta.nil? || meta.to_i == 0
+
+      name_ptr = @fn_class_name.call(meta)
+      return '' if name_ptr.nil? || name_ptr.to_i == 0
+
+      name_ptr.to_s
+    rescue StandardError
+      ''
+    end
+
+    def object_children(qobj)
+      return [] if qobj.nil? || qobj.to_i == 0 || @fn_children.nil?
+
+      ref_ptr = @fn_children.call(qobj)
+      return [] if ref_ptr.nil? || ref_ptr.to_i == 0
+
+      # QList<QObject*> w Qt 6 (QArrayDataPointer):
+      # offset 0: d (8B), offset 8: ptr (8B), offset 16: size (8B)
+      bytes = ref_ptr[0, 24]
+      return [] unless bytes && bytes.length >= 24
+
+      elem_ptr_val = bytes[8, 8].unpack1('Q')
+      size_val     = bytes[16, 8].unpack1('q')
+
+      return [] if size_val <= 0 || size_val > 5000 || elem_ptr_val == 0
+
+      elem_mem = Fiddle::Pointer.new(elem_ptr_val, size_val * 8)
+      children_ptrs = []
+      size_val.times do |i|
+        child_addr = elem_mem[i * 8, 8].unpack1('Q')
+        children_ptrs << Fiddle::Pointer.new(child_addr) if child_addr != 0
+      end
+      children_ptrs
+    rescue StandardError
+      []
+    end
+
     # Aplikuje arkusz stylów CSS oraz ciemną paletę
     def apply_stylesheet(css_text)
       return false unless available?
@@ -264,6 +428,9 @@ module SketchupDarkMode
         @fn_qstr_dtor.call(qstr_buf)
       end
 
+      # 3. Odblokuj pełne zwijanie i limity szerokości zasobnika
+      unlock_tray_limits
+
       true
     rescue StandardError => e
       puts "[Dark Mode] Błąd nakładania stylu Qt: #{e.message}"
@@ -279,9 +446,35 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
+      # Aby zapobiec zamrożeniu sztucznych limitów szerokości w natywnym Qt po wyłączeniu Dark Mode,
+      # aplikujemy regułę zerującą min-width na zasobniku i przyciskach bez zmiany barw systemu
+      reset_css = <<~QSS
+        QDockWidget,
+        KDDockWidgets--DockWidget,
+        KDDockWidgets--FrameWidget,
+        KDDockWidgets--SideBarWidget,
+        KDDockWidgets--TabBarWidget,
+        KDDockWidgets--TabWidgetWidget,
+        QScrollArea,
+        QScrollArea > QWidget,
+        QScrollArea > QWidget > QWidget,
+        QFrame[class*="Page"],
+        QWidget[class*="Page"],
+        CMaterialBrowserPage,
+        CMaterialBrowserPage *,
+        CMaterialListCtrl,
+        ContentBrowserListCtrl,
+        QSplitter {
+            min-width: 0px !important;
+        }
+        QPushButton {
+            min-width: 0px !important;
+        }
+      QSS
+
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
-      c_ptr = Fiddle::Pointer.to_ptr("\0")
+      c_ptr = Fiddle::Pointer.to_ptr(reset_css.encode('UTF-8') + "\0")
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
@@ -289,6 +482,9 @@ module SketchupDarkMode
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
+
+      # Odblokuj ograniczenia szerokości zasobnika również w trybie jasnym
+      unlock_tray_limits
 
       true
     rescue StandardError => e

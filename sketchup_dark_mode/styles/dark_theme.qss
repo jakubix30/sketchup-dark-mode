@@ -102,7 +102,7 @@ QToolBar {
 QDockWidget {
     background-color: #252526;
     color: #ffffff;
-    border: 1px solid #333333;
+    min-width: 0px !important;
 }
 
 QDockWidget::title {
@@ -117,9 +117,17 @@ KDDockWidgets--DockWidget,
 KDDockWidgets--FrameWidget,
 KDDockWidgets--SideBarWidget,
 KDDockWidgets--TabBarWidget,
-KDDockWidgets--TabWidgetWidget {
+KDDockWidgets--TabWidgetWidget,
+QScrollArea,
+QScrollArea > QWidget,
+QScrollArea > QWidget > QWidget,
+QFrame[class*="Page"],
+QWidget[class*="Page"],
+CMaterialBrowserPage,
+QSplitter {
     background-color: #252526;
     color: #d4d4d4;
+    min-width: 0px !important;
 }
 
 KDDockWidgets--TitleBarWidget,
@@ -199,19 +207,15 @@ MaterialListCtrl::viewport {
     color: #e0e0e0 !important;
     border: 1px solid #38383b !important;
     outline: none;
+    min-width: 0px !important;
 }
 
 /* Tekst i styl elementów wewnątrz listy próbek/folderów */
-CMaterialListCtrl *,
-ContentBrowserListCtrl *,
-CBrowserListCtrl *,
-MaterialListCtrl *,
 CMaterialListCtrl::item,
 ContentBrowserListCtrl::item,
 CBrowserListCtrl::item,
 MaterialListCtrl::item,
-MaterialListItem,
-MaterialListItem * {
+MaterialListItem {
     background-color: #2a2a2d !important;
     color: #ffffff !important;
     font-weight: 600 !important;
@@ -430,8 +434,14 @@ QPushButton {
     color: #cccccc;
     border: 1px solid #454549;
     border-radius: 3px;
+    padding: 2px 6px;
+    min-width: 0px;
+}
+
+QDialog QPushButton,
+QMessageBox QPushButton {
+    min-width: 60px;
     padding: 4px 12px;
-    min-width: 48px;
 }
 
 QPushButton:hover {

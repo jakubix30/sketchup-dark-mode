@@ -151,18 +151,14 @@ module SketchupDarkMode
               color: #e0e0e0 !important;
               border: 1px solid #38383b !important;
               outline: none;
+              min-width: 0px !important;
           }
 
-          CMaterialListCtrl *,
-          ContentBrowserListCtrl *,
-          CBrowserListCtrl *,
-          MaterialListCtrl *,
           CMaterialListCtrl::item,
           ContentBrowserListCtrl::item,
           CBrowserListCtrl::item,
           MaterialListCtrl::item,
-          MaterialListItem,
-          MaterialListItem * {
+          MaterialListItem {
               background-color: #2a2a2d !important;
               color: #ffffff !important;
               font-weight: 600 !important;
@@ -206,18 +202,14 @@ module SketchupDarkMode
               color: #111111 !important;
               border: 1px solid #38383b !important;
               outline: none;
+              min-width: 0px !important;
           }
 
-          CMaterialListCtrl *,
-          ContentBrowserListCtrl *,
-          CBrowserListCtrl *,
-          MaterialListCtrl *,
           CMaterialListCtrl::item,
           ContentBrowserListCtrl::item,
           CBrowserListCtrl::item,
           MaterialListCtrl::item,
-          MaterialListItem,
-          MaterialListItem * {
+          MaterialListItem {
               background-color: transparent !important;
               color: #111111 !important;
               font-weight: 700 !important;
