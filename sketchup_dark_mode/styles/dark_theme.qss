@@ -114,62 +114,80 @@ QDockWidget::title {
 }
 
 CDockingTray,
+CDockingTray *,
 CDockingTrayDialog,
+CDockingTrayDialog *,
 CDockingPanel,
+CDockingPanel *,
 CDockingPanelContainer,
+CDockingPanelContainer *,
 CPanelContentSplitter,
+CPanelContentSplitter *,
 CMaterialBrowser,
+CMaterialBrowser *,
 CMaterialBrowserPage,
+CMaterialBrowserPage *,
 CMaterialBrowserPreview,
+CMaterialBrowserPreview *,
 CMaterialEditPage,
+CMaterialEditPage *,
 MaterialsBrowser,
+MaterialsBrowser *,
 MaterialsBrowser2,
+MaterialsBrowser2 *,
 KDDockWidgets--DockWidget,
+KDDockWidgets--DockWidget *,
 KDDockWidgets--FrameWidget,
+KDDockWidgets--FrameWidget *,
 KDDockWidgets--SideBarWidget,
+KDDockWidgets--SideBarWidget *,
 KDDockWidgets--TabBarWidget,
+KDDockWidgets--TabBarWidget *,
 KDDockWidgets--TabWidgetWidget,
+KDDockWidgets--TabWidgetWidget *,
+QDockWidget,
+QDockWidget *,
 QScrollArea,
+QScrollArea *,
 QScrollArea > QWidget,
-QScrollArea > QWidget > QWidget,
+QScrollArea > QWidget *,
+QFrame#collapsibleContent,
+QFrame#collapsibleContent *,
+QFrame[class*="Expander"],
+QFrame[class*="Expander"] *,
 QFrame[class*="Page"],
+QFrame[class*="Page"] *,
 QWidget[class*="Page"],
-QSplitter {
+QWidget[class*="Page"] *,
+QSplitter,
+QSplitter * {
     background-color: #252526;
     color: #d4d4d4;
     min-width: 0px !important;
 }
 
-/* Kompaktowe wymiary kontrolek panelu Materiały (zdjęcie ograniczenia minimalnej szerokości zasobnika) */
+/* Kompaktowe wymiary wszystkich kontrolek w zasobniku (zdjęcie ograniczenia minimalnej szerokości) */
+CDockingTray QPushButton,
+CDockingTray QToolButton,
+CDockingTray QComboBox,
+CDockingTray QLineEdit,
+CDockingTray QTabBar::tab,
+QDockWidget QPushButton,
+QDockWidget QToolButton,
+QDockWidget QComboBox,
+QDockWidget QLineEdit,
+QDockWidget QTabBar::tab,
 CMaterialBrowser QTabBar::tab,
 CMaterialBrowserPage QTabBar::tab,
 MaterialsBrowser QTabBar::tab {
-    padding: 1px 3px !important;
+    padding: 1px 2px !important;
     min-width: 0px !important;
 }
 
-CMaterialBrowser QComboBox,
-CMaterialBrowserPage QComboBox,
-MaterialsBrowser QComboBox {
+CMaterialBrowserPreview,
+CMaterialBrowserPreview * {
     min-width: 0px !important;
-    padding: 1px 2px !important;
-}
-
-CMaterialBrowser QLineEdit,
-CMaterialBrowserPage QLineEdit,
-MaterialsBrowser QLineEdit {
-    min-width: 0px !important;
-    padding: 1px 2px !important;
-}
-
-CMaterialBrowser QPushButton,
-CMaterialBrowserPage QPushButton,
-MaterialsBrowser QPushButton,
-CMaterialBrowser QToolButton,
-CMaterialBrowserPage QToolButton,
-MaterialsBrowser QToolButton {
-    min-width: 0px !important;
-    padding: 1px 2px !important;
+    max-width: 100% !important;
 }
 
 KDDockWidgets--TitleBarWidget,
@@ -274,8 +292,8 @@ CMaterialBrowserPage QAbstractItemView *,
 CMaterialBrowserPage QListView,
 CMaterialBrowserPage QListView * {
     color: #000000 !important;
-    font-weight: 900 !important;
-    font-size: 11px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
 }
 
 CMaterialListCtrl::item,
@@ -286,6 +304,9 @@ MaterialListItem {
     background-color: transparent !important;
     border: 1px solid transparent !important;
     border-radius: 4px;
+    padding-top: 0px !important;
+    padding-bottom: 7px !important;
+    margin-bottom: 3px !important;
 }
 
 CMaterialListCtrl::item:hover,
