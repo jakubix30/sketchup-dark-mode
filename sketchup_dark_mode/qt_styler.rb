@@ -160,7 +160,7 @@ module SketchupDarkMode
         3  => '#2d2d30', # Midlight
         4  => '#1a1a1c', # Dark
         5  => '#282828', # Mid
-        6  => '#ffffff', # Text (biały/jasny tekst)
+        6  => '#000000', # Text (czarny tekst dla widoków próbek i folderów materiałów)
         7  => '#ffffff', # BrightText
         8  => '#ffffff', # ButtonText
         9  => '#1e1e1e', # Base (tło kafelków, miniatur, list)
