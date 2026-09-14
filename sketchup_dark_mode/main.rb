@@ -7,7 +7,6 @@ module SketchupDarkMode
     extend self
 
     QSS_PATH = File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'styles', 'dark_theme.qss')
-    LIGHT_QSS_PATH = File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'styles', 'light_theme.qss')
     ICONS_DIR = File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'icons')
 
     @app_observer = nil
@@ -90,8 +89,8 @@ module SketchupDarkMode
       # 2. Widok 3D (Przywrócenie domyślnych kolorów canvas)
       ViewportStyler.restore_viewport(Sketchup.active_model)
 
-      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i aplikacja stylu jasnego)
-      apply_light_theme
+      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS)
+      QtStyler.clear_stylesheet
 
       update_ui_elements
       puts '[Dark Mode] Przywrócono domyślny jasny motyw SketchUp.'
@@ -106,18 +105,14 @@ module SketchupDarkMode
     end
 
     def reload_stylesheet
-      if dark_mode_active?
-        if File.exist?(QSS_PATH)
-          puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
-          apply_current_qss if Config['style_ui']
-          UI.messagebox(I18n.t(:reload_success), MB_OK)
-        else
-          UI.messagebox(I18n.t(:reload_error, path: QSS_PATH), MB_OK)
+      if File.exist?(QSS_PATH)
+        puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
+        if dark_mode_active? && Config['style_ui']
+          apply_current_qss
         end
-      else
-        puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{LIGHT_QSS_PATH})..."
-        apply_light_theme
         UI.messagebox(I18n.t(:reload_success), MB_OK)
+      else
+        UI.messagebox(I18n.t(:reload_error, path: QSS_PATH), MB_OK)
       end
     end
 
@@ -134,13 +129,6 @@ module SketchupDarkMode
       else
         puts "[Dark Mode] Ostrzeżenie: Plik stylów #{QSS_PATH} nie istnieje."
       end
-    end
-
-    def apply_light_theme
-      light_qss = if File.exist?(LIGHT_QSS_PATH)
-                    File.read(LIGHT_QSS_PATH, encoding: 'UTF-8')
-                  end
-      QtStyler.clear_stylesheet(light_qss)
     end
 
     private

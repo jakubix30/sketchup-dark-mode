@@ -300,151 +300,8 @@ module SketchupDarkMode
       false
     end
 
-    DEFAULT_LIGHT_QSS = <<~QSS
-      QDockWidget,
-      CDockingTray,
-      CDockingTrayDialog,
-      CDockingPanel,
-      CDockingPanelContainer,
-      CPanelContentSplitter,
-      KDDockWidgets--DockWidget,
-      KDDockWidgets--FrameWidget,
-      KDDockWidgets--SideBarWidget,
-      KDDockWidgets--TabBarWidget,
-      KDDockWidgets--TabWidgetWidget,
-      QScrollArea,
-      QScrollArea > QWidget,
-      QScrollArea > QWidget > QWidget,
-      QFrame#collapsibleContent,
-      QWidget#collapsibleContent,
-      QFrame[class*="Expander"],
-      QWidget[class*="Expander"],
-      QFrame[class*="Page"],
-      QWidget[class*="Page"],
-      QFrame[class*="Dlg"],
-      QWidget[class*="Dlg"],
-      CMaterialBrowser,
-      CMaterialBrowserPage,
-      CMaterialBrowserPreview,
-      CMaterialEditPage,
-      MaterialsBrowser,
-      MaterialsBrowser2,
-      QSplitter {
-          min-width: 0px !important;
-      }
-
-      CMaterialBrowserPreview,
-      CMaterialBrowserPreview QLabel,
-      CMaterialBrowserPreview QWidget {
-          min-width: 0px !important;
-          max-width: 100% !important;
-      }
-
-      CDockingTray QPushButton,
-      CDockingTray QToolButton,
-      CDockingTray QComboBox,
-      CDockingTray QLineEdit,
-      CDockingTray QTabBar::tab,
-      CDockingTray QLabel,
-      CDockingTray QWidget,
-      QDockWidget QPushButton,
-      QDockWidget QToolButton,
-      QDockWidget QComboBox,
-      QDockWidget QLineEdit,
-      QDockWidget QTabBar::tab,
-      QDockWidget QLabel,
-      QDockWidget QWidget,
-      CMaterialBrowser QTabBar::tab,
-      CMaterialBrowserPage QTabBar::tab,
-      MaterialsBrowser QTabBar::tab,
-      CMaterialBrowserPage QComboBox,
-      CMaterialBrowserPage QLineEdit,
-      CMaterialBrowserPage QPushButton,
-      CMaterialBrowserPage QToolButton {
-          min-width: 0px !important;
-      }
-
-      CMaterialListCtrl,
-      ContentBrowserListCtrl,
-      CBrowserListCtrl,
-      MaterialListCtrl,
-      MaterialsBrowser QListView,
-      MaterialsBrowser2 QListView,
-      CMaterialBrowser QListView,
-      CMaterialBrowserPage QListView {
-          min-width: 0px !important;
-      }
-
-      CMaterialListCtrl,
-      CMaterialListCtrl::item,
-      ContentBrowserListCtrl,
-      ContentBrowserListCtrl::item,
-      CBrowserListCtrl,
-      CBrowserListCtrl::item,
-      MaterialListCtrl,
-      MaterialListCtrl::item,
-      MaterialListItem,
-      CListBrowserItem,
-      ListContentBrowserItem,
-      QWidget#materialsCtrl,
-      QWidget#materialsCtrl QAbstractItemView,
-      QWidget#materialsCtrl QAbstractItemView::item,
-      QWidget#materialsCtrl QListView,
-      QWidget#materialsCtrl QListView::item,
-      CMaterialBrowserPage QAbstractItemView,
-      CMaterialBrowserPage QAbstractItemView::item,
-      CMaterialBrowserPage QListView,
-      CMaterialBrowserPage QListView::item,
-      MaterialsBrowser QAbstractItemView,
-      MaterialsBrowser QAbstractItemView::item,
-      MaterialsBrowser QListView,
-      MaterialsBrowser QListView::item,
-      MaterialsBrowser2 QAbstractItemView,
-      MaterialsBrowser2 QAbstractItemView *,
-      MaterialsBrowser2 QAbstractItemView::item,
-      MaterialsBrowser2 QListView,
-      MaterialsBrowser2 QListView *,
-      MaterialsBrowser2 QListView::item,
-      CMaterialBrowser QAbstractItemView,
-      CMaterialBrowser QAbstractItemView *,
-      CMaterialBrowser QAbstractItemView::item,
-      CMaterialBrowser QListView,
-      CMaterialBrowser QListView *,
-      CMaterialBrowser QListView::item,
-      CDockingTray CMaterialBrowserPage QAbstractItemView,
-      CDockingTray CMaterialBrowserPage QAbstractItemView *,
-      CDockingTray CMaterialBrowserPage QAbstractItemView::item,
-      CDockingTray MaterialsBrowser QAbstractItemView,
-      CDockingTray MaterialsBrowser QAbstractItemView *,
-      CDockingTray MaterialsBrowser QAbstractItemView::item,
-      QListView,
-      QListView QLabel,
-      QAbstractItemView[class*="Material"],
-      QAbstractItemView[class*="Content"] {
-          font-weight: normal !important;
-          padding-bottom: 0px !important;
-      }
-
-      CMaterialListCtrl::item:hover,
-      ContentBrowserListCtrl::item:hover,
-      CBrowserListCtrl::item:hover,
-      MaterialListCtrl::item:hover,
-      QWidget#materialsCtrl QAbstractItemView::item:hover,
-      CMaterialBrowserPage QAbstractItemView::item:hover,
-      MaterialsBrowser QAbstractItemView::item:hover,
-      CMaterialListCtrl::item:selected,
-      ContentBrowserListCtrl::item:selected,
-      CBrowserListCtrl::item:selected,
-      MaterialListCtrl::item:selected,
-      QWidget#materialsCtrl QAbstractItemView::item:selected,
-      CMaterialBrowserPage QAbstractItemView::item:selected,
-      MaterialsBrowser QAbstractItemView::item:selected {
-          font-weight: normal !important;
-      }
-    QSS
-
-    # Przywraca standardowy jasny motyw z odblokowanym zasobnikiem i normalną czcionką
-    def clear_stylesheet(css_text = nil)
+    # Całkowicie wyłącza styl Qt i przywraca 100% natywny fabryczny wygląd SketchUp bez CSS i lagów
+    def clear_stylesheet
       return false unless available?
 
       restore_default_palette
@@ -452,11 +309,10 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # Aplikujemy styl jasny z odblokowanym zasobnikiem i normalną czcionką
+      # Czyścimy arkusz stylów do zera (pełne wyłączenie QSS bez narzutów)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
-      c_text = (css_text || DEFAULT_LIGHT_QSS).encode('UTF-8') + "\0"
-      c_ptr = Fiddle::Pointer.to_ptr(c_text)
+      c_ptr = Fiddle::Pointer.to_ptr("\0")
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
@@ -467,7 +323,7 @@ module SketchupDarkMode
 
       true
     rescue StandardError => e
-      puts "[Dark Mode] Błąd przywracania stylu jasnego: #{e.message}"
+      puts "[Dark Mode] Błąd czyszczenia stylu Qt: #{e.message}"
       false
     end
 
