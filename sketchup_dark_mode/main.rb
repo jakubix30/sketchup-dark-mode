@@ -262,10 +262,9 @@ module SketchupDarkMode
       menu.add_separator
       menu.add_item(cmd_reload)
 
-      # Toolbar - exactly two buttons
+      # Toolbar - single toggle button
       @toolbar = UI::Toolbar.new(I18n.t(:toolbar_title))
       @toolbar.add_item(@cmd_toggle)
-      @toolbar.add_item(cmd_settings)
       @toolbar.restore
     end
 

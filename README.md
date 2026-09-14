@@ -30,8 +30,8 @@ It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **W
   Uses native Windows Desktop Window Manager (`DwmSetWindowAttribute`, attributes 20/19) to seamlessly darken the native OS window title bar.
 - 🧊 **3D Viewport Dark Canvas**:
   Switches the modeling background to dark graphite (`#1e1e20`) and adapts edge contrasts for eye-strain-free modeling. Restores original style settings upon disabling.
-- 🎛️ **Clean 2-Button Toolbar**:
-  Includes a toggle moon button and a settings button.
+- 🎛️ **Minimalist 1-Button Toolbar**:
+  Single 1-click toggle button (moon/sun icon). Settings and options remain conveniently accessible from the Extensions menu.
 - ⚙️ **Customizable Settings**:
   Selectively toggle UI styling, title bar styling, 3D viewport canvas styling, or enable auto-synchronization with Windows Dark/Light mode.
 - ⚡ **Hot-Reload CSS**:

@@ -30,8 +30,8 @@ Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obs
   Wykorzystuje natywne Windows Desktop Window Manager API (`DwmSetWindowAttribute`, atrybuty 20/19) do automatycznego przyciemnienia paska okna głównego i okien dialogowych.
 - 🧊 **Ciemne tło obszaru roboczego 3D**:
   Przełącza tło modelowania na ciemny grafit (`#1e1e20`) i automatycznie dopasowuje kontrast krawędzi modeli. Przy wyłączeniu trybu ciemnego wtyczka **przywraca oryginalne ustawienia stylu modelu**.
-- 🎛️ **Schludny pasek narzędzi z 2 przyciskami**:
-  Zawiera przycisk z ikoną księżyca do włączania/wyłączania jednym kliknięciem oraz przycisk ustawień.
+- 🎛️ **Minimalistyczny pasek z pojedynczym przyciskiem**:
+  Zawiera pojedynczy przycisk szybkiego włączania/wyłączania jednym kliknięciem (ikona księżyca/słońca). Pełna konfiguracja i opcje są wygodnie dostępne w menu Rozszerzenia.
 - ⚙️ **Panel Ustawień**:
   Możliwość niezależnego włączania stylizowania UI, paska tytułu, tła 3D oraz automatycznej synchronizacji z motywem Windows.
 - ⚡ **Hot-Reload stylów CSS**:
