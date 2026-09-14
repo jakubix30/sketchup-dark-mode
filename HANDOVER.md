@@ -57,7 +57,7 @@ Oto tabela symboli, które są bezpiecznie importowane w `qt_styler.rb`:
 | `QString::QString(const char*)` | `??0QString@@QEAA@PEBD@Z` | `Qt6Core.dll` |
 | `QString::~QString()` | `??1QString@@QEAA@XZ` | `Qt6Core.dll` |
 | `QApplication::setStyleSheet(const QString&)` | `?setStyleSheet@QApplication@@QEAAXAEBVQString@@@Z` | `Qt6Widgets.dll` |
-| `QApplication::palette()` | `?palette@QApplication@@SA?AVQPalette@@XZ` | `Qt6Widgets.dll` |
+| `QGuiApplication::palette()` | `?palette@QGuiApplication@@SA?AVQPalette@@XZ` | `Qt6Gui.dll` |
 | `QApplication::setPalette(const QPalette&, const char*)` | `?setPalette@QApplication@@SAXAEBVQPalette@@PEBD@Z` | `Qt6Widgets.dll` |
 | `QPalette::QPalette()` | `??0QPalette@@QEAA@XZ` | `Qt6Gui.dll` |
 | `QPalette::~QPalette()` | `??1QPalette@@QEAA@XZ` | `Qt6Gui.dll` |
@@ -209,19 +209,23 @@ tar -xf "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz" -C "C:\Users\jak
 
 ## 6. Ostatnio Zrealizowane Zadania & Architektura Zmian (Completed Tasks)
 
-### 6.1. Zrealizowane w tej iteracji:
-1. **Czcionka folderów w Materiałach w Dark Mode (gruba, czarna i lekko wyżej)**:
-   - **Problem:** Etykiety tekstowe folderów w panelu Materiały wyświetlały się jako jasnoszare (#d4d4d4) z powodu ogólnej reguły `QListView::item { color: #d4d4d4 !important; }`. Selektory z prefiksami (np. `MaterialsBrowser QListView::item`) nie pasowały, ponieważ rzeczywista hierarchia klas w SketchUp 2025 nie zawiera takiego kontenera.
+#### 6.1. Zrealizowane w tej iteracji:
+1. **Czcionka folderów w Materiałach w Dark Mode (gruba, czarna na białej karcie z podniesieniem o 2px)**:
+   - **Problem:** Etykiety tekstowe folderów w panelu Materiały wyświetlały się jako jasnoszare (#d4d4d4) na białym tle miniaturki, a próby naprawy powodowały konflikty i powielanie reguł.
    - **Rozwiązanie:** 
-     - Wyodrębniono `QListView` z ogólnej reguły dla widoków drzew (`QTreeView, QTableView`).
-     - Ustanowiono bezpośrednią regułę `QListView::item`:
+     - Przywrócono i uściślono architekturę kafelków swatches (commit `6c0a585`):
        ```css
+       CMaterialListCtrl::item,
+       ContentBrowserListCtrl::item,
+       CBrowserListCtrl::item,
+       MaterialListCtrl::item,
        QListView::item {
+           background-color: #ffffff !important;
            color: #000000 !important;
            font-weight: 800 !important;
            font-size: 8pt !important;
-           background-color: transparent !important;
-           border: none !important;
+           border: 1px solid #999999 !important;
+           border-radius: 4px;
            padding-top: 0px !important;
            padding-left: 0px !important;
            padding-right: 0px !important;
@@ -229,15 +233,16 @@ tar -xf "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz" -C "C:\Users\jak
            margin: 0px !important;
        }
        ```
-     - Zaktualizowano stany `:hover` oraz `:selected` (również z `color: #000000 !important; font-weight: 800 !important;`).
-   - **Efekt:** W ciemnym motywie czcionka na białym tle miniaturki jest mocna, głęboko czarna (font-weight 800) i uniesiona o 2px w górę – zarówno dla folderów zaznaczonych, jak i niezaznaczonych.
+     - Usunięto 330 linii zdublowanego bloku `materials_list_qss` z `main.rb` oraz zduplikowany blok z końca `dark_theme.qss`.
+   - **Efekt:** W ciemnym motywie czcionka na kafelku folderu jest głęboko czarna (font-weight 800), wyrazista, podniesiona o 2px i doskonale czytelna na białym tle swatches.
 
-2. **Czysty, standardowy tryb jasny (fabryczny SketchUp – zero CSS, zero lagów)**:
+2. **Czysty, 100% standardowy tryb jasny (identyczny jak przy wyłączonym pluginie)**:
    - **Żądanie użytkownika:** *"chciałbym aby jasny był standardowy jakby cały plugin się wyłączał"*.
-   - **Rozwiązanie:** 
-     - W `clear_stylesheet` całkowicie usunięto wstrzykiwanie jakiegokolwiek arkusza QSS (`c_ptr = Fiddle::Pointer.to_ptr("\0")`).
-     - Przywracana jest w 100% oryginalna paleta systemowa Windows (`@orig_palette_mem`), standardowy pasek DWM oraz standardowy viewport.
-   - **Efekt:** W trybie jasnym aplikacja wraca natychmiastowo do fabrycznego stanu SketchUpa bez ani jednej modyfikacji stylów. Przełączanie trybów jest błyskawiczne (0 ms narzutu, zero lagów).
+   - **Przyczyny wcześniejszych zniekształceń:**
+     1. W `viewport_styler.rb` istniał blok usuwający `DrawGround` i `DrawHorizon` oraz wstawiający sztuczne tło `218, 216, 212` – blok ten został całkowicie usunięty; `restore_viewport` przywraca w 100% oryginalne niebo, ziemię i horyzont.
+     2. W `qt_styler.rb` symbol `?palette@QApplication@@SA?AVQPalette@@XZ` rzucał błąd (brak takiego symbolu w `Qt6Widgets.dll`), przez co oryginalna paleta nigdy nie była zapamiętywana, a przywracano pusty `QPalette()`. Poprawiono symbol na `?palette@QGuiApplication@@SA?AVQPalette@@XZ` z `Qt6Gui.dll` oraz dodano natychmiastowy zapis natywnej palety przy starcie.
+     3. W trybie jasnym do `setStyleSheet` przekazywany jest pusty ciąg `\0`, a paleta i rendering options wracają do stanu fabrycznego.
+   - **Efekt:** Po wyłączeniu trybu ciemnego SketchUp wygląda w 100% identycznie jak przed instalacją wtyczki – z kompletnym widokiem 3D (ziemia/horyzont) i bez żadnych lagów czy sztucznych czcionek.
 
 ### 6.2. Procedura Wdrożeniowa:
 1. Budowa paczki:
