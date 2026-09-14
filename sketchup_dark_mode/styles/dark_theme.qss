@@ -102,7 +102,6 @@ QToolBar {
 QDockWidget {
     background-color: #252526;
     color: #ffffff;
-    min-width: 0px !important;
 }
 
 QDockWidget::title {
@@ -161,8 +160,7 @@ QWidget[class*="Page"],
 QWidget[class*="Page"] *,
 QSplitter,
 QSplitter * {
-        background-color: #252526;
-    min-width: 0px !important;
+    background-color: #252526;
 }
 
 /* Kolor tekstu tacek - BEZ kontenerow materialow (aby kolor #000000 !important na koncu wygral) */
@@ -220,14 +218,12 @@ CMaterialBrowser QTabBar::tab,
 CMaterialBrowserPage QTabBar::tab,
 MaterialsBrowser QTabBar::tab {
     padding: 1px 2px !important;
-    min-width: 0px !important;
 }
 
 CMaterialBrowserPreview,
 CMaterialBrowserPreview *,
 CMaterialBrowserPreview QLabel,
 CMaterialBrowserPreview QWidget {
-    min-width: 0px !important;
     max-width: 100% !important;
 }
 
@@ -274,7 +270,6 @@ QStackedWidget {
     background-color: #252526 !important;
     color: #d4d4d4;
     border: none;
-    min-width: 0px !important;
 }
 
 /* Sekcje rozwijane (Expander / Accordion / NagĹ‚Ăłwki sekcji tacek) */
@@ -288,7 +283,6 @@ QFrame[class*="Dlg"],
 QWidget[class*="Dlg"] {
     background-color: #252526 !important;
     color: #d4d4d4;
-    min-width: 0px !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -318,7 +312,6 @@ CMaterialBrowserPage QListView::viewport {
     background-color: #202022 !important;
     border: 1px solid #38383b !important;
     outline: none;
-    min-width: 0px !important;
 }
 
 /* Czarny, mocny, pogrubiony tekst kontenerĂłw materiaĹ‚Ăłw */
@@ -343,7 +336,6 @@ MaterialsBrowser2 QListView *,
 CMaterialBrowser QListView,
 CMaterialBrowser QListView * {
     color: #000000 !important;
-    font-weight: 800 !important;
 }
 
 /* Kafelki miniatur materiaĹ‚Ăłw i folderĂłw - przezroczyste tĹ‚o z czarnym pogrubionym tekstem */
@@ -367,7 +359,6 @@ CDockingTray CMaterialBrowser QListView::item,
 CDockingTray CMaterialBrowserPage QListView::item {
     background-color: transparent !important;
     color: #000000 !important;
-    font-weight: 800 !important;
     font-size: 8pt !important;
     border: none !important;
     padding-top: 0px !important;
@@ -394,7 +385,6 @@ CDockingTray CMaterialBrowserPage QListView::item:hover {
     background-color: #f0f0f0 !important;
     border: 2px solid #007acc !important;
     color: #000000 !important;
-    font-weight: 800 !important;
 }
 
 CMaterialListCtrl::item:selected,
@@ -414,7 +404,6 @@ CDockingTray CMaterialBrowserPage QListView::item:selected {
     background-color: #badcfc !important;
     border: 2px solid #007acc !important;
     color: #002244 !important;
-    font-weight: 800 !important;
 }
 
 /* Kontrolki panelu materiaĹ‚Ăłw (lista rozwijana "MateriaĹ‚y", etykiety, przyciski) - peĹ‚ny ciemny motyw z biaĹ‚ym tekstem */
@@ -514,7 +503,6 @@ QDateTimeEdit {
     border: 1px solid #3e3e42;
     border-radius: 3px;
     padding: 1px 3px;
-    min-width: 0px !important;
     selection-background-color: #264f78;
     selection-color: #ffffff;
 }
@@ -540,7 +528,6 @@ QComboBox {
     border-radius: 3px;
     padding: 1px 4px;
     min-height: 18px;
-    min-width: 0px !important;
 }
 
 QComboBox:hover {
@@ -913,8 +900,7 @@ CDockingTray MaterialsBrowser QAbstractItemView,
 CDockingTray MaterialsBrowser QAbstractItemView *,
 CDockingTray MaterialsBrowser QAbstractItemView::item {
     color: #000000 !important;
-    font-weight: 800 !important;
-    padding-bottom: 2px !important;
+    padding-bottom: 10px !important;
 }
 
 /* Interakcje (hover i zaznaczenie) kafelkĂłw materiaĹ‚Ăłw */
@@ -928,7 +914,6 @@ MaterialsBrowser QAbstractItemView::item:hover {
     background-color: #f0f0f0 !important;
     border: 2px solid #007acc !important;
     color: #000000 !important;
-    font-weight: 800 !important;
 }
 
 CMaterialListCtrl::item:selected,
@@ -941,7 +926,6 @@ MaterialsBrowser QAbstractItemView::item:selected {
     background-color: #dbeafe !important;
     border: 2px solid #007acc !important;
     color: #002244 !important;
-    font-weight: 800 !important;
 }
 
 /* Ochrona kontrolek nawigacji panelu materiaĹ‚Ăłw - lista rozwijana i pole tekstowe pozostajÄ… jasne */
