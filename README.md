@@ -90,11 +90,12 @@ This automatically produces `sketchup_dark_mode.rbz` ready for distribution.
 
 ---
 
-## 📜 Terms of Service & Compliance
+## ⚠️ Disclaimer & Legal Notice
 
-- **Trimble Developer Agreement**: This extension is 100% compliant with Trimble's SketchUp Developer Terms of Service.
-- **No Proprietary Code**: No copyrighted DLLs or binaries from Trimble or Qt are redistributed. All styling is applied at runtime via official Ruby APIs and standard Qt 6 C++ export calls.
-- **Non-Destructive**: Does not alter or patch SketchUp executable files on disk.
+- **Independent Community Project**: This extension is an independent, community-driven open-source project developed for educational and interoperability research purposes. It is **not** created, endorsed, certified, or supported by Trimble Inc.
+- **No Trademark Affiliation**: "SketchUp" and "Trimble" are registered trademarks of Trimble Inc. Their use in this repository is purely descriptive to denote software compatibility.
+- **Non-Destructive**: Does not alter, crack, patch, or modify any executable files (`SketchUp.exe`) or DLLs on disk. All styles are applied dynamically in memory at runtime.
+- **Warranty Disclaimer**: Provided under the MIT License "AS IS", without warranty of any kind. Users install and use this extension at their own risk.
 
 ---
 

@@ -93,11 +93,12 @@ Skrypt automatycznie spakuje wszystkie pliki źródłowe, ikony oraz style do go
 
 ---
 
-## ⚖️ Zgodność z Regulaminem Trimble (TOS Compliance)
+## ⚠️ Oświadczenie Prawne i Zastrzeżenia (Disclaimer)
 
-- **Zgodność z Trimble Developer Agreement**: Wtyczka w 100% spełnia wymogi regulaminu Trimble SketchUp dla rozszerzeń Ruby API.
-- **Brak redystrybucji kodu własnościowego**: Wtyczka nie zawiera żadnych zastrzeżonych plików binarnych (.dll, .exe) Trimble ani Qt — korzysta wyłącznie z bibliotek zainstalowanych na komputerze użytkownika.
-- **Brak ingerencji w licencjonowanie**: Rozszerzenie modyfikuje wyłącznie warstwę wizualną interfejsu (CSS i tło). Nie modyfikuje plików wykonywalnych SketchUp i nie omija mechanizmów DRM ani licencji.
+- **Niezależny projekt społecznościowy**: Niniejsze rozszerzenie jest niezależnym projektem open-source o charakterze badawczo-edukacyjnym (interoperability research). Nie jest w żaden sposób powiązane, autoryzowane, certyfikowane ani wspierane przez firmę Trimble Inc.
+- **Znaki towarowe**: Nazwy „SketchUp” oraz „Trimble” są zastrzeżonymi znakami towarowymi firmy Trimble Inc. i zostały użyte wyłącznie w celach informacyjnych, aby wskazać kompatybilność oprogramowania.
+- **Brak modyfikacji plików na dysku**: Wtyczka nie modyfikuje, nie patchuje ani nie narusza plików wykonywalnych (`SketchUp.exe`) ani bibliotek DLL na dysku komputera. Wszystkie style są nakładane dynamicznie w pamięci RAM w trakcie działania programu.
+- **Brak gwarancji**: Oprogramowanie jest udostępniane na licencji MIT „takie, jakie jest” (AS IS), bez jakichkolwiek gwarancji. Użytkownik instaluje i korzysta z rozszerzenia na własną odpowiedzialność.
 
 ---
 
