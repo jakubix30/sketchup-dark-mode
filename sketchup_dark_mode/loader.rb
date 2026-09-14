@@ -7,6 +7,7 @@ module SketchupDarkMode
 
   # Użycie load zamiast require umożliwia bezproblemowe przeładowywanie zmian w Konsoli Ruby
   load File.join(loader_dir, 'config.rb')
+  load File.join(loader_dir, 'i18n.rb')
   load File.join(loader_dir, 'qt_styler.rb')
   load File.join(loader_dir, 'dwm_styler.rb')
   load File.join(loader_dir, 'viewport_styler.rb')

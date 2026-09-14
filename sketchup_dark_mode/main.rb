@@ -105,17 +105,14 @@ module SketchupDarkMode
     end
 
     def reload_stylesheet
-      is_en = SettingsDialog.english?
       if File.exist?(QSS_PATH)
-        puts "[Dark Mode] Reloading stylesheet from #{QSS_PATH}..."
+        puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
         if dark_mode_active? && Config['style_ui']
           apply_current_qss
         end
-        msg = is_en ? "Dark Mode stylesheet has been reloaded successfully!" : "Styl Dark Mode został pomyślnie przeładowany!"
-        UI.messagebox(msg, MB_OK)
+        UI.messagebox(I18n.t(:reload_success), MB_OK)
       else
-        msg = is_en ? "Stylesheet file not found:\n#{QSS_PATH}" : "Nie znaleziono pliku stylu:\n#{QSS_PATH}"
-        UI.messagebox(msg, MB_OK)
+        UI.messagebox(I18n.t(:reload_error, path: QSS_PATH), MB_OK)
       end
     end
 
@@ -283,27 +280,19 @@ module SketchupDarkMode
         @cmd_toggle.large_icon = png_32
       end
 
-      is_en = SettingsDialog.english?
-      status_msg = if is_en
-        is_dark ? 'Dark Mode is ON. Click to disable.' : 'Dark Mode is OFF. Click to enable.'
-      else
-        is_dark ? 'Tryb ciemny jest WŁĄCZONY. Kliknij, aby wyłączyć.' : 'Tryb ciemny jest WYŁĄCZONY. Kliknij, aby włączyć.'
-      end
-      @cmd_toggle.tooltip = status_msg
-      @cmd_toggle.status_bar_text = status_msg
+      status_msg = is_dark ? I18n.t(:status_on) : I18n.t(:status_off)
+      @cmd_toggle.tooltip = status_msg if @cmd_toggle
+      @cmd_toggle.status_bar_text = status_msg if @cmd_toggle
     end
 
     def setup_ui
-      is_en = SettingsDialog.english?
-
       # 1. Komenda Toggle
-      toggle_name = is_en ? 'Toggle Dark Mode' : 'Przełącz tryb ciemny'
-      @cmd_toggle = UI::Command.new(toggle_name) do
+      @cmd_toggle = UI::Command.new(I18n.t(:cmd_toggle)) do
         Main.toggle
       end
-      @cmd_toggle.menu_text = is_en ? 'Toggle Dark Mode (On / Off)' : 'Przełącz tryb ciemny (Włącz / Wyłącz)'
-      @cmd_toggle.tooltip = is_en ? 'Toggle Dark Mode' : 'Przełącz tryb ciemny (Dark Mode)'
-      @cmd_toggle.status_bar_text = is_en ? 'Enables or disables Dark Mode' : 'Włącza lub wyłącza tryb ciemny'
+      @cmd_toggle.menu_text = I18n.t(:cmd_toggle_menu)
+      @cmd_toggle.tooltip = I18n.t(:cmd_toggle_tip)
+      @cmd_toggle.status_bar_text = I18n.t(:cmd_toggle_status)
 
       @cmd_toggle.set_validation_proc do
         if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
@@ -316,13 +305,12 @@ module SketchupDarkMode
       update_ui_elements
 
       # 2. Komenda Przywróć domyślne (Jasny motyw)
-      restore_name = is_en ? 'Restore Default Theme' : 'Przywróć domyślny wygląd'
-      @cmd_restore = UI::Command.new(restore_name) do
+      @cmd_restore = UI::Command.new(I18n.t(:cmd_restore)) do
         Main.disable_dark_mode
       end
-      @cmd_restore.menu_text = is_en ? 'Restore Default Theme (Light Mode)' : 'Przywróć domyślny wygląd (Jasny motyw)'
-      @cmd_restore.tooltip = is_en ? 'Disables dark mode and restores standard light theme' : 'Wyłącza tryb ciemny i przywraca standardowy jasny motyw SketchUp'
-      @cmd_restore.status_bar_text = is_en ? 'Restores default light theme for UI and 3D viewport' : 'Przywraca domyślny jasny motyw interfejsu i widoku 3D'
+      @cmd_restore.menu_text = I18n.t(:cmd_restore_menu)
+      @cmd_restore.tooltip = I18n.t(:cmd_restore_tip)
+      @cmd_restore.status_bar_text = I18n.t(:cmd_restore_status)
 
       sun_svg = File.join(ICONS_DIR, 'light_mode.svg')
       sun_24  = File.join(ICONS_DIR, 'light_mode_24.png')
@@ -337,8 +325,7 @@ module SketchupDarkMode
       end
 
       # 3. Komenda Przełącz ciemny widok 3D
-      vp_name = is_en ? 'Dark 3D Viewport' : 'Ciemny widok 3D (Viewport)'
-      cmd_toggle_viewport = UI::Command.new(vp_name) do
+      cmd_toggle_viewport = UI::Command.new(I18n.t(:cmd_viewport)) do
         Config['style_viewport'] = !Config['style_viewport']
         if Config['style_viewport'] && Main.dark_mode_active?
           ViewportStyler.apply_dark_viewport(Sketchup.active_model)
@@ -346,8 +333,9 @@ module SketchupDarkMode
           ViewportStyler.restore_viewport(Sketchup.active_model)
         end
       end
-      cmd_toggle_viewport.menu_text = is_en ? 'Dark 3D Viewport (On / Off)' : 'Ciemny widok 3D (Włącz / Wyłącz)'
-      cmd_toggle_viewport.tooltip = is_en ? 'Toggle dark 3D viewport style' : 'Przełącza ciemny styl obszaru roboczego 3D'
+      cmd_toggle_viewport.menu_text = I18n.t(:cmd_viewport_menu)
+      cmd_toggle_viewport.tooltip = I18n.t(:cmd_viewport_tip)
+      cmd_toggle_viewport.status_bar_text = I18n.t(:cmd_viewport_status)
       cmd_toggle_viewport.set_validation_proc do
         if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
           Config['style_viewport'] ? MF_CHECKED : MF_UNCHECKED
@@ -357,13 +345,13 @@ module SketchupDarkMode
       end
 
       # 4. Komenda Przełącz ciemną listę materiałów
-      mat_name = is_en ? 'Dark Materials List Canvas' : 'Ciemne tło listy materiałów'
-      cmd_toggle_materials = UI::Command.new(mat_name) do
+      cmd_toggle_materials = UI::Command.new(I18n.t(:cmd_materials)) do
         Config['dark_materials_list'] = !Config['dark_materials_list']
         Main.apply_current_qss if Main.dark_mode_active?
       end
-      cmd_toggle_materials.menu_text = is_en ? 'Dark Materials List (On / Off)' : 'Ciemna lista materiałów (Włącz / Wyłącz)'
-      cmd_toggle_materials.tooltip = is_en ? 'Toggle dark / light materials and swatches canvas' : 'Przełącza ciemne / jasne tło listy materiałów i próbek'
+      cmd_toggle_materials.menu_text = I18n.t(:cmd_materials_menu)
+      cmd_toggle_materials.tooltip = I18n.t(:cmd_materials_tip)
+      cmd_toggle_materials.status_bar_text = I18n.t(:cmd_materials_status)
       cmd_toggle_materials.set_validation_proc do
         if defined?(MF_CHECKED) && defined?(MF_UNCHECKED)
           Config['dark_materials_list'] ? MF_CHECKED : MF_UNCHECKED
@@ -373,24 +361,21 @@ module SketchupDarkMode
       end
 
       # 5. Komenda Ustawienia
-      settings_name = is_en ? 'Dark Mode Settings' : 'Ustawienia trybu ciemnego'
-      cmd_settings = UI::Command.new(settings_name) do
+      cmd_settings = UI::Command.new(I18n.t(:cmd_settings)) do
         SettingsDialog.show
       end
-      cmd_settings.menu_text = is_en ? 'Dark Mode Settings...' : 'Ustawienia trybu ciemnego...'
-      cmd_settings.tooltip = is_en ? 'Configure Dark Mode settings' : 'Konfiguracja trybu ciemnego'
+      cmd_settings.menu_text = I18n.t(:cmd_settings_menu)
+      cmd_settings.tooltip = I18n.t(:cmd_settings_tip)
 
       # 6. Komenda Przeładuj styl (Hot-Reload)
-      reload_name = is_en ? 'Reload CSS Stylesheet' : 'Przeładuj styl CSS'
-      cmd_reload = UI::Command.new(reload_name) do
+      cmd_reload = UI::Command.new(I18n.t(:cmd_reload)) do
         Main.reload_stylesheet
       end
-      cmd_reload.menu_text = is_en ? 'Reload CSS Stylesheet (Hot-Reload)' : 'Przeładuj styl CSS (Hot-Reload)'
-      cmd_reload.tooltip = is_en ? 'Refreshes Qt stylesheet from dark_theme.qss' : 'Odświeża arkusz stylów Qt z pliku dark_theme.qss'
+      cmd_reload.menu_text = I18n.t(:cmd_reload_menu)
+      cmd_reload.tooltip = I18n.t(:cmd_reload_tip)
 
       # Menu w Extensions / Rozszerzenia
-      menu_title = is_en ? 'Dark Mode' : 'Tryb ciemny (Dark Mode)'
-      menu = UI.menu('Plugins').add_submenu(menu_title)
+      menu = UI.menu('Plugins').add_submenu(I18n.t(:menu_title))
       menu.add_item(@cmd_toggle)
       menu.add_item(@cmd_restore)
       menu.add_separator
@@ -402,11 +387,11 @@ module SketchupDarkMode
       menu.add_item(cmd_reload)
 
       # Pasek narzędzi (Toolbar) - dokładnie dwa przyciski
-      toolbar_title = is_en ? 'Dark Mode' : 'Tryb ciemny'
-      @toolbar = UI::Toolbar.new(toolbar_title)
+      @toolbar = UI::Toolbar.new(I18n.t(:toolbar_title))
       @toolbar.add_item(@cmd_toggle)
       @toolbar.add_item(cmd_settings)
       @toolbar.restore
+    end
     end
 
     def setup_observers

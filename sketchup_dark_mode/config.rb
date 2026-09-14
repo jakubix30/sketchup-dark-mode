@@ -24,7 +24,8 @@ module SketchupDarkMode
       'auto_sync_windows'   => false,
       'viewport_bg_hex'     => '#1e1e20',
       'viewport_edge_hex'   => '#dedee0',
-      'auto_hot_reload'     => false
+      'auto_hot_reload'     => false,
+      'language'            => 'auto'
     }.freeze
 
     @settings = nil

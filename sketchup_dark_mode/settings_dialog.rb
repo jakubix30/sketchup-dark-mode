@@ -4,46 +4,21 @@ module SketchupDarkMode
   module SettingsDialog
     extend self
 
-    def english?
-      lang = Config['language'].to_s.downcase
-      return true if lang == 'en' || lang == 'english'
-      return false if lang == 'pl' || lang == 'polish'
-
-      locale = (Sketchup.respond_to?(:get_locale) ? Sketchup.get_locale.to_s.downcase : 'en')
-      !locale.start_with?('pl')
-    end
-
     def show
-      is_en = english?
+      yes_text = I18n.t(:yes)
+      no_text  = I18n.t(:no)
 
-      yes_text = is_en ? 'Yes' : 'Tak'
-      no_text  = is_en ? 'No' : 'Nie'
-
-      prompts = if is_en
-        [
-          'Dark Mode (Enabled):',
-          'Style UI (Qt 6):',
-          'Dark Windows Titlebar:',
-          'Dark 3D Viewport:',
-          'Dark Materials List Canvas:',
-          'Sync with Windows Theme:',
-          'Language / Język:',
-          '3D Viewport Background (HEX):',
-          '3D Model Edges (HEX):'
-        ]
-      else
-        [
-          'Tryb ciemny (Włączony):',
-          'Stylizuj interfejs (Qt 6):',
-          'Ciemny pasek tytułu Windows:',
-          'Ciemny obszar roboczy 3D (Viewport):',
-          'Ciemne tło listy materiałów:',
-          'Synchronizuj z motywem Windows:',
-          'Język / Language:',
-          'Kolor tła widoku 3D (HEX):',
-          'Kolor krawędzi modeli 3D (HEX):'
-        ]
-      end
+      prompts = [
+        I18n.t(:opt_dark_mode),
+        I18n.t(:opt_style_ui),
+        I18n.t(:opt_style_titlebar),
+        I18n.t(:opt_style_viewport),
+        I18n.t(:opt_dark_materials),
+        I18n.t(:opt_auto_sync),
+        I18n.t(:opt_language),
+        I18n.t(:opt_viewport_bg),
+        I18n.t(:opt_viewport_edge)
+      ]
 
       current_lang = case Config['language'].to_s.downcase
                      when 'en', 'english' then 'English'
@@ -76,9 +51,10 @@ module SketchupDarkMode
         ''
       ]
 
-      dialog_title = is_en ? 'SketchUp Dark Mode Settings' : 'Ustawienia SketchUp Dark Mode'
-      results = UI.inputbox(prompts, defaults, lists, dialog_title)
+      results = UI.inputbox(prompts, defaults, lists, I18n.t(:dialog_title))
       return unless results
+
+      old_lang = Config['language'].to_s.downcase
 
       Config['dark_mode_enabled']   = (results[0] == yes_text)
       Config['style_ui']            = (results[1] == yes_text)
@@ -88,17 +64,23 @@ module SketchupDarkMode
       Config['auto_sync_windows']   = (results[5] == yes_text)
 
       selected_lang = results[6].to_s.strip
-      Config['language'] = case selected_lang
-                           when 'English' then 'en'
-                           when 'Polski'  then 'pl'
-                           else 'auto'
-                           end
+      new_lang = case selected_lang
+                 when 'English' then 'en'
+                 when 'Polski'  then 'pl'
+                 else 'auto'
+                 end
+      Config['language'] = new_lang
 
       Config['viewport_bg_hex']   = results[7].to_s.strip
       Config['viewport_edge_hex'] = results[8].to_s.strip
 
       # Natychmiast zaktualizuj stan aplikacji
       Main.update_state
+
+      # Jeśli język uległ zmianie, odśwież dynamiczne teksty
+      if old_lang != new_lang
+        Main.update_ui_elements
+      end
     end
   end
 end
