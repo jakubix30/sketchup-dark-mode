@@ -326,45 +326,69 @@ module SketchupDarkMode
 
       visited = {}
       queue = [root]
+      splitters_unlocked = 0
 
       while (w = queue.shift)
-        break if visited.size > 2000
+        break if visited.size > 3000
         addr = w.to_i
         next if addr == 0 || visited[addr]
         visited[addr] = true
 
         cname = widget_class_name(w)
 
-        # 1. Jeśli to QSplitter - odblokuj pełne zwijanie i brak minimalnych limitów dzieci
-        if cname == 'QSplitter'
+        # 1. Jeśli to QSplitter lub potomny splitter - odblokuj pełne zwijanie i brak minimalnych limitów dzieci
+        if cname.include?('Splitter')
           @fn_splitter_set_children_collapsible&.call(w, 1)
           if @fn_splitter_count && @fn_splitter_set_collapsible
-            cnt = @fn_splitter_count.call(w)
-            cnt.times { |i| @fn_splitter_set_collapsible.call(w, i, 1) }
+            begin
+              cnt = @fn_splitter_count.call(w)
+              if cnt && cnt > 0 && cnt < 50
+                cnt.times { |i| @fn_splitter_set_collapsible.call(w, i, 1) }
+              end
+              splitters_unlocked += 1
+            rescue StandardError
+            end
           end
         end
 
-        # 2. Jeśli to doki, tacki, panele lub widoki materiałów - zresetuj minimumWidth i minimumSize
-        if cname.include?('Splitter') || cname.include?('Dock') || cname.include?('Tray') ||
-           cname.include?('Material') || cname.include?('ContentBrowser') ||
-           cname.include?('ScrollArea') || cname.include?('Page') || cname.include?('FrameWidget') ||
-           cname.include?('Button') || cname.include?('TabBar') || cname.include?('SideBar')
-          @fn_set_min_w&.call(w, 0)
-          @fn_set_min_size&.call(w, 0, 0)
-        end
+        # 2. Zresetuj sztuczne ograniczenia minimumWidth i minimumSize na każdym widgecie layoutu
+        @fn_set_min_w&.call(w, 0)
+        @fn_set_min_size&.call(w, 0, 0)
 
         # Pobierz i dodaj dzieci do kolejki przeszukiwania
         kids = object_children(w)
         queue.concat(kids) unless kids.empty?
+      end
+
+      begin
+        log_path = File.join(File.dirname(__FILE__), '..', 'unlock_log.txt')
+        File.open(log_path, 'w') do |f|
+          f.puts "[#{Time.now}] unlock_tray_limits wykonano pomyślnie."
+          f.puts "Odwiedzono widgetów: #{visited.size}, odblokowano splitterów: #{splitters_unlocked}"
+        end
+      rescue StandardError
       end
     rescue StandardError => e
       puts "[Dark Mode] Ostrzeżenie unlock_tray_limits: #{e.message}"
     end
 
     def widget_class_name(qobj)
-      return '' if qobj.nil? || qobj.to_i == 0 || @fn_meta_object.nil? || @fn_class_name.nil?
+      return '' if qobj.nil? || qobj.to_i == 0 || @fn_class_name.nil?
 
-      meta = @fn_meta_object.call(qobj)
+      addr = qobj.to_i
+      vtable_addr = Fiddle::Pointer.new(addr, 8)[0, 8].unpack1('Q')
+      return '' if vtable_addr == 0
+
+      # Pierwszy slot vtable w QObject to virtual const QMetaObject *metaObject() const
+      meta_fn_addr = Fiddle::Pointer.new(vtable_addr, 8)[0, 8].unpack1('Q')
+      return '' if meta_fn_addr == 0
+
+      vfn = Fiddle::Function.new(
+        Fiddle::Pointer.new(meta_fn_addr),
+        [Fiddle::TYPE_VOIDP],
+        Fiddle::TYPE_VOIDP
+      )
+      meta = vfn.call(qobj)
       return '' if meta.nil? || meta.to_i == 0
 
       name_ptr = @fn_class_name.call(meta)

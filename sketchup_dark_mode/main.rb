@@ -188,7 +188,7 @@ module SketchupDarkMode
         <<~QSS
 
           /* ==========================================================================
-             Jasne tło listy materiałów (Biały canvas dla próbek)
+             Jasne tło listy materiałów (Biały canvas dla próbek) z mocnym czarnym tekstem
              ========================================================================== */
           CMaterialListCtrl,
           CMaterialListCtrl::viewport,
@@ -199,10 +199,34 @@ module SketchupDarkMode
           MaterialListCtrl,
           MaterialListCtrl::viewport {
               background-color: #ffffff !important;
-              color: #111111 !important;
+              color: #000000 !important;
               border: 1px solid #38383b !important;
               outline: none;
               min-width: 0px !important;
+          }
+
+          CMaterialListCtrl,
+          CMaterialListCtrl *,
+          ContentBrowserListCtrl,
+          ContentBrowserListCtrl *,
+          CBrowserListCtrl,
+          CBrowserListCtrl *,
+          MaterialListCtrl,
+          MaterialListCtrl *,
+          MaterialListItem,
+          MaterialListItem *,
+          CMaterialListCtrl QLabel,
+          CMaterialListCtrl::item,
+          ContentBrowserListCtrl::item,
+          CBrowserListCtrl::item,
+          MaterialListCtrl::item,
+          CMaterialBrowserPage QAbstractItemView,
+          CMaterialBrowserPage QAbstractItemView *,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView * {
+              color: #000000 !important;
+              font-weight: 900 !important;
+              font-size: 11px !important;
           }
 
           CMaterialListCtrl::item,
@@ -211,8 +235,6 @@ module SketchupDarkMode
           MaterialListCtrl::item,
           MaterialListItem {
               background-color: transparent !important;
-              color: #111111 !important;
-              font-weight: 700 !important;
               border: 1px solid transparent !important;
               border-radius: 4px;
           }
