@@ -4,7 +4,7 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Podstawowy reset kolorĂłw kontenerĂłw (bez globalnego QWidget)
+   Container color reset (without global QWidget)
    -------------------------------------------------------------------------- */
 QMainWindow,
 QDialog,
@@ -14,7 +14,7 @@ QGroupBox {
     color: #d4d4d4;
 }
 
-/* Ochrona widoku 3D OpenGL przed przesĹ‚anianiem */
+/* Protect OpenGL 3D viewport from being occluded */
 QOpenGLWidget,
 QQuickWidget,
 QGLWidget {
@@ -22,7 +22,7 @@ QGLWidget {
     border: none !important;
 }
 
-/* GĹ‚Ăłwne kontenery aplikacji */
+/* Main application containers */
 QMainWindow,
 QDialog,
 QFrame#centralWidget {
@@ -31,7 +31,7 @@ QFrame#centralWidget {
 }
 
 /* --------------------------------------------------------------------------
-   Pasek menu i menu kontekstowe
+   Menu bar and context menus
    -------------------------------------------------------------------------- */
 QMenuBar {
     background-color: #252526;
@@ -86,10 +86,9 @@ QMenu::separator {
 }
 
 /* --------------------------------------------------------------------------
-   Paski narzÄ™dzi (Toolbars)
-   TĹ‚o paska narzÄ™dzi ustawione na ciemne. Przyciski QToolButton NIE sÄ…
-   modyfikowane przez QSS, co pozwala silnikowi QWindowsVistaStyle na zachowanie
-   w 100% natywnej geometrii 1:1, identycznej jak w trybie jasnym!
+   Toolbars
+   Toolbar background set to dark. QToolButtons are NOT styled by QSS,
+   allowing QWindowsVistaStyle to preserve 100% native 1:1 geometry!
    -------------------------------------------------------------------------- */
 QToolBar {
     background-color: #252526;
@@ -97,7 +96,7 @@ QToolBar {
 }
 
 /* --------------------------------------------------------------------------
-   Tacki boczne (Zasobnik domyĹ›lny, panele KDDockWidgets i QDockWidget)
+   Side trays (Default Tray, KDDockWidgets, and QDockWidget panels)
    -------------------------------------------------------------------------- */
 QDockWidget {
     background-color: #252526;
@@ -163,7 +162,7 @@ QSplitter * {
     background-color: #252526;
 }
 
-/* Kolor tekstu tacek - BEZ kontenerow materialow (aby kolor #000000 !important na koncu wygral) */
+/* Tray text color - EXCLUDING material containers (so that #000000 !important at the end wins) */
 CDockingTray,
 CDockingTray *,
 CDockingTrayDialog,
@@ -199,7 +198,7 @@ QSplitter * {
     color: #d4d4d4;
 }
 
-/* Kompaktowe wymiary wszystkich kontrolek w zasobniku (zdjÄ™cie ograniczenia minimalnej szerokoĹ›ci) */
+/* Compact dimensions for tray controls (preventing minimum width expansion) */
 CDockingTray QPushButton,
 CDockingTray QToolButton,
 CDockingTray QComboBox,
@@ -268,7 +267,7 @@ KDDockWidgets--SideBarButton:hover {
 }
 
 /* --------------------------------------------------------------------------
-   Kontenery paneli bocznych (MateriaĹ‚y, Informacje o elemencie, Style itp.)
+   Side panel containers (Materials, Entity Info, Styles, etc.)
    -------------------------------------------------------------------------- */
 QScrollArea,
 QScrollArea > QWidget,
@@ -283,7 +282,7 @@ QStackedWidget {
     border: none;
 }
 
-/* Sekcje rozwijane (Expander / Accordion / NagĹ‚Ăłwki sekcji tacek) */
+/* Collapsible sections (Expander / Accordion / Tray section headers) */
 QFrame#collapsibleContent,
 QWidget#collapsibleContent,
 QFrame[class*="Expander"],
@@ -297,13 +296,12 @@ QWidget[class*="Dlg"] {
 }
 
 /* --------------------------------------------------------------------------
-   PrzeglÄ…darka materiaĹ‚Ăłw (CMaterialListCtrl, ContentBrowserListCtrl, CBrowserListCtrl)
-   Kafelki miniatur folderĂłw i prĂłbek posiadajÄ… czyste biaĹ‚e tĹ‚o (swatch).
-   Ich etykiety tekstowe majÄ… kolor czarny (#000000) z mocnym pogrubieniem (800)
-   i sÄ… lekko uniesione (padding-bottom: 2px), co gwarantuje doskonaĹ‚Ä… czytelnoĹ›Ä‡!
+   Materials browser (CMaterialListCtrl, ContentBrowserListCtrl, CBrowserListCtrl)
+   Thumbnail tiles for folders and swatches have clean white background.
+   Text labels are rendered in crisp dark color with bottom padding.
    -------------------------------------------------------------------------- */
 
-/* TĹ‚o kontenera listy materiaĹ‚Ăłw */
+/* Materials list container background */
 CMaterialListCtrl,
 CMaterialListCtrl::viewport,
 ContentBrowserListCtrl,
@@ -325,7 +323,7 @@ CMaterialBrowserPage QListView::viewport {
     outline: none;
 }
 
-/* Czarny, mocny, pogrubiony tekst kontenerĂłw materiaĹ‚Ăłw */
+/* Dark text for material containers */
 CMaterialListCtrl,
 CMaterialListCtrl *,
 ContentBrowserListCtrl,
@@ -349,7 +347,7 @@ CMaterialBrowser QListView * {
     color: #000000 !important;
 }
 
-/* Kafelki miniatur materiaĹ‚Ăłw i folderĂłw - przezroczyste tĹ‚o z czarnym pogrubionym tekstem */
+/* Material thumbnail and folder tiles - transparent background with dark text */
 CMaterialListCtrl::item,
 ContentBrowserListCtrl::item,
 CBrowserListCtrl::item,
@@ -408,7 +406,7 @@ CDockingTray CMaterialBrowserPage QListView::item:selected {
     color: #002244 !important;
 }
 
-/* Kontrolki panelu materiaĹ‚Ăłw (lista rozwijana "MateriaĹ‚y", etykiety, przyciski) - peĹ‚ny ciemny motyw z biaĹ‚ym tekstem */
+/* Materials panel controls (dropdown, labels, buttons) - dark theme styling */
 CMaterialBrowserPage QComboBox,
 CMaterialBrowserPage QComboBox *,
 QWidget#materialsCtrl QComboBox,
@@ -433,7 +431,7 @@ CMaterialBrowserPage QPushButton {
     color: #d4d4d4 !important;
 }
 
-/* PozostaĹ‚e standardowe widoki list (np. Tagi, Konspekt) zachowujÄ… ciemne tĹ‚o */
+/* Other standard list views (e.g. Tags, Outliner) retain dark background */
 QTreeView,
 QTreeView::viewport,
 QTableView,
@@ -470,7 +468,7 @@ QTableView::item:selected {
 }
 
 
-/* NagĹ‚Ăłwki tabel i widokĂłw drzew */
+/* Table and tree view headers */
 QHeaderView::section {
     background-color: #2d2d30;
     color: #cccccc;
@@ -480,7 +478,7 @@ QHeaderView::section {
 }
 
 /* --------------------------------------------------------------------------
-   Edytory tekstu i Konsola Ruby
+   Text editors and Ruby Console
    -------------------------------------------------------------------------- */
 QTextEdit,
 QTextEdit::viewport,
@@ -494,7 +492,7 @@ QPlainTextEdit::viewport {
 }
 
 /* --------------------------------------------------------------------------
-   Kontrolki wejĹ›ciowe (Pola tekstowe, SpinBoxy, ComboBoxy)
+   Input controls (LineEdits, SpinBoxes, ComboBoxes)
    -------------------------------------------------------------------------- */
 QLineEdit,
 QSpinBox,
@@ -583,7 +581,7 @@ QComboBox QListView::item:selected {
 }
 
 /* --------------------------------------------------------------------------
-   ZakĹ‚adki (Tabs)
+   Tabs
    -------------------------------------------------------------------------- */
 QTabWidget::pane {
     border: 1px solid #3a3a3d;
@@ -616,7 +614,7 @@ QTabBar::tab:hover:!selected {
 }
 
 /* --------------------------------------------------------------------------
-   Przyciski standardowe
+   Standard push buttons
    -------------------------------------------------------------------------- */
 QPushButton {
     background-color: #333337;
@@ -657,7 +655,7 @@ QPushButton:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   Etykiety tekstowe
+   Labels
    -------------------------------------------------------------------------- */
 QLabel {
     background-color: transparent;
@@ -669,7 +667,7 @@ QLabel:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   Pola wyboru i przyciski opcji (Checkbox & RadioButton)
+   Checkboxes and Radio buttons
    -------------------------------------------------------------------------- */
 QCheckBox,
 QRadioButton {
@@ -707,7 +705,7 @@ QRadioButton::indicator:checked {
 }
 
 /* --------------------------------------------------------------------------
-   Pasek narzÄ™dzi Cienie (Shadows toolbar) oraz suwaki (QSlider)
+   Shadows toolbar and sliders (QSlider)
    -------------------------------------------------------------------------- */
 QToolBar,
 QToolBar QLabel,
@@ -725,7 +723,7 @@ ShadowsBrowser * {
 }
 
 /* --------------------------------------------------------------------------
-   Paski przewijania (ScrollBars)
+   Scroll bars
    -------------------------------------------------------------------------- */
 QScrollBar:vertical {
     background-color: #1e1e1e;
@@ -786,7 +784,7 @@ QScrollBar::sub-line:horizontal {
 }
 
 /* --------------------------------------------------------------------------
-   Pasek stanu (StatusBar) i pomiary (VCB)
+   Status bar and Measurements (VCB)
    -------------------------------------------------------------------------- */
 QStatusBar {
     background-color: #007acc;
@@ -800,7 +798,7 @@ QStatusBar QLabel {
 }
 
 /* --------------------------------------------------------------------------
-   Etykiety narzÄ™dzi (ToolTips)
+   Tooltips
    -------------------------------------------------------------------------- */
 QToolTip {
     background-color: #2d2d30;
@@ -811,7 +809,7 @@ QToolTip {
 }
 
 /* --------------------------------------------------------------------------
-   Rozdzielacze okien (Splitters) i ramki grup (GroupBox)
+   Splitters and GroupBoxes
    -------------------------------------------------------------------------- */
 QSplitter::handle {
     background-color: #2d2d30;
@@ -838,11 +836,9 @@ QGroupBox::title {
 }
 
 /* ==========================================================================
-   ETYKIETY FOLDERĂ“W I MINIATUR MATERIAĹĂ“W (CMaterialListCtrl)
-   Wymuszenie czarnej, grubej czcionki (color: #000000 !important, font-weight: 800 !important)
-   oraz lekkiego uniesienia tekstu (padding-bottom: 2px !important)
-   na biaĹ‚ym tle kafelkĂłw prĂłbek i folderĂłw w panelu MateriaĹ‚y.
-   Umieszczone na samym koĹ„cu arkusza QSS, aby ĹĽadna ogĂłlna reguĹ‚a nie nadpisaĹ‚a etykiet!
+   MATERIAL FOLDER & THUMBNAIL LABELS (CMaterialListCtrl)
+   Enforces black text (color: #000000 !important) on white swatch backgrounds
+   in the Materials panel. Positioned at the end of stylesheet to ensure specificity.
    ========================================================================== */
 CMaterialListCtrl,
 CMaterialListCtrl *,
@@ -904,7 +900,7 @@ CDockingTray MaterialsBrowser QAbstractItemView::item {
 }
 
 
-/* Interakcje (hover i zaznaczenie) kafelków materiałów */
+/* Material tile hover and selection interactions */
 CMaterialListCtrl::item:hover,
 ContentBrowserListCtrl::item:hover,
 CBrowserListCtrl::item:hover,
@@ -929,7 +925,7 @@ MaterialsBrowser QAbstractItemView::item:selected {
     color: #002244 !important;
 }
 
-/* Ochrona kontrolek nawigacji panelu materiałów - lista rozwijana i pole tekstowe pozostają jasne */
+/* Protect materials panel navigation controls - dropdown and text input */
 CMaterialBrowserPage QComboBox,
 CMaterialBrowserPage QComboBox *,
 CMaterialBrowserPage QComboBox QAbstractItemView,

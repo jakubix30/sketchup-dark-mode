@@ -29,7 +29,7 @@ module SketchupDarkMode
     end
 
     def init
-      # Automatyczna synchronizacja z motywem Windows, jeśli włączona
+      # Auto sync with Windows theme if enabled
       if Config['auto_sync_windows']
         Config['dark_mode_enabled'] = Config.windows_dark_mode?
       end
@@ -58,17 +58,17 @@ module SketchupDarkMode
       Config['dark_mode_enabled'] = true
       Config['auto_sync_windows'] = false
 
-      # 1. Pasek tytułu Windows (DWM)
+      # 1. Windows titlebar (DWM)
       DwmStyler.set_dark_titlebar(true) if Config['style_titlebar']
 
-      # 2. Interfejs Qt 6 (Ciemna paleta + QSS)
+      # 2. Qt 6 UI (Dark palette + QSS)
       if Config['style_ui']
         apply_current_qss
       else
         QtStyler.clear_stylesheet
       end
 
-      # 3. Widok 3D (Viewport)
+      # 3. 3D Viewport
       if Config['style_viewport']
         ViewportStyler.apply_dark_viewport(Sketchup.active_model)
       else
@@ -76,24 +76,24 @@ module SketchupDarkMode
       end
 
       update_ui_elements
-      puts '[Dark Mode] Tryb ciemny został WŁĄCZONY.'
+      puts '[Dark Mode] Dark mode ENABLED.'
     end
 
     def disable_dark_mode
       Config['dark_mode_enabled'] = false
       Config['auto_sync_windows'] = false
 
-      # 1. Pasek tytułu Windows (DWM)
+      # 1. Windows titlebar (DWM)
       DwmStyler.set_dark_titlebar(false)
 
-      # 2. Widok 3D (Przywrócenie domyślnych kolorów canvas)
+      # 2. 3D Viewport (Restore default canvas colors)
       ViewportStyler.restore_viewport(Sketchup.active_model)
 
-      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS)
+      # 3. Qt 6 UI (Restore light palette and clear QSS)
       QtStyler.clear_stylesheet
 
       update_ui_elements
-      puts '[Dark Mode] Przywrócono domyślny jasny motyw SketchUp.'
+      puts '[Dark Mode] Restored default light theme.'
     end
 
     def update_state
@@ -127,7 +127,7 @@ module SketchupDarkMode
         qss_content = File.read(QSS_PATH, encoding: 'UTF-8')
         QtStyler.apply_stylesheet(qss_content)
       else
-        puts "[Dark Mode] Ostrzeżenie: Plik stylów #{QSS_PATH} nie istnieje."
+        puts "[Dark Mode] Warning: Stylesheet #{QSS_PATH} does not exist."
       end
     end
 
@@ -157,7 +157,7 @@ module SketchupDarkMode
     end
 
     def setup_ui
-      # 1. Komenda Toggle
+      # 1. Toggle command
       @cmd_toggle = UI::Command.new(I18n.t(:cmd_toggle)) do
         Main.toggle
       end
@@ -175,7 +175,7 @@ module SketchupDarkMode
 
       update_ui_elements
 
-      # 2. Komenda Przywróć domyślne (Jasny motyw)
+      # 2. Restore default (Light mode) command
       @cmd_restore = UI::Command.new(I18n.t(:cmd_restore)) do
         Main.disable_dark_mode
       end
@@ -195,7 +195,7 @@ module SketchupDarkMode
         @cmd_restore.large_icon = sun_32
       end
 
-      # 3. Komenda Przełącz ciemny widok 3D
+      # 3. Toggle dark 3D viewport command
       cmd_toggle_viewport = UI::Command.new(I18n.t(:cmd_viewport)) do
         Config['style_viewport'] = !Config['style_viewport']
         if Config['style_viewport'] && Main.dark_mode_active?
@@ -215,7 +215,7 @@ module SketchupDarkMode
         end
       end
 
-      # 4. Komenda Przełącz ciemną listę materiałów
+      # 4. Toggle dark materials list command
       cmd_toggle_materials = UI::Command.new(I18n.t(:cmd_materials)) do
         Config['dark_materials_list'] = !Config['dark_materials_list']
         Main.apply_current_qss if Main.dark_mode_active?
@@ -231,21 +231,21 @@ module SketchupDarkMode
         end
       end
 
-      # 5. Komenda Ustawienia
+      # 5. Settings command
       cmd_settings = UI::Command.new(I18n.t(:cmd_settings)) do
         SettingsDialog.show
       end
       cmd_settings.menu_text = I18n.t(:cmd_settings_menu)
       cmd_settings.tooltip = I18n.t(:cmd_settings_tip)
 
-      # 6. Komenda Przeładuj styl (Hot-Reload)
+      # 6. Reload stylesheet (Hot-Reload) command
       cmd_reload = UI::Command.new(I18n.t(:cmd_reload)) do
         Main.reload_stylesheet
       end
       cmd_reload.menu_text = I18n.t(:cmd_reload_menu)
       cmd_reload.tooltip = I18n.t(:cmd_reload_tip)
 
-      # Menu w Extensions / Rozszerzenia
+      # Menu in Extensions
       menu = UI.menu('Plugins').add_submenu(I18n.t(:menu_title))
       menu.add_item(@cmd_toggle)
       menu.add_item(@cmd_restore)
@@ -257,7 +257,7 @@ module SketchupDarkMode
       menu.add_separator
       menu.add_item(cmd_reload)
 
-      # Pasek narzędzi (Toolbar) - dokładnie dwa przyciski
+      # Toolbar - exactly two buttons
       @toolbar = UI::Toolbar.new(I18n.t(:toolbar_title))
       @toolbar.add_item(@cmd_toggle)
       @toolbar.add_item(cmd_settings)

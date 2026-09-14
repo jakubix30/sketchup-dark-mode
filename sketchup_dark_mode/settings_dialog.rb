@@ -74,10 +74,10 @@ module SketchupDarkMode
       Config['viewport_bg_hex']   = results[7].to_s.strip
       Config['viewport_edge_hex'] = results[8].to_s.strip
 
-      # Natychmiast zaktualizuj stan aplikacji
+      # Immediately apply state changes
       Main.update_state
 
-      # Jeśli język uległ zmianie, odśwież dynamiczne teksty
+      # If language changed, refresh dynamic UI elements
       if old_lang != new_lang
         Main.update_ui_elements
       end

@@ -5,7 +5,7 @@ require 'sketchup.rb'
 module SketchupDarkMode
   loader_dir = File.dirname(__FILE__)
 
-  # Użycie load zamiast require umożliwia bezproblemowe przeładowywanie zmian w Konsoli Ruby
+  # Use load instead of require to allow seamless reloading during development in the Ruby Console
   load File.join(loader_dir, 'config.rb')
   load File.join(loader_dir, 'i18n.rb')
   load File.join(loader_dir, 'qt_styler.rb')
@@ -18,7 +18,7 @@ module SketchupDarkMode
     Main.init
     file_loaded(__FILE__)
   else
-    # Jeśli plik jest ładowany ponownie, odśwież stan
+    # If the file is reloaded, refresh current state
     Main.update_state
   end
 end

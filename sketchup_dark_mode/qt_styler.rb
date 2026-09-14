@@ -8,7 +8,7 @@ module SketchupDarkMode
 
     @available = false
 
-    # Inicjalizuje wskaźniki do funkcji Qt 6 przez Fiddle
+    # Initializes pointers to Qt 6 functions via Fiddle
     def initialize_qt
       if @available && @fn_set_palette && @fn_palette_ctor && @fn_qcolor_ctor && @fn_palette_set_color
         return true
@@ -16,13 +16,13 @@ module SketchupDarkMode
 
       su_dir = File.dirname(Sketchup.find_support_file('sketchup.exe'))
 
-      # Załaduj biblioteki Qt 6
+      # Load Qt 6 libraries
       qt_core_handle    = load_dll('Qt6Core.dll', su_dir)
       qt_gui_handle     = load_dll('Qt6Gui.dll', su_dir)
       qt_widgets_handle = load_dll('Qt6Widgets.dll', su_dir)
 
       unless qt_core_handle && qt_gui_handle && qt_widgets_handle
-        puts '[Dark Mode] Nie odnaleziono wszystkich bibliotek Qt 6.'
+        puts '[Dark Mode] Could not find all Qt 6 libraries.'
         @available = false
         return false
       end
@@ -125,10 +125,10 @@ module SketchupDarkMode
 
       @available = true
       capture_original_palette
-      puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Paleta + QSS).'
+      puts '[Dark Mode] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).'
       true
     rescue StandardError => e
-      puts "[Dark Mode] Błąd Fiddle podczas ładowania Qt: #{e.message}"
+      puts "[Dark Mode] Fiddle error during Qt initialization: #{e.message}"
       @available = false
       false
     end
@@ -162,7 +162,7 @@ module SketchupDarkMode
       nil
     end
 
-    # Nakłada ciemną paletę systemową na całą aplikację Qt
+    # Applies dark system palette to the entire Qt application
     def apply_dark_palette
       return unless available?
 
@@ -174,9 +174,9 @@ module SketchupDarkMode
 
       color_mem = Fiddle::Pointer.malloc(32)
 
-      # Definicje barw ciemnego motywu w Qt
+      # Dark theme color definitions in Qt
       dark_roles = {
-        0  => '#d4d4d4', # WindowText (jasny tekst dla etykiet, okien i paneli np. Cienie)
+        0  => '#d4d4d4', # WindowText (light text for labels, windows, and panels e.g. Shadows)
         1  => '#2d2d30', # Button
         2  => '#3e3e42', # Light
         3  => '#2d2d30', # Midlight
@@ -185,10 +185,10 @@ module SketchupDarkMode
         6  => '#ffffff', # Text
         7  => '#ffffff', # BrightText
         8  => '#ffffff', # ButtonText
-        9  => '#1e1e1e', # Base (tło kafelków, miniatur, list)
-        10 => '#252526', # Window (tło okien, paneli, tacek)
+        9  => '#1e1e1e', # Base (background for tiles, thumbnails, lists)
+        10 => '#252526', # Window (background for windows, panels, trays)
         11 => '#141414', # Shadow
-        12 => '#094771', # Highlight (zaznaczenie)
+        12 => '#094771', # Highlight (selection)
         13 => '#ffffff', # HighlightedText
         14 => '#3794ff', # Link
         16 => '#252526', # AlternateBase
@@ -204,16 +204,16 @@ module SketchupDarkMode
         @fn_palette_set_color.call(pal_mem, role, color_mem)
       end
 
-      # Zastosuj paletę globalnie
+      # Apply palette globally
       @fn_set_palette.call(pal_mem, 0)
       @dark_palette_applied = true
     rescue StandardError => e
-      puts "[Dark Mode] Błąd ustawiania ciemnej palety: #{e.message}"
+      puts "[Dark Mode] Error applying dark palette: #{e.message}"
     ensure
       @fn_palette_dtor.call(pal_mem) if pal_mem
     end
 
-    # Przywraca standardową jasną paletę systemową Windows
+    # Restores default light Windows system palette
     def restore_default_palette
       return unless available?
       return unless @dark_palette_applied
@@ -229,7 +229,7 @@ module SketchupDarkMode
       @fn_palette_ctor.call(pal_mem)
       color_mem = Fiddle::Pointer.malloc(32)
 
-      # Domyślne jasne barwy Windows (fallback jeśli brak kopii)
+      # Default Windows light colors (fallback if no backup copy)
       light_roles = {
         0  => '#000000', # WindowText
         1  => '#f0f0f0', # Button
@@ -240,8 +240,8 @@ module SketchupDarkMode
         6  => '#000000', # Text
         7  => '#ffffff', # BrightText
         8  => '#000000', # ButtonText
-        9  => '#ffffff', # Base (białe tło)
-        10 => '#f0f0f0', # Window (jasnoszary)
+        9  => '#ffffff', # Base (white background)
+        10 => '#f0f0f0', # Window (light gray)
         11 => '#696969', # Shadow
         12 => '#0078d7', # Highlight
         13 => '#ffffff', # HighlightedText
@@ -262,22 +262,22 @@ module SketchupDarkMode
       @fn_set_palette.call(pal_mem, 0)
       @dark_palette_applied = false
     rescue StandardError => e
-      puts "[Dark Mode] Błąd przywracania jasnej palety: #{e.message}"
+      puts "[Dark Mode] Error restoring default light palette: #{e.message}"
     ensure
       @fn_palette_dtor.call(pal_mem) if pal_mem && !@orig_palette_saved
     end
 
-    # Aplikuje arkusz stylów CSS oraz ciemną paletę
+    # Applies QSS stylesheet and dark palette
     def apply_stylesheet(css_text)
       return false unless available?
 
-      # 1. Zastosuj ciemną paletę
+      # 1. Apply dark palette
       apply_dark_palette
 
-      # 2. Zastosuj arkusz stylów QSS
+      # 2. Apply QSS stylesheet
       qapp = @fn_instance.call
       if qapp.nil? || qapp.to_i == 0
-        puts '[Dark Mode] Wskaźnik QApplication jest NULL.'
+        puts '[Dark Mode] QApplication pointer is NULL.'
         return false
       end
 
@@ -296,11 +296,11 @@ module SketchupDarkMode
 
       true
     rescue StandardError => e
-      puts "[Dark Mode] Błąd nakładania stylu Qt: #{e.message}"
+      puts "[Dark Mode] Error applying Qt stylesheet: #{e.message}"
       false
     end
 
-    # Całkowicie wyłącza styl Qt i przywraca 100% natywny fabryczny wygląd SketchUp bez CSS i lagów
+    # Completely disables Qt styling and restores 100% native factory look of SketchUp without CSS overhead
     def clear_stylesheet
       return false unless available?
 
@@ -309,7 +309,7 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # Czyścimy arkusz stylów do zera (pełne wyłączenie QSS bez narzutów)
+      # Clear stylesheet to empty string (full reset of QSS)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
       c_ptr = Fiddle::Pointer.to_ptr("\0")
@@ -323,7 +323,7 @@ module SketchupDarkMode
 
       true
     rescue StandardError => e
-      puts "[Dark Mode] Błąd czyszczenia stylu Qt: #{e.message}"
+      puts "[Dark Mode] Error clearing Qt stylesheet: #{e.message}"
       false
     end
 

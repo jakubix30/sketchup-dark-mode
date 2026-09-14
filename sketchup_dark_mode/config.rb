@@ -49,12 +49,12 @@ module SketchupDarkMode
           data = JSON.parse(File.read(CONFIG_FILE))
           DEFAULT_SETTINGS.merge(data)
         rescue StandardError => e
-          puts "[Dark Mode] Błąd odczytu konfiguracji: #{e.message}, przywracanie domyślnych"
+          puts "[Dark Mode] Error reading configuration: #{e.message}, restoring defaults"
           DEFAULT_SETTINGS.dup
         end
       else
         cfg = DEFAULT_SETTINGS.dup
-        # Sprawdź czy Windows ma ciemny motyw
+        # Check if Windows uses dark mode
         if windows_dark_mode?
           cfg['dark_mode_enabled'] = true
         end
@@ -67,10 +67,10 @@ module SketchupDarkMode
       Dir.mkdir(dir) unless Dir.exist?(dir)
       File.write(CONFIG_FILE, JSON.pretty_generate(settings))
     rescue StandardError => e
-      puts "[Dark Mode] Błąd zapisu konfiguracji: #{e.message}"
+      puts "[Dark Mode] Error saving configuration: #{e.message}"
     end
 
-    # Wykrywa czy Windows 10/11 używa ciemnego motywu
+    # Detects whether Windows 10/11 uses dark mode
     def windows_dark_mode?
       return false unless defined?(Win32::Registry)
 
