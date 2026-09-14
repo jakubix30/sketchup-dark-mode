@@ -1,5 +1,16 @@
+# Temporary and crop screenshots
 crop_*.png
-*.log
-
 test_*.png
+*.log
 *log*.txt
+
+# AI & Handover documentation (internal developer notes)
+HANDOVER*.md
+GEMINI.md
+CLAUDE.md
+.gemini/
+.claude/
+.cursor/
+.antigravity/
+.vscode/
+.idea/
