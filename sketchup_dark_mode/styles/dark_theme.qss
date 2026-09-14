@@ -800,10 +800,13 @@ QStatusBar QLabel {
 /* --------------------------------------------------------------------------
    Tooltips
    -------------------------------------------------------------------------- */
-QToolTip {
-    background-color: #2d2d30;
-    color: #f1f1f1;
-    border: 1px solid #454545;
+QToolTip,
+QToolTip QLabel,
+QTipLabel,
+QTipLabel QLabel {
+    background-color: #252526 !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
     padding: 4px 7px;
     border-radius: 3px;
 }
@@ -951,4 +954,28 @@ QWidget#materialsCtrl QLineEdit {
     color: #d4d4d4 !important;
     font-weight: normal !important;
 }
+
+/* ==========================================================================
+   TOOLTIPS - GLOBAL WHITE TEXT OVERRIDE
+   Ensures all hover tooltips in trays, toolbars, and panels display crisp
+   white text (#ffffff) on dark background (#252526).
+   ========================================================================== */
+QToolTip,
+QToolTip *,
+QTipLabel,
+QTipLabel *,
+CDockingTray QToolTip,
+CDockingTray QToolTip *,
+QDockWidget QToolTip,
+QDockWidget QToolTip *,
+CMaterialBrowserPage QToolTip,
+CMaterialBrowserPage QToolTip *,
+QWidget#materialsCtrl QToolTip,
+QWidget#materialsCtrl QToolTip * {
+    background-color: #252526 !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
+    font-weight: normal !important;
+}
+
 

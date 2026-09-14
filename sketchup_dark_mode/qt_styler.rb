@@ -192,8 +192,8 @@ module SketchupDarkMode
         13 => '#ffffff', # HighlightedText
         14 => '#3794ff', # Link
         16 => '#252526', # AlternateBase
-        18 => '#2d2d30', # ToolTipBase
-        19 => '#f1f1f1', # ToolTipText
+        18 => '#252526', # ToolTipBase
+        19 => '#ffffff', # ToolTipText
         20 => '#808080'  # PlaceholderText
       }
 
