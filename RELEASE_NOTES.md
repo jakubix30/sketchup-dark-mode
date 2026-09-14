@@ -9,11 +9,12 @@ A modern, polished Dark Mode extension for **SketchUp 2025** on Windows 10/11.
 - **Full Qt 6 Dark Theme**: Restyles menus, toolbars, docking trays, status bars, tab bars, dialogs, and panels.
 - **Windows DWM Dark Titlebar**: Native dark window titlebar matching the Windows 10/11 system theme.
 - **Dark 3D Viewport**: High-contrast dark canvas background with clear model edge rendering.
-- **Materials & Folders Readability**: Deep black, extra-bold text (`font-weight: 800`) elevated on thumbnail swatches for crisp folder readability in dark mode.
+- **Materials & Folders Readability**: High-contrast black text elevated on thumbnail swatches for crisp folder readability in dark mode.
 - **Clean Dropdown Menus**: Category selector dropdowns (`QComboBox`) with dark backgrounds, clear text, and zero white box artifacts.
 - **Instant Mode Switching**: Highly optimized stylesheet rules preventing UI freezes and main-thread lag.
 - **100% Factory Standard Light Mode**: Disabling dark mode completely clears stylesheets (`setStyleSheet("")`) and restores native Windows palettes with zero lag.
 - **Multilingual Support (PL / EN)**: Automatic language detection matching SketchUp's locale, with manual override in Settings.
+- **English Console Logs & Comments**: Fully translated Ruby console diagnostics and codebase documentation for international community support.
 - **Hot-Reload Support**: Instant stylesheet reloading without restarting SketchUp.
 
 ---
