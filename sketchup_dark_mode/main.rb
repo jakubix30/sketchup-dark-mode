@@ -83,14 +83,14 @@ module SketchupDarkMode
       Config['dark_mode_enabled'] = false
       Config['auto_sync_windows'] = false
 
-      # 1. Pasek tytułu Windows (DWM)
+      # 1. Pasek tytułu Windows (DWM) — tania operacja, najpierw
       DwmStyler.set_dark_titlebar(false)
 
-      # 2. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS)
-      QtStyler.clear_stylesheet
-
-      # 3. Widok 3D (Przywrócenie domyślnych kolorów canvas)
+      # 2. Widok 3D (Przywrócenie domyślnych kolorów canvas) — przed Qt
       ViewportStyler.restore_viewport(Sketchup.active_model)
+
+      # 3. Interfejs Qt 6 (Przywrócenie jasnej palety i czyszczenie QSS) — najcięższa operacja na końcu
+      QtStyler.clear_stylesheet
 
       update_ui_elements
       puts '[Dark Mode] Przywrócono domyślny jasny motyw SketchUp.'
@@ -125,9 +125,6 @@ module SketchupDarkMode
     def apply_current_qss
       if File.exist?(QSS_PATH)
         qss_content = File.read(QSS_PATH, encoding: 'UTF-8')
-        unless Config['dark_materials_list']
-          qss_content += "\nCMaterialListCtrl, CMaterialListCtrl::viewport, ContentBrowserListCtrl, ContentBrowserListCtrl::viewport, CBrowserListCtrl, CBrowserListCtrl::viewport, MaterialListCtrl, MaterialListCtrl::viewport { background-color: #ffffff !important; }\n"
-        end
         QtStyler.apply_stylesheet(qss_content)
       else
         puts "[Dark Mode] Ostrzeżenie: Plik stylów #{QSS_PATH} nie istnieje."
