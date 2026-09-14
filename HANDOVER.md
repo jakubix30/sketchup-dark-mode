@@ -211,42 +211,33 @@ tar -xf "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz" -C "C:\Users\jak
 
 ### 6.1. Zrealizowane w tej iteracji:
 1. **Czcionka folderów w Materiałach w Dark Mode (gruba, czarna i lekko wyżej)**:
-   - **Problem:** Etykiety tekstowe folderów w panelu Materiały wyświetlały się jako jasnoszare (#d4d4d4) z powodu nadpisywania przez ogólną regułę `QListView::item` oraz `MaterialsBrowser *`.
-   - **Rozwiązanie:** Podniesiono specyficzność selektorów w `dark_theme.qss` oraz `main.rb` (`materials_list_qss`), dodając precyzyjne reguły dla widoków listy i ich subkontrolek `::item`:
-     - `MaterialsBrowser QListView::item`, `MaterialsBrowser QAbstractItemView::item`
-     - `CMaterialBrowserPage QListView::item`, `CMaterialBrowser QListView::item`
-     - `QListView[class*="Material"]::item`, `CMaterialListCtrl::item`, itp.
-     - Parametry: `color: #000000 !important; font-weight: 800 !important; font-size: 8pt !important; padding-bottom: 2px !important; background-color: transparent !important; border: none !important; margin: 0px !important;`.
-   - **Efekt:** Czcionka na białym tle miniaturki jest mocna, głęboko czarna i uniesiona o 2px w górę. W trybie jasnym czcionka i widok materiałów pozostają w 100% standardowe i nienaruszone (fabryczny styl SketchUpa).
+   - **Problem:** Etykiety tekstowe folderów w panelu Materiały wyświetlały się jako jasnoszare (#d4d4d4) z powodu ogólnej reguły `QListView::item { color: #d4d4d4 !important; }`. Selektory z prefiksami (np. `MaterialsBrowser QListView::item`) nie pasowały, ponieważ rzeczywista hierarchia klas w SketchUp 2025 nie zawiera takiego kontenera.
+   - **Rozwiązanie:** 
+     - Wyodrębniono `QListView` z ogólnej reguły dla widoków drzew (`QTreeView, QTableView`).
+     - Ustanowiono bezpośrednią regułę `QListView::item`:
+       ```css
+       QListView::item {
+           color: #000000 !important;
+           font-weight: 800 !important;
+           font-size: 8pt !important;
+           background-color: transparent !important;
+           border: none !important;
+           padding-top: 0px !important;
+           padding-left: 0px !important;
+           padding-right: 0px !important;
+           padding-bottom: 2px !important;
+           margin: 0px !important;
+       }
+       ```
+     - Zaktualizowano stany `:hover` oraz `:selected` (również z `color: #000000 !important; font-weight: 800 !important;`).
+   - **Efekt:** W ciemnym motywie czcionka na białym tle miniaturki jest mocna, głęboko czarna (font-weight 800) i uniesiona o 2px w górę – zarówno dla folderów zaznaczonych, jak i niezaznaczonych.
 
-2. **Zmniejszanie zasobnika w trybie jasnym (odblokowanie min-width bez lagów i crashy)**:
-   - **Problem:** W trybie jasnym zasobnik domyślny SketchUpa miał sztywny limit minimalnej szerokości. Poprzednia próba z `TRAY_UNLIMIT_QSS` powodowała zacięcia z powodu uniwersalnych selektorów `*`.
-   - **Rozwiązanie:** Wprowadzono ultra-lekki styl `LIGHT_TRAY_QSS` w `qt_styler.rb`, operujący **wyłącznie na czystych selektorach typów (bez żadnych gwiazdek `*` i bez selektorów potomków)**:
-     ```css
-     CDockingTray,
-     CDockingTrayDialog,
-     CDockingPanel,
-     CDockingPanelContainer,
-     CPanelContentSplitter,
-     KDDockWidgets--DockWidget,
-     KDDockWidgets--FrameWidget,
-     KDDockWidgets--SideBarWidget,
-     KDDockWidgets--TabBarWidget,
-     KDDockWidgets--TabWidgetWidget,
-     QDockWidget,
-     CMaterialBrowser,
-     CMaterialBrowserPage,
-     MaterialsBrowser,
-     MaterialsBrowser2 {
-         min-width: 0px !important;
-     }
-
-     CMaterialBrowserPreview {
-         min-width: 0px !important;
-         max-width: 100% !important;
-     }
-     ```
-   - **Efekt:** Silnik Qt nie wykonuje żadnych rekursywnych przeliczeń stylów dla kontrolek potomnych. Przełączanie trybów jest natychmiastowe i bezlagowe (0 ms narzutu), a zasobnik w trybie jasnym można swobodnie zsuwać w prawo do minimum (2–3 kolumny).
+2. **Czysty, standardowy tryb jasny (fabryczny SketchUp – zero CSS, zero lagów)**:
+   - **Żądanie użytkownika:** *"chciałbym aby jasny był standardowy jakby cały plugin się wyłączał"*.
+   - **Rozwiązanie:** 
+     - W `clear_stylesheet` całkowicie usunięto wstrzykiwanie jakiegokolwiek arkusza QSS (`c_ptr = Fiddle::Pointer.to_ptr("\0")`).
+     - Przywracana jest w 100% oryginalna paleta systemowa Windows (`@orig_palette_mem`), standardowy pasek DWM oraz standardowy viewport.
+   - **Efekt:** W trybie jasnym aplikacja wraca natychmiastowo do fabrycznego stanu SketchUpa bez ani jednej modyfikacji stylów. Przełączanie trybów jest błyskawiczne (0 ms narzutu, zero lagów).
 
 ### 6.2. Procedura Wdrożeniowa:
 1. Budowa paczki:

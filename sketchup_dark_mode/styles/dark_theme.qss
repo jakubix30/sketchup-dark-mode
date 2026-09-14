@@ -437,8 +437,6 @@ QTreeView,
 QTreeView::viewport,
 QTableView,
 QTableView::viewport,
-QListView,
-QListView::viewport,
 QListWidget,
 QListWidget::viewport,
 QTreeWidget,
@@ -452,28 +450,53 @@ QAbstractItemView::viewport {
 }
 
 QTreeView::item,
-QTableView::item,
-QListView::item {
+QTableView::item {
     color: #d4d4d4 !important;
     background-color: transparent;
     padding: 2px 4px;
 }
 
 QTreeView::item:hover,
-QTableView::item:hover,
-QListView::item:hover {
+QTableView::item:hover {
     background-color: #2a2d2e !important;
     color: #ffffff !important;
 }
 
 QTreeView::item:selected,
-QTableView::item:selected,
-QListView::item:selected {
+QTableView::item:selected {
     background-color: #094771 !important;
     color: #ffffff !important;
 }
 
-/* Specyficzne nadpisanie dla kafelków i folderów materiałów PO ogólnej regule QListView::item */
+/* ==========================================================================
+   Widoki list miniaturek i kafelków (QListView, panele Materiałów, Komponentów itp.)
+   Gruba, czarna czcionka (font-weight: 800) podniesiona lekko wyżej (padding-bottom: 2px)
+   dla folderów i próbek na białym tle.
+   ========================================================================== */
+QListView,
+QListView::viewport {
+    background-color: #202022 !important;
+    color: #000000 !important;
+    border: 1px solid #38383b !important;
+    outline: none;
+    min-width: 0px !important;
+}
+
+QListView,
+QListView *,
+QListView QLabel,
+QAbstractItemView[class*="Material"],
+QAbstractItemView[class*="Material"] *,
+QAbstractItemView[class*="Content"],
+QAbstractItemView[class*="Content"] * {
+    color: #000000 !important;
+    font-weight: 800 !important;
+    font-size: 8pt !important;
+}
+
+/* Podstawowa reguła dla WSZYSTKICH kafelków QListView::item bez wymogu dopasowania prefiksu kontenera */
+QListView::item,
+QListView::item *,
 MaterialsBrowser QListView::item,
 MaterialsBrowser QAbstractItemView::item,
 MaterialsBrowser2 QListView::item,
@@ -485,6 +508,7 @@ CMaterialBrowserPage QAbstractItemView::item,
 CDockingTray MaterialsBrowser QListView::item,
 CDockingTray CMaterialBrowser QListView::item,
 CDockingTray CMaterialBrowserPage QListView::item,
+CDockingTray QListView::item,
 QListView[class*="Material"]::item,
 QAbstractItemView[class*="Material"]::item,
 CMaterialListCtrl::item,
@@ -504,6 +528,7 @@ MaterialListItem {
     margin: 0px !important;
 }
 
+QListView::item:hover,
 MaterialsBrowser QListView::item:hover,
 MaterialsBrowser QAbstractItemView::item:hover,
 MaterialsBrowser2 QListView::item:hover,
@@ -514,6 +539,7 @@ CMaterialBrowserPage QListView::item:hover,
 CMaterialBrowserPage QAbstractItemView::item:hover,
 CDockingTray MaterialsBrowser QListView::item:hover,
 CDockingTray CMaterialBrowserPage QListView::item:hover,
+CDockingTray QListView::item:hover,
 QListView[class*="Material"]::item:hover,
 QAbstractItemView[class*="Material"]::item:hover,
 CMaterialListCtrl::item:hover,
@@ -526,6 +552,7 @@ MaterialListCtrl::item:hover {
     font-weight: 800 !important;
 }
 
+QListView::item:selected,
 MaterialsBrowser QListView::item:selected,
 MaterialsBrowser QAbstractItemView::item:selected,
 MaterialsBrowser2 QListView::item:selected,
@@ -536,6 +563,7 @@ CMaterialBrowserPage QListView::item:selected,
 CMaterialBrowserPage QAbstractItemView::item:selected,
 CDockingTray MaterialsBrowser QListView::item:selected,
 CDockingTray CMaterialBrowserPage QListView::item:selected,
+CDockingTray QListView::item:selected,
 QListView[class*="Material"]::item:selected,
 QAbstractItemView[class*="Material"]::item:selected,
 CMaterialListCtrl::item:selected,
@@ -544,7 +572,7 @@ CBrowserListCtrl::item:selected,
 MaterialListCtrl::item:selected {
     background-color: #badcfc !important;
     border: 2px solid #007acc !important;
-    color: #002244 !important;
+    color: #000000 !important;
     font-weight: 800 !important;
 }
 

@@ -147,6 +147,8 @@ module SketchupDarkMode
           CBrowserListCtrl::viewport,
           MaterialListCtrl,
           MaterialListCtrl::viewport,
+          QListView,
+          QListView::viewport,
           MaterialsBrowser QListView,
           MaterialsBrowser QListView::viewport,
           MaterialsBrowser2 QListView,
@@ -163,6 +165,9 @@ module SketchupDarkMode
               min-width: 0px !important;
           }
 
+          QListView,
+          QListView *,
+          QListView QLabel,
           CMaterialListCtrl,
           CMaterialListCtrl *,
           ContentBrowserListCtrl,
@@ -199,6 +204,8 @@ module SketchupDarkMode
           CDockingTray MaterialsBrowser QListView *,
           CDockingTray CMaterialBrowserPage QListView,
           CDockingTray CMaterialBrowserPage QListView *,
+          CDockingTray QListView,
+          CDockingTray QListView *,
           QListView[class*="Material"],
           QListView[class*="Material"] *,
           QAbstractItemView[class*="Material"],
@@ -208,6 +215,8 @@ module SketchupDarkMode
               font-size: 8pt !important;
           }
 
+          QListView::item,
+          QListView::item *,
           MaterialsBrowser QListView::item,
           MaterialsBrowser QAbstractItemView::item,
           MaterialsBrowser2 QListView::item,
@@ -219,6 +228,7 @@ module SketchupDarkMode
           CDockingTray MaterialsBrowser QListView::item,
           CDockingTray CMaterialBrowser QListView::item,
           CDockingTray CMaterialBrowserPage QListView::item,
+          CDockingTray QListView::item,
           QListView[class*="Material"]::item,
           QAbstractItemView[class*="Material"]::item,
           CMaterialListCtrl::item,
@@ -238,6 +248,7 @@ module SketchupDarkMode
               margin: 0px !important;
           }
 
+          QListView::item:hover,
           MaterialsBrowser QListView::item:hover,
           MaterialsBrowser QAbstractItemView::item:hover,
           MaterialsBrowser2 QListView::item:hover,
@@ -248,6 +259,7 @@ module SketchupDarkMode
           CMaterialBrowserPage QAbstractItemView::item:hover,
           CDockingTray MaterialsBrowser QListView::item:hover,
           CDockingTray CMaterialBrowserPage QListView::item:hover,
+          CDockingTray QListView::item:hover,
           QListView[class*="Material"]::item:hover,
           QAbstractItemView[class*="Material"]::item:hover,
           CMaterialListCtrl::item:hover,
@@ -260,6 +272,7 @@ module SketchupDarkMode
               font-weight: 800 !important;
           }
 
+          QListView::item:selected,
           MaterialsBrowser QListView::item:selected,
           MaterialsBrowser QAbstractItemView::item:selected,
           MaterialsBrowser2 QListView::item:selected,
@@ -270,13 +283,14 @@ module SketchupDarkMode
           CMaterialBrowserPage QAbstractItemView::item:selected,
           CDockingTray MaterialsBrowser QListView::item:selected,
           CDockingTray CMaterialBrowserPage QListView::item:selected,
+          CDockingTray QListView::item:selected,
           QListView[class*="Material"]::item:selected,
           QAbstractItemView[class*="Material"]::item:selected,
           CMaterialListCtrl::item:selected,
           ContentBrowserListCtrl::item:selected,
           CBrowserListCtrl::item:selected,
           MaterialListCtrl::item:selected {
-              background-color: #094771 !important;
+              background-color: #badcfc !important;
               border: 2px solid #007acc !important;
               color: #000000 !important;
               font-weight: 800 !important;
@@ -296,6 +310,8 @@ module SketchupDarkMode
           CBrowserListCtrl::viewport,
           MaterialListCtrl,
           MaterialListCtrl::viewport,
+          QListView,
+          QListView::viewport,
           MaterialsBrowser QListView,
           MaterialsBrowser QListView::viewport,
           MaterialsBrowser2 QListView,
@@ -312,6 +328,9 @@ module SketchupDarkMode
               min-width: 0px !important;
           }
 
+          QListView,
+          QListView *,
+          QListView QLabel,
           CMaterialListCtrl,
           CMaterialListCtrl *,
           ContentBrowserListCtrl,
@@ -348,6 +367,8 @@ module SketchupDarkMode
           CDockingTray MaterialsBrowser QListView *,
           CDockingTray CMaterialBrowserPage QListView,
           CDockingTray CMaterialBrowserPage QListView *,
+          CDockingTray QListView,
+          CDockingTray QListView *,
           QListView[class*="Material"],
           QListView[class*="Material"] *,
           QAbstractItemView[class*="Material"],
@@ -357,6 +378,8 @@ module SketchupDarkMode
               font-size: 8pt !important;
           }
 
+          QListView::item,
+          QListView::item *,
           MaterialsBrowser QListView::item,
           MaterialsBrowser QAbstractItemView::item,
           MaterialsBrowser2 QListView::item,
@@ -368,6 +391,7 @@ module SketchupDarkMode
           CDockingTray MaterialsBrowser QListView::item,
           CDockingTray CMaterialBrowser QListView::item,
           CDockingTray CMaterialBrowserPage QListView::item,
+          CDockingTray QListView::item,
           QListView[class*="Material"]::item,
           QAbstractItemView[class*="Material"]::item,
           CMaterialListCtrl::item,
@@ -387,6 +411,7 @@ module SketchupDarkMode
               margin: 0px !important;
           }
 
+          QListView::item:hover,
           MaterialsBrowser QListView::item:hover,
           MaterialsBrowser QAbstractItemView::item:hover,
           MaterialsBrowser2 QListView::item:hover,
@@ -397,6 +422,7 @@ module SketchupDarkMode
           CMaterialBrowserPage QAbstractItemView::item:hover,
           CDockingTray MaterialsBrowser QListView::item:hover,
           CDockingTray CMaterialBrowserPage QListView::item:hover,
+          CDockingTray QListView::item:hover,
           QListView[class*="Material"]::item:hover,
           QAbstractItemView[class*="Material"]::item:hover,
           CMaterialListCtrl::item:hover,
@@ -409,6 +435,7 @@ module SketchupDarkMode
               font-weight: 800 !important;
           }
 
+          QListView::item:selected,
           MaterialsBrowser QListView::item:selected,
           MaterialsBrowser QAbstractItemView::item:selected,
           MaterialsBrowser2 QListView::item:selected,
@@ -419,15 +446,16 @@ module SketchupDarkMode
           CMaterialBrowserPage QAbstractItemView::item:selected,
           CDockingTray MaterialsBrowser QListView::item:selected,
           CDockingTray CMaterialBrowserPage QListView::item:selected,
+          CDockingTray QListView::item:selected,
           QListView[class*="Material"]::item:selected,
           QAbstractItemView[class*="Material"]::item:selected,
           CMaterialListCtrl::item:selected,
           ContentBrowserListCtrl::item:selected,
           CBrowserListCtrl::item:selected,
           MaterialListCtrl::item:selected {
-              background-color: #cce8ff !important;
+              background-color: #badcfc !important;
               border: 2px solid #007acc !important;
-              color: #003366 !important;
+              color: #000000 !important;
               font-weight: 800 !important;
           }
         QSS

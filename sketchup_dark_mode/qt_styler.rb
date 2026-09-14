@@ -263,33 +263,7 @@ module SketchupDarkMode
       false
     end
 
-    # Ultra-lekki styl dla trybu jasnego odblokowujący szerokość zasobnika bez gwiazdek '*' (zero lagów)
-    LIGHT_TRAY_QSS = <<~QSS
-      CDockingTray,
-      CDockingTrayDialog,
-      CDockingPanel,
-      CDockingPanelContainer,
-      CPanelContentSplitter,
-      KDDockWidgets--DockWidget,
-      KDDockWidgets--FrameWidget,
-      KDDockWidgets--SideBarWidget,
-      KDDockWidgets--TabBarWidget,
-      KDDockWidgets--TabWidgetWidget,
-      QDockWidget,
-      CMaterialBrowser,
-      CMaterialBrowserPage,
-      MaterialsBrowser,
-      MaterialsBrowser2 {
-          min-width: 0px !important;
-      }
-
-      CMaterialBrowserPreview {
-          min-width: 0px !important;
-          max-width: 100% !important;
-      }
-    QSS
-
-    # Przywraca standardowy jasny motyw z odblokowanym zasobnikiem (ultra-lekki QSS bez gwiazdek *)
+    # Całkowicie wyłącza styl Qt i przywraca oryginalną paletę (100% natywny fabryczny wygląd SketchUp bez CSS i lagów)
     def clear_stylesheet
       return false unless available?
 
@@ -298,11 +272,10 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # Aplikujemy ultra-lekki styl odblokowujący szerokość zasobnika bez narzutu na silnik Qt
+      # Czyścimy arkusz stylów do zera (pełne wyłączenie QSS bez narzutów)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
-      c_text = LIGHT_TRAY_QSS.encode('UTF-8') + "\0"
-      c_ptr = Fiddle::Pointer.to_ptr(c_text)
+      c_ptr = Fiddle::Pointer.to_ptr("\0")
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
