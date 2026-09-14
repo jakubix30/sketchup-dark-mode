@@ -19,7 +19,7 @@ module SketchupDarkMode
     else
       ext.description = 'Modern Dark Mode for SketchUp 2025 – styles Qt6 UI, Windows titlebar, and 3D viewport (PL / EN).'
     end
-    ext.version     = '1.0.0'
+    ext.version     = '1.1.0'
     ext.creator     = 'jakubix30'
     ext.copyright   = '2026'
 

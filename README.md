@@ -96,6 +96,22 @@ This automatically produces `sketchup_dark_mode.rbz` ready for distribution.
 
 ---
 
+## 🔍 Known Limitations & Future Roadmap
+
+While the extension provides a complete, modern dark mode experience, certain internal SketchUp implementation specifics are documented for future research:
+
+1. **Materials Browser Folder Thumbnails (Hardcoded White Rendered Background)**:
+   - In the Materials Browser, folder category thumbnails and label boxes contain a white background that is baked/rendered directly onto the image surface by SketchUp's internal C++ drawing routine (`CMaterialBrowserPage` / `CMaterialBrowserPreview`).
+   - Because this is an owner-drawn bitmap rather than a standard Qt widget background, CSS `background-color`, `color`, and `padding` rules cannot cleanly remove or reposition the white rendered surface without distorting thumbnail layout.
+   - *Future exploration*: investigating low-level bitmap hook overrides or memory patches to recolor or replace the hardcoded rendered folder glyph.
+
+2. **Tray Minimum Width after Switching from Dark to Light Mode**:
+   - When switching from Dark Mode back to Light Mode during an active session, the Default Tray's minimum width (`min-width`) may remain slightly wider than SketchUp's default until the application is restarted.
+   - *Cause*: Qt 6's `QStyleSheetStyle` recalculates and caches container `minimumSizeHint()` constraints on complex composite widgets (`CDockingTray`, `CPanelContentSplitter`). Even though `setStyleSheet("")` successfully unbinds the stylesheet, Qt's internal layout cache retains the evaluated minimum width until a window re-dock or application restart.
+   - *Workaround*: A quick restart of SketchUp restores the exact factory minimum width.
+
+---
+
 ## ⚠️ Disclaimer & Legal Notice
 
 - **Independent Community Project**: This extension is an independent, community-driven open-source project developed for educational and interoperability research purposes. It is **not** created, endorsed, certified, or supported by Trimble Inc.

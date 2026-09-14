@@ -99,6 +99,22 @@ Skrypt automatycznie spakuje wszystkie pliki źródłowe, ikony oraz style do go
 
 ---
 
+## 🔍 Znane Ograniczenia i Plany na Przyszłość (Roadmap)
+
+Chociaż wtyczka zapewnia spójny i dopracowany ciemny motyw, pewne wewnętrzne mechanizmy silnika SketchUpa stanowią znane wyzwania techniczne:
+
+1. **Ikony i etykiety folderów w panelu Materiały (Wkompilowane białe tło renderowania)**:
+   - W zasobniku Materiałów miniatury folderów kategorii posiadają białe tło wyrenderowane bezpośrednio na powierzchni bitmapy przez wewnętrzną procedurę C++ SketchUpa (`CMaterialBrowserPage` / `CMaterialBrowserPreview`).
+   - Ponieważ jest to bezpośrednio rysowany kafelek (owner-draw bitmap), a nie standardowy widget Qt, reguły CSS `background-color` czy zmiany marginesów `padding` nie są w stanie usunąć tego białego fragmentu ani przesunąć tekstu bez zniekształcania miniatur.
+   - *Plany*: Badanie możliwości przechwycenia bitmapy w pamięci lub podmiany renderera kafelków w przyszłych wersjach.
+
+2. **Minimalna szerokość zasobnika po przełączeniu z trybu ciemnego na jasny**:
+   - Po powrocie z trybu ciemnego na jasny w trakcie tej samej sesji minimalna szerokość zasobnika bocznego (`min-width`) może pozostać nieznacznie większa niż fabryczna, dopóki SketchUp nie zostanie uruchomiony ponownie.
+   - *Przyczyna*: Silnik Qt 6 (`QStyleSheetStyle`) oblicza i keszuje ograniczenia `minimumSizeHint()` dla złożonych kontenerów (`CDockingTray`, `CPanelContentSplitter`). Nawet po wyczyszczeniu arkusza stylów (`setStyleSheet("")`), wewnętrzny kesz układu Qt pamięta wyliczoną minimalną szerokość.
+   - *Rozwiązanie*: Ponowne uruchomienie SketchUpa natychmiast przywraca oryginalne, fabryczne wymiary zasobnika.
+
+---
+
 ## ⚠️ Oświadczenie Prawne i Zastrzeżenia (Disclaimer)
 
 - **Niezależny projekt społecznościowy**: Niniejsze rozszerzenie jest niezależnym projektem open-source o charakterze badawczo-edukacyjnym (interoperability research). Nie jest w żaden sposób powiązane, autoryzowane, certyfikowane ani wspierane przez firmę Trimble Inc.

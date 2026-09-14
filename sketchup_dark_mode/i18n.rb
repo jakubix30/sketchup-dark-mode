@@ -43,11 +43,6 @@ module SketchupDarkMode
         cmd_reload_menu: 'Reload CSS Stylesheet (Hot-Reload)',
         cmd_reload_tip: 'Refreshes Qt stylesheet from dark_theme.qss',
 
-        cmd_color_picker: '3D Viewport Color Picker',
-        cmd_color_picker_menu: '3D Viewport Color Picker (Palette)...',
-        cmd_color_picker_tip: 'Pick custom background and edge colors for the 3D viewport',
-        color_picker_title: '3D Viewport Color Picker',
-
         # Settings Dialog
         dialog_title: 'SketchUp Dark Mode Settings',
         opt_dark_mode: 'Dark Mode (Enabled):',
@@ -104,11 +99,6 @@ module SketchupDarkMode
         cmd_reload: 'Przeładuj styl CSS',
         cmd_reload_menu: 'Przeładuj styl CSS (Hot-Reload)',
         cmd_reload_tip: 'Odświeża arkusz stylów Qt z pliku dark_theme.qss',
-
-        cmd_color_picker: 'Wybór kolorów widoku 3D',
-        cmd_color_picker_menu: 'Wybór kolorów widoku 3D (Color Picker)...',
-        cmd_color_picker_tip: 'Wybierz własne kolory tła i krawędzi modeli w widoku 3D za pomocą próbnika',
-        color_picker_title: 'Wybór kolorów widoku 3D (Color Picker)',
 
         # Settings Dialog
         dialog_title: 'Ustawienia SketchUp Dark Mode',
