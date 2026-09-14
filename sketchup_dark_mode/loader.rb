@@ -12,6 +12,7 @@ module SketchupDarkMode
   load File.join(loader_dir, 'dwm_styler.rb')
   load File.join(loader_dir, 'viewport_styler.rb')
   load File.join(loader_dir, 'settings_dialog.rb')
+  load File.join(loader_dir, 'color_picker_dialog.rb')
   load File.join(loader_dir, 'main.rb')
 
   unless file_loaded?(__FILE__)

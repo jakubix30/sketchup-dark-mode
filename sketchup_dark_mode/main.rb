@@ -107,6 +107,7 @@ module SketchupDarkMode
     def reload_stylesheet
       loader_dir = File.dirname(__FILE__)
       load File.join(loader_dir, 'qt_styler.rb')
+      load File.join(loader_dir, 'color_picker_dialog.rb')
       load File.join(loader_dir, 'main.rb')
       if File.exist?(QSS_PATH)
         puts "[Dark Mode] #{I18n.t(:cmd_reload)} (#{QSS_PATH})..."
@@ -236,14 +237,21 @@ module SketchupDarkMode
         end
       end
 
-      # 5. Settings command
+      # 5. Color Picker command
+      cmd_color_picker = UI::Command.new(I18n.t(:cmd_color_picker)) do
+        ColorPickerDialog.show
+      end
+      cmd_color_picker.menu_text = I18n.t(:cmd_color_picker_menu)
+      cmd_color_picker.tooltip = I18n.t(:cmd_color_picker_tip)
+
+      # 6. Settings command
       cmd_settings = UI::Command.new(I18n.t(:cmd_settings)) do
         SettingsDialog.show
       end
       cmd_settings.menu_text = I18n.t(:cmd_settings_menu)
       cmd_settings.tooltip = I18n.t(:cmd_settings_tip)
 
-      # 6. Reload stylesheet (Hot-Reload) command
+      # 7. Reload stylesheet (Hot-Reload) command
       cmd_reload = UI::Command.new(I18n.t(:cmd_reload)) do
         Main.reload_stylesheet
       end
@@ -256,6 +264,7 @@ module SketchupDarkMode
       menu.add_item(@cmd_restore)
       menu.add_separator
       menu.add_item(cmd_toggle_viewport)
+      menu.add_item(cmd_color_picker)
       menu.add_item(cmd_toggle_materials)
       menu.add_separator
       menu.add_item(cmd_settings)

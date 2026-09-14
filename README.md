@@ -77,6 +77,12 @@ SketchUp 2024 and 2025 transitioned their desktop UI framework from legacy MFC t
 3. **Ruby API Viewport Observer (`viewport_styler.rb`)**:
    Interacts with `Sketchup.active_model.rendering_options` to modify viewport background and edge colors cleanly while storing original values for lossless restoration.
 
+## 🎨 QSS Styling Documentation & Guide
+
+For a comprehensive deep-dive into Qt 6 styling in SketchUp 2024 / 2025, widget selectors, gotchas (toolbar inflation, tray min-width, QToolTip palette, SVG icon overrides), and custom theme creation:
+- 📖 [Complete QSS Guide & Selector Reference (English)](QSS_DOCS.md)
+- 📖 [Kompletny Poradnik i Ściągawka QSS (Polski)](QSS_DOCS_PL.md)
+
 ---
 
 ## 📦 Building the `.rbz` Package

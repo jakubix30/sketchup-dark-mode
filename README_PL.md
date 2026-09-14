@@ -80,6 +80,12 @@ SketchUp 2024 i 2025 przeszły z dawnego MFC na nowoczesną bibliotekę **Qt 6**
 3. **Ruby API Viewport (`viewport_styler.rb`)**:
    Modyfikuje `rendering_options` modelu 3D z zachowaniem poprzednich wartości, zapewniając bezstratne przywrócenie jasnego stylu po wyłączeniu wtyczki.
 
+## 🎨 Dokumentacja i Poradnik QSS
+
+Kompletny podręcznik architektury Qt 6 w SketchUp 2024 / 2025, katalog selektorów, rozwiązań kluczowych problemów (Toolbar inflation bug, min-width zasobnika, dymki QToolTip, ikony SVG) oraz tworzenia własnych motywów:
+- 📖 [Kompletny Poradnik i Ściągawka QSS (Polski)](QSS_DOCS_PL.md)
+- 📖 [Complete QSS Guide & Selector Reference (English)](QSS_DOCS.md)
+
 ---
 
 ## 📦 Budowanie paczki `.rbz`
