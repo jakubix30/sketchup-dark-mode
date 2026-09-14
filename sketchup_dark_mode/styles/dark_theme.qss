@@ -172,11 +172,15 @@ CDockingTray QToolButton,
 CDockingTray QComboBox,
 CDockingTray QLineEdit,
 CDockingTray QTabBar::tab,
+CDockingTray QLabel,
+CDockingTray QWidget,
 QDockWidget QPushButton,
 QDockWidget QToolButton,
 QDockWidget QComboBox,
 QDockWidget QLineEdit,
 QDockWidget QTabBar::tab,
+QDockWidget QLabel,
+QDockWidget QWidget,
 CMaterialBrowser QTabBar::tab,
 CMaterialBrowserPage QTabBar::tab,
 MaterialsBrowser QTabBar::tab {
@@ -185,7 +189,9 @@ MaterialsBrowser QTabBar::tab {
 }
 
 CMaterialBrowserPreview,
-CMaterialBrowserPreview * {
+CMaterialBrowserPreview *,
+CMaterialBrowserPreview QLabel,
+CMaterialBrowserPreview QWidget {
     min-width: 0px !important;
     max-width: 100% !important;
 }
@@ -428,7 +434,7 @@ QDateTimeEdit {
     border: 1px solid #3e3e42;
     border-radius: 3px;
     padding: 1px 3px;
-    min-width: 0px;
+    min-width: 0px !important;
     selection-background-color: #264f78;
     selection-color: #ffffff;
 }
@@ -454,7 +460,7 @@ QComboBox {
     border-radius: 3px;
     padding: 1px 4px;
     min-height: 18px;
-    min-width: 0px;
+    min-width: 0px !important;
 }
 
 QComboBox:hover {
@@ -608,8 +614,12 @@ QRadioButton::indicator:checked {
 }
 
 /* --------------------------------------------------------------------------
-   Suwaki (QSlider) oraz panel Cienie (Shadows)
+   Pasek narzędzi Cienie (Shadows toolbar) oraz suwaki (QSlider)
    -------------------------------------------------------------------------- */
+QToolBar,
+QToolBar QLabel,
+QToolBar QSlider,
+QToolBar QSlider QLabel,
 QSlider,
 QSlider QLabel,
 CShadowsPage,
