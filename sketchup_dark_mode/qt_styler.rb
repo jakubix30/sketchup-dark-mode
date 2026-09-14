@@ -154,7 +154,7 @@ module SketchupDarkMode
 
       # Definicje barw ciemnego motywu w Qt
       dark_roles = {
-        0  => '#d4d4d4', # WindowText
+        0  => '#000000', # WindowText (czarny tekst dla kontrolek CMaterialListCtrl)
         1  => '#2d2d30', # Button
         2  => '#3e3e42', # Light
         3  => '#2d2d30', # Midlight

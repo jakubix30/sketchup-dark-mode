@@ -246,7 +246,8 @@ CBrowserListCtrl::viewport,
 MaterialListCtrl,
 MaterialListCtrl::viewport {
     background-color: #202022 !important;
-    color: #e0e0e0 !important;
+    color: #000000 !important;
+    font-weight: bold !important;
     border: 1px solid #38383b !important;
     outline: none;
     min-width: 0px !important;

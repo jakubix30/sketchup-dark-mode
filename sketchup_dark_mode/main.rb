@@ -148,22 +148,34 @@ module SketchupDarkMode
           MaterialListCtrl,
           MaterialListCtrl::viewport {
               background-color: #202022 !important;
-              color: #e0e0e0 !important;
+              color: #000000 !important;
+              font-weight: bold !important;
               border: 1px solid #38383b !important;
               outline: none;
               min-width: 0px !important;
           }
 
+          CMaterialListCtrl,
+          CMaterialListCtrl *,
+          ContentBrowserListCtrl,
+          ContentBrowserListCtrl *,
+          CBrowserListCtrl,
+          CBrowserListCtrl *,
+          MaterialListCtrl,
+          MaterialListCtrl *,
+          MaterialListItem,
+          MaterialListItem *,
+          CMaterialListCtrl QLabel,
           CMaterialListCtrl::item,
           ContentBrowserListCtrl::item,
           CBrowserListCtrl::item,
           MaterialListCtrl::item,
-          MaterialListItem {
-              background-color: #2a2a2d !important;
-              color: #ffffff !important;
-              font-weight: 600 !important;
-              border: 1px solid #3f3f46 !important;
-              border-radius: 4px;
+          CMaterialBrowserPage QAbstractItemView,
+          CMaterialBrowserPage QAbstractItemView *,
+          CMaterialBrowserPage QListView,
+          CMaterialBrowserPage QListView * {
+              color: #000000 !important;
+              font-weight: bold !important;
           }
 
           CMaterialListCtrl::item:hover,
@@ -172,7 +184,7 @@ module SketchupDarkMode
           MaterialListCtrl::item:hover {
               background-color: #38383c !important;
               border: 1px solid #007acc !important;
-              color: #ffffff !important;
+              color: #000000 !important;
           }
 
           CMaterialListCtrl::item:selected,
@@ -181,7 +193,7 @@ module SketchupDarkMode
           MaterialListCtrl::item:selected {
               background-color: #094771 !important;
               border: 2px solid #007acc !important;
-              color: #ffffff !important;
+              color: #000000 !important;
           }
         QSS
       else
@@ -391,7 +403,6 @@ module SketchupDarkMode
       @toolbar.add_item(@cmd_toggle)
       @toolbar.add_item(cmd_settings)
       @toolbar.restore
-    end
     end
 
     def setup_observers
