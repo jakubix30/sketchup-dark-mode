@@ -263,7 +263,81 @@ module SketchupDarkMode
       false
     end
 
-    # Przywraca domyślny wygląd (czyści styl i przywraca jasną paletę)
+    TRAY_UNLIMIT_QSS = <<~QSS
+      CDockingTray,
+      CDockingTray *,
+      CDockingTrayDialog,
+      CDockingTrayDialog *,
+      CDockingPanel,
+      CDockingPanel *,
+      CDockingPanelContainer,
+      CDockingPanelContainer *,
+      CPanelContentSplitter,
+      CPanelContentSplitter *,
+      CMaterialBrowser,
+      CMaterialBrowser *,
+      CMaterialBrowserPage,
+      CMaterialBrowserPage *,
+      CMaterialBrowserPreview,
+      CMaterialBrowserPreview *,
+      CMaterialEditPage,
+      CMaterialEditPage *,
+      MaterialsBrowser,
+      MaterialsBrowser *,
+      MaterialsBrowser2,
+      MaterialsBrowser2 *,
+      KDDockWidgets--DockWidget,
+      KDDockWidgets--DockWidget *,
+      KDDockWidgets--FrameWidget,
+      KDDockWidgets--FrameWidget *,
+      KDDockWidgets--SideBarWidget,
+      KDDockWidgets--SideBarWidget *,
+      KDDockWidgets--TabBarWidget,
+      KDDockWidgets--TabBarWidget *,
+      KDDockWidgets--TabWidgetWidget,
+      KDDockWidgets--TabWidgetWidget *,
+      QDockWidget,
+      QDockWidget *,
+      QScrollArea,
+      QScrollArea *,
+      QScrollArea > QWidget,
+      QScrollArea > QWidget *,
+      QFrame#collapsibleContent,
+      QFrame#collapsibleContent *,
+      QFrame[class*="Expander"],
+      QFrame[class*="Expander"] *,
+      QFrame[class*="Page"],
+      QFrame[class*="Page"] *,
+      QWidget[class*="Page"],
+      QWidget[class*="Page"] *,
+      QSplitter,
+      QSplitter * {
+          min-width: 0px !important;
+      }
+
+      CMaterialBrowserPreview,
+      CMaterialBrowserPreview * {
+          min-width: 0px !important;
+          max-width: 100% !important;
+      }
+
+      CDockingTray QPushButton,
+      CDockingTray QToolButton,
+      CDockingTray QComboBox,
+      CDockingTray QLineEdit,
+      CDockingTray QTabBar::tab,
+      QDockWidget QPushButton,
+      QDockWidget QToolButton,
+      QDockWidget QComboBox,
+      QDockWidget QLineEdit,
+      QDockWidget QTabBar::tab {
+          min-width: 0px !important;
+          padding-left: 1px !important;
+          padding-right: 1px !important;
+      }
+    QSS
+
+    # Przywraca domyślny wygląd (zachowując odblokowany zasobnik bez modyfikacji kolorów/czcionek)
     def clear_stylesheet
       return false unless available?
 
@@ -272,10 +346,10 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # Czyścimy arkusz stylów do zera (pełne przywrócenie natywnego stylu Windows)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
-      c_ptr = Fiddle::Pointer.to_ptr("\0")
+      c_text = TRAY_UNLIMIT_QSS.encode('UTF-8') + "\0"
+      c_ptr = Fiddle::Pointer.to_ptr(c_text)
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)

@@ -233,6 +233,7 @@ QStackedWidget {
     background-color: #252526 !important;
     color: #d4d4d4;
     border: none;
+    min-width: 0px !important;
 }
 
 /* Sekcje rozwijane (Expander / Accordion / Nagłówki sekcji tacek) */
@@ -246,6 +247,7 @@ QFrame[class*="Dlg"],
 QWidget[class*="Dlg"] {
     background-color: #252526 !important;
     color: #d4d4d4;
+    min-width: 0px !important;
 }
 
 /* --------------------------------------------------------------------------
