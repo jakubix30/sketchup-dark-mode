@@ -292,8 +292,8 @@ CMaterialBrowserPage QAbstractItemView *,
 CMaterialBrowserPage QListView,
 CMaterialBrowserPage QListView * {
     color: #000000 !important;
-    font-weight: 700 !important;
-    font-size: 10px !important;
+    font-weight: bold !important;
+    font-size: 8pt !important;
 }
 
 CMaterialListCtrl::item,
@@ -302,11 +302,9 @@ CBrowserListCtrl::item,
 MaterialListCtrl::item,
 MaterialListItem {
     background-color: transparent !important;
-    border: 1px solid transparent !important;
-    border-radius: 4px;
-    padding-top: 0px !important;
-    padding-bottom: 7px !important;
-    margin-bottom: 3px !important;
+    border: none !important;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 CMaterialListCtrl::item:hover,
@@ -619,26 +617,6 @@ CShadowPage *,
 ShadowsBrowser,
 ShadowsBrowser * {
     color: #e0e0e0 !important;
-}
-
-QSlider::groove:horizontal {
-    border: 1px solid #3e3e42;
-    height: 6px;
-    background: #1e1e1e;
-    margin: 2px 0;
-    border-radius: 3px;
-}
-
-QSlider::handle:horizontal {
-    background: #007acc;
-    border: 1px solid #005a9e;
-    width: 14px;
-    margin: -4px 0;
-    border-radius: 7px;
-}
-
-QSlider::handle:horizontal:hover {
-    background: #1c97ea;
 }
 
 /* --------------------------------------------------------------------------

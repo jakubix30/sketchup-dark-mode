@@ -116,6 +116,13 @@ module SketchupDarkMode
         @fn_set_corner = nil
       end
 
+      begin
+        sym_pal = qt_widgets_handle['?palette@QApplication@@SA?AVQPalette@@XZ']
+        @fn_get_palette = Fiddle::Function.new(sym_pal, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP) if sym_pal
+      rescue StandardError
+        @fn_get_palette = nil
+      end
+
       @available = true
       puts '[Dark Mode] Pomyślnie zainicjalizowano interfejs Fiddle dla Qt 6 (Paleta + QSS).'
       true
@@ -128,6 +135,18 @@ module SketchupDarkMode
     def available?
       initialize_qt
       @available
+    end
+
+    def capture_original_palette
+      return if @orig_palette_saved
+      if @fn_get_palette
+        @orig_palette_mem = Fiddle::Pointer.malloc(128)
+        128.times { |i| @orig_palette_mem[i] = 0 }
+        @fn_get_palette.call(@orig_palette_mem)
+        @orig_palette_saved = true
+      end
+    rescue StandardError => e
+      @orig_palette_mem = nil
     end
 
     def active_window_hwnd
@@ -145,6 +164,8 @@ module SketchupDarkMode
     # Nakłada ciemną paletę systemową na całą aplikację Qt
     def apply_dark_palette
       return unless available?
+
+      capture_original_palette
 
       pal_mem = Fiddle::Pointer.malloc(128)
       128.times { |i| pal_mem[i] = 0 }
@@ -194,47 +215,19 @@ module SketchupDarkMode
     def restore_default_palette
       return unless available?
 
+      if @orig_palette_saved && @orig_palette_mem
+        @fn_set_palette.call(@orig_palette_mem, 0)
+        return
+      end
+
       pal_mem = Fiddle::Pointer.malloc(128)
       128.times { |i| pal_mem[i] = 0 }
       @fn_palette_ctor.call(pal_mem)
-
-      color_mem = Fiddle::Pointer.malloc(32)
-
-      # Domyślne jasne barwy Windows
-      light_roles = {
-        0  => '#000000', # WindowText
-        1  => '#f0f0f0', # Button
-        2  => '#ffffff', # Light
-        3  => '#e0e0e0', # Midlight
-        4  => '#a0a0a0', # Dark
-        5  => '#808080', # Mid
-        6  => '#000000', # Text
-        7  => '#ffffff', # BrightText
-        8  => '#000000', # ButtonText
-        9  => '#ffffff', # Base (białe tło)
-        10 => '#f0f0f0', # Window (jasnoszary)
-        11 => '#696969', # Shadow
-        12 => '#0078d7', # Highlight
-        13 => '#ffffff', # HighlightedText
-        14 => '#0066cc', # Link
-        16 => '#f7f7f7', # AlternateBase
-        18 => '#ffffdc', # ToolTipBase
-        19 => '#000000', # ToolTipText
-        20 => '#767676'  # PlaceholderText
-      }
-
-      light_roles.each do |role, hex|
-        32.times { |i| color_mem[i] = 0 }
-        cstr = Fiddle::Pointer.to_ptr(hex + "\0")
-        @fn_qcolor_ctor.call(color_mem, cstr)
-        @fn_palette_set_color.call(pal_mem, role, color_mem)
-      end
-
       @fn_set_palette.call(pal_mem, 0)
     rescue StandardError => e
       puts "[Dark Mode] Błąd przywracania jasnej palety: #{e.message}"
     ensure
-      @fn_palette_dtor.call(pal_mem) if pal_mem
+      @fn_palette_dtor.call(pal_mem) if pal_mem && !@orig_palette_saved
     end
 
     # Aplikuje arkusz stylów CSS oraz ciemną paletę

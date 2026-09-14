@@ -175,8 +175,8 @@ module SketchupDarkMode
           CMaterialBrowserPage QListView,
           CMaterialBrowserPage QListView * {
               color: #000000 !important;
-              font-weight: 700 !important;
-              font-size: 10px !important;
+              font-weight: bold !important;
+              font-size: 8pt !important;
           }
 
           CMaterialListCtrl::item,
@@ -185,11 +185,9 @@ module SketchupDarkMode
           MaterialListCtrl::item,
           MaterialListItem {
               background-color: transparent !important;
-              border: 1px solid transparent !important;
-              border-radius: 4px;
-              padding-top: 0px !important;
-              padding-bottom: 7px !important;
-              margin-bottom: 3px !important;
+              border: none !important;
+              padding: 0px !important;
+              margin: 0px !important;
           }
 
           CMaterialListCtrl::item:hover,
@@ -251,8 +249,8 @@ module SketchupDarkMode
           CMaterialBrowserPage QListView,
           CMaterialBrowserPage QListView * {
               color: #000000 !important;
-              font-weight: 700 !important;
-              font-size: 10px !important;
+              font-weight: bold !important;
+              font-size: 8pt !important;
           }
 
           CMaterialListCtrl::item,
@@ -261,11 +259,9 @@ module SketchupDarkMode
           MaterialListCtrl::item,
           MaterialListItem {
               background-color: transparent !important;
-              border: 1px solid transparent !important;
-              border-radius: 4px;
-              padding-top: 0px !important;
-              padding-bottom: 7px !important;
-              margin-bottom: 3px !important;
+              border: none !important;
+              padding: 0px !important;
+              margin: 0px !important;
           }
 
           CMaterialListCtrl::item:hover,
