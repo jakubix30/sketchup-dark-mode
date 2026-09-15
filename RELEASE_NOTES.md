@@ -1,27 +1,26 @@
-# SketchUp Dark Mode v1.1.0 🚀
+# SketchUp Dark Mode v1.1.1 🛡️
 
-A major update for **SketchUp 2025** Dark Mode featuring crisp vector close icons, crystal-clear white tooltips, minimalist single-button toolbar, and comprehensive QSS documentation.
+A critical stability and crash prevention patch for **SketchUp Dark Mode**.
 
 ---
 
-### 🌟 What's New in v1.1.0
-- **Crisp White Vector Close Buttons (`[X]`)**: Replaced hardcoded charcoal (`#252A2E`) close icons with pure white vector SVG (`close_white.svg`) across all tray headers (`CPanelHeader #hide_button_`), dock widgets (`QDockWidget::close-button`), and KDDockWidgets headers.
-- **Crystal-Clear Tooltips (`QToolTip`)**: Direct Fiddle binding to `QToolTip::setPalette(const QPalette&)` ensures every tooltip in toolbars, menus, and trays renders pure white text on dark graphite.
-- **Minimalist 1-Button Toolbar**: Streamlined toolbar to a single toggle button (moon/sun icon). Full configuration remains easily accessible from the Extensions cascading menu.
-- **Comprehensive QSS Documentation**: Added [QSS_DOCS.md](QSS_DOCS.md) and [QSS_DOCS_PL.md](QSS_DOCS_PL.md) detailing Qt 6 architecture in SketchUp 2025, widget selectors, 5 engineering gotchas, and theme authoring guides.
-- **Improved Hot-Reload**: Live reloading now re-executes `qt_styler.rb` and `main.rb` alongside `dark_theme.qss` without restarting SketchUp.
-- **Updated Preview Screenshot**: High-resolution screenshot reflecting modern UI refinements.
+### 🌟 What's Changed in v1.1.1
+- **Safe Installation (No Auto-Crash)**: Dark mode is now disabled by default on initial installation (`dark_mode_enabled: false`). Installing the `.rbz` is completely benign, registers cleanly, and will not inject Qt styles or DWM window changes while Extension Manager is running.
+- **Dynamic Version Config Path**: Replaced hardcoded `SketchUp 2025` directory with dynamic detection from `Sketchup.find_support_file('Plugins')`, preventing path errors across different versions.
+- **DWM & EnumWindows Safety Guards**: Added isolated exception handling inside each window iteration in `EnumWindows` and guarded `apply_dark_to_hwnd` against null/invalid window handles.
+- **Delayed Startup Initialization**: Startup timer increased to 1.0s to allow SketchUp's core plugins, dialogs, and splash screen to fully finish booting before applying styles.
+- **Emergency Recovery Guide**: Added comprehensive troubleshooting steps to the README (Dan Rathbun's `.rb!` rename method and config JSON toggling).
+
 ---
 
 ### 📦 Installation
-
 1. Download **`sketchup_dark_mode.rbz`** from the Assets below.
-2. In SketchUp 2025, open: **Extensions** -> **Extension Manager** (or **Rozszerzenia** -> **Menedżer rozszerzeń**).
-3. Click **Install Extension** (**Zainstaluj rozszerzenie**) and select `sketchup_dark_mode.rbz`.
-4. The extension will activate automatically and display the **Dark Mode** toolbar.
+2. In SketchUp, open: **Extensions** -> **Extension Manager**.
+3. Click **Install Extension** and select `sketchup_dark_mode.rbz`.
+4. Click the moon toggle button on the **Dark Mode** toolbar to activate!
 
 ---
 
 ### ⚠️ Disclaimer & Research Notice
-
 This project is an independent community proof-of-concept (PoC) developed for educational and interoperability research purposes. It is **not** affiliated with, endorsed by, or supported by Trimble Inc. Use at your own risk.
+

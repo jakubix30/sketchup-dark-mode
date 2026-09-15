@@ -1,6 +1,6 @@
 param(
-    [string]$tagName = "v1.1.0",
-    [string]$releaseTitle = "v1.1.0 - Vector Close Icons, Crisp Tooltips & UI Refinements"
+    [string]$tagName = "v1.1.1",
+    [string]$releaseTitle = "v1.1.1 - Stability Patch: Crash Prevention & Safe Installation"
 )
 
 $ErrorActionPreference = "Stop"

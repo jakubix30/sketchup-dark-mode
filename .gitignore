@@ -14,3 +14,5 @@ CLAUDE.md
 .antigravity/
 .vscode/
 .idea/
+create_release.ps1
+deploy.ps1
