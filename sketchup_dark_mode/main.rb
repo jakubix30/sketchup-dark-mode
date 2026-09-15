@@ -37,8 +37,11 @@ module SketchupDarkMode
       setup_ui
       setup_observers
 
-      UI.start_timer(0.3, false) do
-        update_state
+      # Only auto-apply dark mode on launch if it was explicitly enabled previously
+      if dark_mode_active?
+        UI.start_timer(1.0, false) do
+          enable_dark_mode if dark_mode_active?
+        end
       end
     end
 

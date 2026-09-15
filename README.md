@@ -66,6 +66,50 @@ It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **W
 
 ---
 
+## 🚨 Troubleshooting & Emergency Recovery (Crash on Launch)
+
+If SketchUp crashes during installation or enters a crash loop upon launching:
+
+### 1. Emergency Disable Without Opening SketchUp
+If SketchUp crashes before you can access the Extension Manager:
+1. Open Windows Run dialog (`Win + R`), paste the following path, and press Enter:
+   ```text
+   %APPDATA%\SketchUp\SketchUp 2025\SketchUp\Plugins\
+   ```
+   *(Replace `2025` with your active SketchUp version, e.g. `2026`).*
+2. Find the file **`sketchup_dark_mode.rb`** and rename it to **`sketchup_dark_mode.rb!`** (or `.rb.bak`).
+   > **How this works**: SketchUp's internal extension loader strictly evaluates files ending in `.rb`. Appending an exclamation mark `!` prevents SketchUp from loading the file, instantly breaking any crash loop without uninstalling your files.
+3. Start SketchUp normally.
+
+### 2. Disabling Auto-Start via Config File
+If you want to keep the extension enabled in Extension Manager but prevent it from automatically activating Dark Mode on launch:
+1. Navigate to:
+   ```text
+   %APPDATA%\SketchUp\SketchUp 2025\SketchUp\sketchup_dark_mode_config.json
+   ```
+2. Open `sketchup_dark_mode_config.json` in Notepad.
+3. Set `"dark_mode_enabled": false`.
+4. Save and launch SketchUp. The extension will load in Light Mode without injecting Qt styles or Windows DWM attributes until you manually click the toolbar button.
+
+### 3. Complete Removal
+To completely remove the extension:
+1. In the `Plugins` folder, delete:
+   - `sketchup_dark_mode.rb`
+   - The `sketchup_dark_mode` folder
+2. Optionally delete `sketchup_dark_mode_config.json`.
+
+---
+
+### 🔍 Why Can Crashes Occur?
+- **Pre-release & Future Versions (e.g. SketchUp 2026)**:
+  This extension binds to native Qt 6 C++ symbols (`Qt6Core.dll`, `Qt6Gui.dll`, `Qt6Widgets.dll`) verified on SketchUp 2024 and 2025. Pre-release builds (such as SketchUp 2026) may use a newer Qt minor release (e.g. Qt 6.8+), different MSVC runtime ABIs, or altered C++ symbol mangling, leading to access violations when invoked via Ruby Fiddle.
+- **Conflicting 3rd-Party Plugins**:
+  Plugins embedding Chromium Embedded Framework (CEF) / `HtmlDialog` webviews (like V-Ray, Enscape, or complex asset browsers) or custom native C++ windows can crash if `DwmSetWindowAttribute` / `SetWindowPos` or recursive `QApplication::setStyleSheet` is broadcast while their internal browser subprocesses are initializing.
+- **Startup Race Conditions**:
+  If Dark Mode applies immediately while SketchUp is still booting other Ruby scripts or rendering the splash screen, calling global Qt stylesheet updates can cause race conditions.
+
+---
+
 ## 🛠️ How It Works (Technical Architecture)
 
 SketchUp 2024 and 2025 transitioned their desktop UI framework from legacy MFC to **Qt 6**. This extension interfaces with the application at multiple levels:

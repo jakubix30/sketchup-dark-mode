@@ -14,7 +14,8 @@ module SketchupDarkMode
         return true
       end
 
-      su_dir = File.dirname(Sketchup.find_support_file('sketchup.exe'))
+      su_exe = (Sketchup.find_support_file('sketchup.exe') rescue nil)
+      su_dir = su_exe ? File.dirname(su_exe) : '.'
 
       # Load Qt 6 libraries
       qt_core_handle    = load_dll('Qt6Core.dll', su_dir)

@@ -69,6 +69,47 @@ Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obs
 
 ---
 
+## 🚨 Rozwiązywanie Problemów i Awaryjne Wyłączanie (Crash przy Starcie)
+
+Jeśli SketchUp wyłącza się (crashuje) w trakcie instalacji lub zapętla się przy uruchamianiu programu:
+
+### 1. Awaryjne wyłączenie wtyczki bez uruchamiania SketchUpa
+Gdy program crashuje zanim zdążysz otworzyć Menedżera rozszerzeń:
+1. Otwórz okno Uruchom (`Win + R`), wklej poniższą ścieżkę i naciśnij Enter:
+   ```text
+   %APPDATA%\SketchUp\SketchUp 2025\SketchUp\Plugins\
+   ```
+   *(W razie potrzeby zmień `2025` na swoją wersję, np. `2026`).*
+2. Znajdź plik **`sketchup_dark_mode.rb`** i zmień jego nazwę na **`sketchup_dark_mode.rb!`** (lub dodaj `.bak`).
+   > **Jak to działa**: Mechanizm startowy SketchUpa ładuje wyłącznie pliki z rozszerzeniem `.rb`. Dodanie wykrzyknika `!` na końcu sprawia, że SketchUp całkowicie ignoruje ten plik przy starcie, co natychmiast przerywa pętlę crashy bez usuwania plików.
+3. Uruchom SketchUpa normalnie.
+
+### 2. Wyłączenie autostartu ciemnego motywu w pliku konfiguracyjnym
+Jeśli chcesz zachować wtyczkę w programie, ale wyłączyć automatyczne włączanie ciemnego motywu przy starcie SketchUpa:
+1. Przejdź do folderu:
+   ```text
+   %APPDATA%\SketchUp\SketchUp 2025\SketchUp\sketchup_dark_mode_config.json
+   ```
+2. Otwórz plik `sketchup_dark_mode_config.json` w Notatniku.
+3. Zmień wartość `"dark_mode_enabled": true` na `"dark_mode_enabled": false`.
+4. Zapisz plik i uruchom SketchUpa. Wtyczka załaduje się w trybie jasnym, bez ingerencji w pamięć Qt i DWM, dopóki sam nie klikniesz przycisku na pasku narzędzi.
+
+### 3. Całkowite odinstalowanie
+1. W folderze `Plugins` usuń plik `sketchup_dark_mode.rb` oraz katalog `sketchup_dark_mode`.
+2. Opcjonalnie usuń plik `sketchup_dark_mode_config.json`.
+
+---
+
+### 🔍 Dlaczego mogą występować crashe?
+- **Wersje przedpremierowe / testowe (np. SketchUp 2026)**:
+  Wtyczka łączy się bezpośrednio z funkcjami bibliotek Qt 6 (`Qt6Core.dll`, `Qt6Gui.dll`, `Qt6Widgets.dll`) zweryfikowanymi dla SketchUpa 2024 i 2025. Przyszłe wersje lub wersje beta (np. SketchUp 2026) mogą korzystać z nowszej wersji Qt (np. Qt 6.8+), innego kompilatora MSVC lub zmienionych sygnatur C++, co przy wywołaniu przez bibliotekę Fiddle może powodować błąd dostępu do pamięci (Access Violation).
+- **Konflikty z innymi wtyczkami**:
+  Rozszerzenia korzystające z Chromium Embedded Framework (CEF) / `HtmlDialog` (np. V-Ray, Enscape, biblioteki modeli) lub tworzące własne natywne okna C++ mogą ulec awarii, gdy globalna funkcja `QApplication::setStyleSheet` lub DWM odświeża okna w trakcie inicjalizacji ich podprocesów.
+- **Wyścig podczas ładowania (Race Condition)**:
+  Autostart ciemnego motywu tuż po instalacji lub w ułamku sekundy po starcie SketchUpa (gdy inne pluginy i ekran powitalny wciąż się ładują) może wywołać konflikt w silniku renderowania Qt.
+
+---
+
 ## 🛠️ Architektura Techniczna
 
 SketchUp 2024 i 2025 przeszły z dawnego MFC na nowoczesną bibliotekę **Qt 6**. Wtyczka integruje się z aplikacją na trzech poziomach:

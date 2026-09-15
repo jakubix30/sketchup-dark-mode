@@ -42,11 +42,17 @@ module SketchupDarkMode
 
       # EnumWindows: find all visible windows belonging to SketchUp process (main window, Ruby Console, dialogs)
       enum_callback = Fiddle::Closure::BlockCaller.new(Fiddle::TYPE_INT, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP]) do |hwnd, _|
-        fn_get_wnd_pid.call(hwnd, pid_buf)
-        wnd_pid = pid_buf.unpack1('L')
+        begin
+          if hwnd && hwnd.to_i != 0
+            fn_get_wnd_pid.call(hwnd, pid_buf)
+            wnd_pid = pid_buf.unpack1('L')
 
-        if wnd_pid == my_pid && fn_is_visible.call(hwnd) != 0
-          apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+            if wnd_pid == my_pid && fn_is_visible.call(hwnd) != 0
+              apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+            end
+          end
+        rescue StandardError
+          # Ignore individual window styling failures to protect stability
         end
         1 # Continue enumeration
       end
@@ -61,6 +67,8 @@ module SketchupDarkMode
     private
 
     def apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+      return if hwnd.nil? || hwnd.to_i == 0
+
       # First try attribute 20 (Windows 11 / newer Windows 10)
       hr = fn_dwm_attr.call(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, pv_attr, 4)
       if hr != 0
@@ -69,6 +77,8 @@ module SketchupDarkMode
       end
       # Force refresh non-client frame (titlebar)
       fn_set_pos.call(hwnd, 0, 0, 0, 0, 0, SWP_FLAGS)
+    rescue StandardError
+      nil
     end
   end
 end
