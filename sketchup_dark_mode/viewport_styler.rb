@@ -59,8 +59,10 @@ module SketchupDarkMode
       end
 
       model.active_view.invalidate if model.active_view
+      Logger.info("[ViewportStyler] Dark 3D viewport applied successfully.") if defined?(Logger)
       true
     rescue StandardError => e
+      Logger.error('[ViewportStyler] Error styling viewport', e) if defined?(Logger)
       puts "[Dark Mode] Error styling viewport: #{e.message}"
       false
     end

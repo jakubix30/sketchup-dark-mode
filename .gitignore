@@ -3,6 +3,7 @@ crop_*.png
 test_*.png
 *.log
 *log*.txt
+sketchup_dark_mode_v1.0.0.rbz
 
 # AI & Handover documentation (internal developer notes)
 HANDOVER*.md

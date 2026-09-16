@@ -142,9 +142,11 @@ module SketchupDarkMode
 
       @available = true
       capture_original_palette
+      Logger.info('[QtStyler] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).') if defined?(Logger)
       puts '[Dark Mode] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).'
       true
     rescue StandardError => e
+      Logger.error('[QtStyler] Fiddle error during Qt initialization', e) if defined?(Logger)
       puts "[Dark Mode] Fiddle error during Qt initialization: #{e.message}"
       @available = false
       false
@@ -170,6 +172,7 @@ module SketchupDarkMode
         @orig_tooltip_palette_saved = true
       end
     rescue StandardError => e
+      Logger.error('[QtStyler] Error capturing original palette', e) if defined?(Logger)
       @orig_palette_mem = nil
       @orig_tooltip_palette_mem = nil
     end
@@ -190,6 +193,7 @@ module SketchupDarkMode
     def apply_dark_palette
       return unless available?
 
+      Logger.info('[QtStyler] Applying dark palette to QApplication...') if defined?(Logger)
       capture_original_palette
 
       pal_mem = Fiddle::Pointer.malloc(128)
@@ -261,10 +265,15 @@ module SketchupDarkMode
 
         @fn_tooltip_set_palette.call(tt_pal_mem)
         @fn_palette_dtor.call(tt_pal_mem)
+        Logger.info('[QtStyler] style_tooltips is TRUE. Applied dark palette to QToolTip.') if defined?(Logger)
+      else
+        Logger.info('[QtStyler] style_tooltips is FALSE. Bypassing QToolTip Fiddle calls.') if defined?(Logger)
       end
 
       @dark_palette_applied = true
+      Logger.info('[QtStyler] Dark palette applied to QApplication successfully.') if defined?(Logger)
     rescue StandardError => e
+      Logger.error('[QtStyler] Error applying dark palette', e) if defined?(Logger)
       puts "[Dark Mode] Error applying dark palette: #{e.message}"
     ensure
       @fn_palette_dtor.call(pal_mem) if pal_mem
@@ -275,12 +284,14 @@ module SketchupDarkMode
       return unless available?
       return unless @dark_palette_applied
 
+      Logger.info('[QtStyler] Restoring light palette...') if defined?(Logger)
       if @orig_palette_saved && @orig_palette_mem
         @fn_set_palette.call(@orig_palette_mem, 0)
         if Config['style_tooltips'] && @orig_tooltip_palette_saved && @orig_tooltip_palette_mem && @fn_tooltip_set_palette
           @fn_tooltip_set_palette.call(@orig_tooltip_palette_mem)
         end
         @dark_palette_applied = false
+        Logger.info('[QtStyler] Original light palette restored successfully.') if defined?(Logger)
         return
       end
 
@@ -321,7 +332,9 @@ module SketchupDarkMode
 
       @fn_set_palette.call(pal_mem, 0)
       @dark_palette_applied = false
+      Logger.info('[QtStyler] Fallback light palette restored successfully.') if defined?(Logger)
     rescue StandardError => e
+      Logger.error('[QtStyler] Error restoring default light palette', e) if defined?(Logger)
       puts "[Dark Mode] Error restoring default light palette: #{e.message}"
     ensure
       @fn_palette_dtor.call(pal_mem) if pal_mem && !@orig_palette_saved
@@ -337,12 +350,14 @@ module SketchupDarkMode
       # 2. Apply QSS stylesheet
       qapp = @fn_instance.call
       if qapp.nil? || qapp.to_i == 0
+        Logger.error('[QtStyler] QApplication pointer is NULL.') if defined?(Logger)
         puts '[Dark Mode] QApplication pointer is NULL.'
         return false
       end
 
       icons_dir = File.join(File.dirname(__FILE__), 'icons').tr('\\', '/')
       processed_css = (css_text || '').gsub('{{ICONS_DIR}}', icons_dir)
+      Logger.info("[QtStyler] Applying QSS stylesheet (#{processed_css.bytesize} bytes)...") if defined?(Logger)
 
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
@@ -357,8 +372,10 @@ module SketchupDarkMode
         @fn_qstr_dtor.call(qstr_buf)
       end
 
+      Logger.info('[QtStyler] QSS stylesheet applied successfully.') if defined?(Logger)
       true
     rescue StandardError => e
+      Logger.error('[QtStyler] Error applying Qt stylesheet', e) if defined?(Logger)
       puts "[Dark Mode] Error applying Qt stylesheet: #{e.message}"
       false
     end
@@ -372,6 +389,8 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
+      Logger.info('[QtStyler] Clearing QSS stylesheet...') if defined?(Logger)
+
       # Clear stylesheet to empty string (full reset of QSS)
       qstr_buf = Fiddle::Pointer.malloc(64)
       64.times { |i| qstr_buf[i] = 0 }
@@ -384,8 +403,10 @@ module SketchupDarkMode
         @fn_qstr_dtor.call(qstr_buf)
       end
 
+      Logger.info('[QtStyler] QSS stylesheet cleared successfully.') if defined?(Logger)
       true
     rescue StandardError => e
+      Logger.error('[QtStyler] Error clearing Qt stylesheet', e) if defined?(Logger)
       puts "[Dark Mode] Error clearing Qt stylesheet: #{e.message}"
       false
     end

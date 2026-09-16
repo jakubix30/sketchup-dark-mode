@@ -7,6 +7,7 @@ module SketchupDarkMode
 
   # Use load instead of require to allow seamless reloading during development in the Ruby Console
   load File.join(loader_dir, 'config.rb')
+  load File.join(loader_dir, 'logger.rb')
   load File.join(loader_dir, 'i18n.rb')
   load File.join(loader_dir, 'qt_styler.rb')
   load File.join(loader_dir, 'dwm_styler.rb')

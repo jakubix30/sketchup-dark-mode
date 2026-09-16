@@ -7,10 +7,12 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Extract version from sketchup_dark_mode.rb
 $loaderContent = Get-Content (Join-Path $scriptDir "sketchup_dark_mode.rb") -Raw
-if ($loaderContent -match "ext\.version\s*=\s*'([^']+)'") {
+if ($loaderContent -match "VERSION\s*=\s*'([^']+)'") {
+    $version = $matches[1]
+} elseif ($loaderContent -match "ext\.version\s*=\s*'([^']+)'") {
     $version = $matches[1]
 } else {
-    $version = "1.0.0"
+    $version = "1.1.2"
 }
 
 $versionedRbzPath = Join-Path $scriptDir "sketchup_dark_mode_v$version.rbz"

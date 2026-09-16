@@ -43,6 +43,10 @@ module SketchupDarkMode
         cmd_reload_menu: 'Reload CSS Stylesheet (Hot-Reload)',
         cmd_reload_tip: 'Refreshes Qt stylesheet from dark_theme.qss',
 
+        cmd_log: 'View Diagnostic Log File',
+        cmd_log_menu: 'View Diagnostic Log File (sketchup_dark_mode.log)',
+        cmd_log_tip: 'Opens diagnostic execution log file',
+
         # Settings Dialog
         dialog_title: 'SketchUp Dark Mode Settings',
         opt_dark_mode: 'Dark Mode (Enabled):',
@@ -50,7 +54,7 @@ module SketchupDarkMode
         opt_style_titlebar: 'Dark Windows Titlebar:',
         opt_style_viewport: 'Dark 3D Viewport:',
         opt_dark_materials: 'Dark Materials List Canvas:',
-        opt_style_tooltips: 'Dark Tooltips (Experimental):',
+        opt_style_tooltips: 'Dark Tooltips (Experimental, recommended restart):',
         opt_auto_sync: 'Sync with Windows Theme:',
         opt_language: 'Language / Język:',
         opt_viewport_bg: '3D Viewport Background (HEX):',
@@ -101,6 +105,10 @@ module SketchupDarkMode
         cmd_reload_menu: 'Przeładuj styl CSS (Hot-Reload)',
         cmd_reload_tip: 'Odświeża arkusz stylów Qt z pliku dark_theme.qss',
 
+        cmd_log: 'Pokaż plik dziennika (Log)',
+        cmd_log_menu: 'Pokaż plik dziennika (sketchup_dark_mode.log)',
+        cmd_log_tip: 'Otwiera plik diagnostyczny dziennika zdarzeń',
+
         # Settings Dialog
         dialog_title: 'Ustawienia SketchUp Dark Mode',
         opt_dark_mode: 'Tryb ciemny (Włączony):',
@@ -108,7 +116,7 @@ module SketchupDarkMode
         opt_style_titlebar: 'Ciemny pasek tytułu Windows:',
         opt_style_viewport: 'Ciemny obszar roboczy 3D (Viewport):',
         opt_dark_materials: 'Ciemne tło listy materiałów:',
-        opt_style_tooltips: 'Ciemne dymki podpowiedzi (Eksperymentalne):',
+        opt_style_tooltips: 'Ciemne dymki podpowiedzi (Eksperymentalne, zalecany restart):',
         opt_auto_sync: 'Synchronizuj z motywem Windows:',
         opt_language: 'Język / Language:',
         opt_viewport_bg: 'Kolor tła widoku 3D (HEX):',

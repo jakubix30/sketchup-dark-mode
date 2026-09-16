@@ -29,9 +29,14 @@ module SketchupDarkMode
     end
 
     def init
+      su_ver = (Sketchup.respond_to?(:version) ? Sketchup.version : 'unknown')
+      Logger.info("[Init] SketchUp Dark Mode v#{VERSION} initializing on SketchUp #{su_ver} (#{RUBY_PLATFORM})") if defined?(Logger)
+      Logger.info("[Config] Current settings: #{Config.settings.to_json rescue Config.settings.to_s}") if defined?(Logger)
+
       # Auto sync with Windows theme if enabled
       if Config['auto_sync_windows']
         Config['dark_mode_enabled'] = Config.windows_dark_mode?
+        Logger.info("[Config] Auto-sync Windows theme: dark_mode_enabled set to #{Config['dark_mode_enabled']}") if defined?(Logger)
       end
 
       setup_ui
@@ -39,9 +44,15 @@ module SketchupDarkMode
 
       # Only auto-apply dark mode on launch if it was explicitly enabled previously
       if dark_mode_active?
+        Logger.info('[Init] Dark mode is active in config. Scheduling 1.0s startup timer...') if defined?(Logger)
         UI.start_timer(1.0, false) do
-          enable_dark_mode if dark_mode_active?
+          if dark_mode_active?
+            Logger.info('[Init] Startup timer fired. Applying dark mode...') if defined?(Logger)
+            enable_dark_mode
+          end
         end
+      else
+        Logger.info('[Init] Dark mode is inactive on startup. Loaded in clean Light Mode.') if defined?(Logger)
       end
     end
 
@@ -58,45 +69,68 @@ module SketchupDarkMode
     end
 
     def enable_dark_mode
+      t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC) rescue Time.now.to_f
+      Logger.info('[Action] Enabling dark mode...') if defined?(Logger)
       Config['dark_mode_enabled'] = true
       Config['auto_sync_windows'] = false
 
       # 1. Windows titlebar (DWM)
-      DwmStyler.set_dark_titlebar(true) if Config['style_titlebar']
+      if Config['style_titlebar']
+        Logger.info('[Action] Step 1/3: Applying DWM dark titlebar...') if defined?(Logger)
+        DwmStyler.set_dark_titlebar(true)
+      end
 
       # 2. Qt 6 UI (Dark palette + QSS)
       if Config['style_ui']
+        Logger.info('[Action] Step 2/3: Applying Qt 6 UI styling (palette + QSS)...') if defined?(Logger)
         apply_current_qss
       else
+        Logger.info('[Action] Step 2/3: style_ui is false. Clearing Qt stylesheet...') if defined?(Logger)
         QtStyler.clear_stylesheet
       end
 
       # 3. 3D Viewport
       if Config['style_viewport']
+        Logger.info('[Action] Step 3/3: Applying dark 3D viewport style...') if defined?(Logger)
         ViewportStyler.apply_dark_viewport(Sketchup.active_model)
       else
+        Logger.info('[Action] Step 3/3: style_viewport is false. Restoring viewport...') if defined?(Logger)
         ViewportStyler.restore_viewport(Sketchup.active_model)
       end
 
       update_ui_elements
+      t1 = Process.clock_gettime(Process::CLOCK_MONOTONIC) rescue Time.now.to_f
+      elapsed_ms = ((t1 - t0) * 1000).round(1)
+      Logger.info("[Action] Dark mode ENABLED in #{elapsed_ms}ms.") if defined?(Logger)
       puts '[Dark Mode] Dark mode ENABLED.'
+    rescue StandardError => e
+      Logger.error('[Action] Error enabling dark mode', e) if defined?(Logger)
+      puts "[Dark Mode] Error enabling dark mode: #{e.message}"
     end
 
     def disable_dark_mode
+      Logger.info('[Action] Disabling dark mode and restoring default light theme...') if defined?(Logger)
       Config['dark_mode_enabled'] = false
       Config['auto_sync_windows'] = false
 
       # 1. Windows titlebar (DWM)
+      Logger.info('[Action] Step 1/3: Restoring DWM light titlebar...') if defined?(Logger)
       DwmStyler.set_dark_titlebar(false)
 
       # 2. 3D Viewport (Restore default canvas colors)
+      Logger.info('[Action] Step 2/3: Restoring default 3D viewport canvas...') if defined?(Logger)
       ViewportStyler.restore_viewport(Sketchup.active_model)
 
       # 3. Qt 6 UI (Restore light palette and clear QSS)
+      Logger.info('[Action] Step 3/3: Restoring Qt light palette and clearing QSS...') if defined?(Logger)
       QtStyler.clear_stylesheet
 
       update_ui_elements
+      Logger.info('[Action] Restored default light theme successfully.') if defined?(Logger)
       puts '[Dark Mode] Restored default light theme.'
+    rescue StandardError => e
+      Logger.error('[Action] Error disabling dark mode', e) if defined?(Logger)
+      puts "[Dark Mode] Error disabling dark mode: #{e.message}"
     end
 
     def update_state
@@ -253,6 +287,13 @@ module SketchupDarkMode
       cmd_reload.menu_text = I18n.t(:cmd_reload_menu)
       cmd_reload.tooltip = I18n.t(:cmd_reload_tip)
 
+      # 7. Diagnostic log command
+      cmd_log = UI::Command.new(I18n.t(:cmd_log)) do
+        Logger.open_log_file
+      end
+      cmd_log.menu_text = I18n.t(:cmd_log_menu)
+      cmd_log.tooltip = I18n.t(:cmd_log_tip)
+
       # Menu in Extensions
       menu = UI.menu('Plugins').add_submenu(I18n.t(:menu_title))
       menu.add_item(@cmd_toggle)
@@ -264,6 +305,7 @@ module SketchupDarkMode
       menu.add_item(cmd_settings)
       menu.add_separator
       menu.add_item(cmd_reload)
+      menu.add_item(cmd_log)
 
       # Toolbar - single toggle button
       @toolbar = UI::Toolbar.new(I18n.t(:toolbar_title))

@@ -1,9 +1,28 @@
 param(
-    [string]$tagName = "v1.1.1",
-    [string]$releaseTitle = "v1.1.1 - Stability Patch: Crash Prevention & Safe Installation"
+    [string]$tagName = "",
+    [string]$releaseTitle = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# Extract version from sketchup_dark_mode.rb if not explicitly passed
+$loaderContent = Get-Content (Join-Path $scriptDir "sketchup_dark_mode.rb") -Raw
+if ($loaderContent -match "VERSION\s*=\s*'([^']+)'") {
+    $ver = $matches[1]
+} elseif ($loaderContent -match "ext\.version\s*=\s*'([^']+)'") {
+    $ver = $matches[1]
+} else {
+    $ver = "1.1.2"
+}
+
+if (-not $tagName) {
+    $tagName = "v$ver"
+}
+if (-not $releaseTitle) {
+    $releaseTitle = "$tagName - Diagnostic Logging, Optional Tooltips & Stability"
+}
 
 # 1. Retrieve GitHub PAT from Git Credential Manager
 $inputStr = "protocol=https`nhost=github.com`n"
@@ -21,14 +40,14 @@ if (-not $token) {
 }
 
 $repo = "jakubix30/sketchup-dark-mode"
-$rbzPath = "D:\Projects\sketchup-dark-mode\sketchup_dark_mode.rbz"
+$rbzPath = Join-Path $scriptDir "sketchup_dark_mode.rbz"
+$versionedRbzPath = Join-Path $scriptDir "sketchup_dark_mode_v$ver.rbz"
 
 if (-not (Test-Path $rbzPath)) {
-    Write-Error "RBZ file not found at $rbzPath"
+    Write-Error "RBZ file not found at $rbzPath. Please run build_rbz.ps1 first."
     exit 1
 }
 
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $releaseNotesPath = Join-Path $scriptDir "RELEASE_NOTES.md"
 if (-not (Test-Path $releaseNotesPath)) {
     Write-Error "RELEASE_NOTES.md not found at $releaseNotesPath"
@@ -67,11 +86,11 @@ if ($existingRelease) {
     $releaseObj = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/$releaseId" -Headers $headers -Method Patch -Body ([System.Text.Encoding]::UTF8.GetBytes($updatePayload)) -ContentType "application/json; charset=utf-8"
     Write-Host "Updated existing release ID: $releaseId" -ForegroundColor Green
 
-    # Delete existing rbz asset if present to re-upload fresh
+    # Delete existing rbz assets if present to re-upload fresh
     if ($existingRelease.assets) {
         foreach ($asset in $existingRelease.assets) {
-            if ($asset.name -eq "sketchup_dark_mode.rbz") {
-                Write-Host "Deleting old asset $($asset.id) before re-uploading..." -ForegroundColor Yellow
+            if ($asset.name -eq "sketchup_dark_mode.rbz" -or $asset.name -eq "sketchup_dark_mode_v$ver.rbz") {
+                Write-Host "Deleting old asset $($asset.name) ($($asset.id)) before re-uploading..." -ForegroundColor Yellow
                 Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/assets/$($asset.id)" -Headers $headers -Method Delete
             }
         }
@@ -90,19 +109,24 @@ if ($existingRelease) {
     Write-Host "Created new release with ID: $($releaseObj.id)" -ForegroundColor Green
 }
 
-# 3. Upload sketchup_dark_mode.rbz asset
-$uploadUri = "https://uploads.github.com/repos/$repo/releases/$($releaseObj.id)/assets?name=sketchup_dark_mode.rbz"
-Write-Host "Uploading $rbzPath to $uploadUri..." -ForegroundColor Cyan
-
-$fileBytes = [System.IO.File]::ReadAllBytes($rbzPath)
-$uploadHeaders = @{
-    "Authorization"  = "Bearer $token"
-    "User-Agent"     = "PowerShell-GitHub-Release"
-    "Content-Type"   = "application/zip"
-    "Content-Length" = $fileBytes.Length
+# 3. Upload helper function
+function Upload-Asset($filePath, $assetName) {
+    if (-not (Test-Path $filePath)) { return }
+    $uploadUri = "https://uploads.github.com/repos/$repo/releases/$($releaseObj.id)/assets?name=$assetName"
+    Write-Host "Uploading $assetName to GitHub..." -ForegroundColor Cyan
+    $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
+    $uploadHeaders = @{
+        "Authorization"  = "Bearer $token"
+        "User-Agent"     = "PowerShell-GitHub-Release"
+        "Content-Type"   = "application/zip"
+        "Content-Length" = $fileBytes.Length
+    }
+    $res = Invoke-RestMethod -Uri $uploadUri -Headers $uploadHeaders -Method Post -Body $fileBytes
+    Write-Host " [SUCCESS] Uploaded $assetName -> $($res.browser_download_url)" -ForegroundColor Green
 }
 
-$uploadedAsset = Invoke-RestMethod -Uri $uploadUri -Headers $uploadHeaders -Method Post -Body $fileBytes
-Write-Host " [SUCCESS] Release created and published successfully!" -ForegroundColor Green
+Upload-Asset $versionedRbzPath "sketchup_dark_mode_v$ver.rbz"
+Upload-Asset $rbzPath "sketchup_dark_mode.rbz"
+
+Write-Host " [SUCCESS] Release published successfully!" -ForegroundColor Green
 Write-Host "Release URL: $($releaseObj.html_url)" -ForegroundColor Green
-Write-Host "Asset download URL: $($uploadedAsset.browser_download_url)" -ForegroundColor Green

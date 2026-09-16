@@ -16,6 +16,7 @@ module SketchupDarkMode
 
     # Enables or disables Windows dark titlebar for all SketchUp windows
     def set_dark_titlebar(enable = true)
+      Logger.info("[DwmStyler] Setting dark titlebar: #{enable}") if defined?(Logger)
       kernel32 = Fiddle.dlopen('kernel32.dll')
       user32   = Fiddle.dlopen('user32.dll')
       dwmapi   = Fiddle.dlopen('dwmapi.dll')
@@ -58,8 +59,10 @@ module SketchupDarkMode
       end
 
       fn_enum_windows.call(enum_callback, 0)
+      Logger.info("[DwmStyler] DWM titlebar styling completed successfully.") if defined?(Logger)
       true
     rescue StandardError => e
+      Logger.error('[DwmStyler] Error setting Windows dark titlebar', e) if defined?(Logger)
       puts "[Dark Mode] Error setting Windows dark titlebar: #{e.message}"
       false
     end
