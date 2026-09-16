@@ -86,6 +86,18 @@ QMenu::separator {
 }
 
 /* --------------------------------------------------------------------------
+   Tooltips (QToolTip)
+   -------------------------------------------------------------------------- */
+QToolTip {
+    background-color: #252526;
+    color: #ffffff;
+    border: 1px solid #3e3e42;
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-size: 11px;
+}
+
+/* --------------------------------------------------------------------------
    Toolbars
    Toolbar background set to dark. QToolButtons are NOT styled by QSS,
    allowing QWindowsVistaStyle to preserve 100% native 1:1 geometry!
@@ -286,17 +298,12 @@ CPanelHeader #title_ctrl_ {
 CPanelHeader #hide_button_,
 QToolButton#hide_button_,
 QPushButton#hide_button_,
-CPanelHeader QToolButton[toolTip*="Ukryj"],
-CPanelHeader QToolButton[toolTip*="Hide"],
-CPanelHeader QPushButton[toolTip*="Ukryj"],
-CPanelHeader QPushButton[toolTip*="Hide"],
 CDockingPanel #hide_button_,
 CDockingTray #hide_button_,
 QDockWidget::close-button,
 KDDockWidgets--Button#closeButton,
 KDDockWidgets--TitleBar KDDockWidgets--Button#closeButton {
     image: url("{{ICONS_DIR}}/close_white.svg") !important;
-    qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
     background-color: transparent;
     border: 1px solid transparent;
     border-radius: 3px;
@@ -309,17 +316,12 @@ KDDockWidgets--TitleBar KDDockWidgets--Button#closeButton {
 CPanelHeader #hide_button_:hover,
 QToolButton#hide_button_:hover,
 QPushButton#hide_button_:hover,
-CPanelHeader QToolButton[toolTip*="Ukryj"]:hover,
-CPanelHeader QToolButton[toolTip*="Hide"]:hover,
-CPanelHeader QPushButton[toolTip*="Ukryj"]:hover,
-CPanelHeader QPushButton[toolTip*="Hide"]:hover,
 CDockingPanel #hide_button_:hover,
 CDockingTray #hide_button_:hover,
 QDockWidget::close-button:hover,
 KDDockWidgets--Button#closeButton:hover,
 KDDockWidgets--TitleBar KDDockWidgets--Button#closeButton:hover {
     image: url("{{ICONS_DIR}}/close_white.svg") !important;
-    qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
     background-color: #3e3e42;
     border: 1px solid #555555;
 }
@@ -328,17 +330,12 @@ KDDockWidgets--TitleBar KDDockWidgets--Button#closeButton:hover {
 CPanelHeader #hide_button_:pressed,
 QToolButton#hide_button_:pressed,
 QPushButton#hide_button_:pressed,
-CPanelHeader QToolButton[toolTip*="Ukryj"]:pressed,
-CPanelHeader QToolButton[toolTip*="Hide"]:pressed,
-CPanelHeader QPushButton[toolTip*="Ukryj"]:pressed,
-CPanelHeader QPushButton[toolTip*="Hide"]:pressed,
 CDockingPanel #hide_button_:pressed,
 CDockingTray #hide_button_:pressed,
 QDockWidget::close-button:pressed,
 KDDockWidgets--Button#closeButton:pressed,
 KDDockWidgets--TitleBar KDDockWidgets--Button#closeButton:pressed {
     image: url("{{ICONS_DIR}}/close_white.svg") !important;
-    qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
     background-color: #0e639c;
     border: 1px solid #1177bb;
 }

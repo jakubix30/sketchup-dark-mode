@@ -1,15 +1,13 @@
-# SketchUp Dark Mode v1.1.1 🛡️
+# SketchUp Dark Mode v1.1.2 🛡️
 
-A critical stability and crash prevention patch for **SketchUp Dark Mode**.
+Critical fix for UI styling crash and modern `AppObserver` refactoring.
 
 ---
 
-### 🌟 What's Changed in v1.1.1
-- **Safe Installation (No Auto-Crash)**: Dark mode is now disabled by default on initial installation (`dark_mode_enabled: false`). Installing the `.rbz` is completely benign, registers cleanly, and will not inject Qt styles or DWM window changes while Extension Manager is running.
-- **Dynamic Version Config Path**: Replaced hardcoded `SketchUp 2025` directory with dynamic detection from `Sketchup.find_support_file('Plugins')`, preventing path errors across different versions.
-- **DWM & EnumWindows Safety Guards**: Added isolated exception handling inside each window iteration in `EnumWindows` and guarded `apply_dark_to_hwnd` against null/invalid window handles.
-- **Delayed Startup Initialization**: Startup timer increased to 1.0s to allow SketchUp's core plugins, dialogs, and splash screen to fully finish booting before applying styles.
-- **Emergency Recovery Guide**: Added comprehensive troubleshooting steps to the README (Dan Rathbun's `.rb!` rename method and config JSON toggling).
+### 🌟 What's Changed in v1.1.2
+- **Fixed `style_ui` Tooltip Crash**: Removed dangerous `QToolTip::setPalette` and `QToolTip::palette` native Fiddle bindings which caused memory corruption and immediate BugSplat when hovering over buttons. Tooltips are now styled natively and safely via Qt CSS (`QToolTip { ... }`).
+- **Sanitized QSS Property Selectors**: Removed `qproperty-icon` and `[toolTip*="..."]` dynamic property selectors on close buttons, preventing Qt stylesheet property resolution crashes.
+- **Idiomatic `AppObserver` Architecture**: Adopted Dan Rathbun's recommended architecture attaching `Main` directly as the `AppObserver` using `onExtensionsLoaded`, ensuring styles are applied cleanly after all other extensions finish loading.
 
 ---
 
@@ -23,4 +21,5 @@ A critical stability and crash prevention patch for **SketchUp Dark Mode**.
 
 ### ⚠️ Disclaimer & Research Notice
 This project is an independent community proof-of-concept (PoC) developed for educational and interoperability research purposes. It is **not** affiliated with, endorsed by, or supported by Trimble Inc. Use at your own risk.
+
 
