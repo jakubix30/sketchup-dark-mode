@@ -9,29 +9,23 @@ module SketchupDarkMode
     QSS_PATH = File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'styles', 'dark_theme.qss')
     ICONS_DIR = File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'icons')
 
+    @app_observer = nil
     @toolbar = nil
     @cmd_toggle = nil
     @cmd_restore = nil
 
-    # AppObserver callbacks directly on Main singleton
-    def onExtensionsLoaded
-      if dark_mode_active?
-        UI.start_timer(0.5, false) do
-          enable_dark_mode if dark_mode_active?
-        end
+    class DarkModeAppObserver < Sketchup::AppObserver
+      def onNewModel(model)
+        Main.on_model_changed(model)
       end
-    end
 
-    def onNewModel(model)
-      on_model_changed(model)
-    end
+      def onOpenModel(model)
+        Main.on_model_changed(model)
+      end
 
-    def onOpenModel(model)
-      on_model_changed(model)
-    end
-
-    def onActivateModel(model)
-      on_model_changed(model)
+      def onActivateModel(model)
+        Main.on_model_changed(model)
+      end
     end
 
     def init
@@ -43,10 +37,9 @@ module SketchupDarkMode
       setup_ui
       setup_observers
 
-      # If extensions are already loaded (e.g. extension loaded or reloaded mid-session)
-      # and dark mode was previously active, apply after UI is ready
-      if dark_mode_active? && Sketchup.active_model
-        UI.start_timer(0.5, false) do
+      # Only auto-apply dark mode on launch if it was explicitly enabled previously
+      if dark_mode_active?
+        UI.start_timer(1.0, false) do
           enable_dark_mode if dark_mode_active?
         end
       end
@@ -279,11 +272,8 @@ module SketchupDarkMode
     end
 
     def setup_observers
-      this_module = Module.nesting[0].name
-      unless file_loaded?(this_module)
-        Sketchup.add_observer(self)
-        file_loaded(this_module)
-      end
+      @app_observer ||= DarkModeAppObserver.new
+      Sketchup.add_observer(@app_observer)
     end
   end
 end
