@@ -163,7 +163,7 @@ module SketchupDarkMode
         @fn_get_palette.call(@orig_palette_mem)
         @orig_palette_saved = true
       end
-      if @fn_tooltip_get_palette && !@orig_tooltip_palette_saved
+      if Config['style_tooltips'] && @fn_tooltip_get_palette && !@orig_tooltip_palette_saved
         @orig_tooltip_palette_mem = Fiddle::Pointer.malloc(128)
         128.times { |i| @orig_tooltip_palette_mem[i] = 0 }
         @fn_tooltip_get_palette.call(@orig_tooltip_palette_mem)
@@ -231,8 +231,8 @@ module SketchupDarkMode
       # Apply palette globally
       @fn_set_palette.call(pal_mem, 0)
 
-      # Explicitly apply dark palette to QToolTip with white text
-      if @fn_tooltip_set_palette
+      # Explicitly apply dark palette to QToolTip with white text (if enabled in settings)
+      if Config['style_tooltips'] && @fn_tooltip_set_palette
         tt_pal_mem = Fiddle::Pointer.malloc(128)
         128.times { |i| tt_pal_mem[i] = 0 }
         @fn_palette_ctor.call(tt_pal_mem)
@@ -277,7 +277,7 @@ module SketchupDarkMode
 
       if @orig_palette_saved && @orig_palette_mem
         @fn_set_palette.call(@orig_palette_mem, 0)
-        if @orig_tooltip_palette_saved && @orig_tooltip_palette_mem && @fn_tooltip_set_palette
+        if Config['style_tooltips'] && @orig_tooltip_palette_saved && @orig_tooltip_palette_mem && @fn_tooltip_set_palette
           @fn_tooltip_set_palette.call(@orig_tooltip_palette_mem)
         end
         @dark_palette_applied = false

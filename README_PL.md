@@ -32,6 +32,8 @@ Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obs
   Przełącza tło modelowania na ciemny grafit (`#1e1e20`) i automatycznie dopasowuje kontrast krawędzi modeli. Przy wyłączeniu trybu ciemnego wtyczka **przywraca oryginalne ustawienia stylu modelu**.
 - 🎛️ **Minimalistyczny pasek z pojedynczym przyciskiem**:
   Zawiera pojedynczy przycisk szybkiego włączania/wyłączania jednym kliknięciem (ikona księżyca/słońca). Pełna konfiguracja i opcje są wygodnie dostępne w menu Rozszerzenia.
+- 💬 **Opcjonalne ciemne dymki podpowiedzi (Eksperymentalne)**:
+  Opcja w Ustawieniach wtyczki do stylizowania pływających dymków podpowiedzi, domyślnie wyłączona w celu zachowania 100% stabilności i bezkonfliktowości na wszystkich wersjach SketchUp.
 - ⚙️ **Panel Ustawień**:
   Możliwość niezależnego włączania stylizowania UI, paska tytułu, tła 3D oraz automatycznej synchronizacji z motywem Windows.
 - ⚡ **Hot-Reload stylów CSS**:

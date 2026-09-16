@@ -32,6 +32,8 @@ It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **W
   Switches the modeling background to dark graphite (`#1e1e20`) and adapts edge contrasts for eye-strain-free modeling. Restores original style settings upon disabling.
 - 🎛️ **Minimalist 1-Button Toolbar**:
   Single 1-click toggle button (moon/sun icon). Settings and options remain conveniently accessible from the Extensions menu.
+- 💬 **Optional Dark Tooltips (Experimental)**:
+  Optional setting in Dark Mode Settings to style floating tooltips, disabled by default to maintain 100% rock-solid stability across all SketchUp versions and 3rd-party extensions.
 - ⚙️ **Customizable Settings**:
   Selectively toggle UI styling, title bar styling, 3D viewport canvas styling, or enable auto-synchronization with Windows Dark/Light mode.
 - ⚡ **Hot-Reload CSS**:

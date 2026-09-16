@@ -6,6 +6,7 @@ test_*.png
 
 # AI & Handover documentation (internal developer notes)
 HANDOVER*.md
+temp_handover.md
 GEMINI.md
 CLAUDE.md
 .gemini/

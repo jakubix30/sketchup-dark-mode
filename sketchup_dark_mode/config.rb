@@ -24,6 +24,7 @@ module SketchupDarkMode
       'style_titlebar'      => true,
       'style_viewport'      => true,
       'dark_materials_list' => true,
+      'style_tooltips'      => false,
       'auto_sync_windows'   => false,
       'viewport_bg_hex'     => '#1e1e20',
       'viewport_edge_hex'   => '#dedee0',
