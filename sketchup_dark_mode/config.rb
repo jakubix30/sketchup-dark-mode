@@ -48,6 +48,15 @@ module SketchupDarkMode
       save_settings
     end
 
+    def key?(key)
+      settings.key?(key.to_s)
+    end
+    alias has_key? key?
+
+    def fetch(key, default = nil, &block)
+      settings.fetch(key.to_s, default, &block)
+    end
+
     def load_settings
       target_file = config_file
       if File.exist?(target_file)

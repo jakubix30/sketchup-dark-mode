@@ -8,6 +8,10 @@
    -------------------------------------------------------------------------- */
 QMainWindow,
 QDialog,
+QMessageBox,
+QInputDialog,
+QFileDialog,
+QWizard,
 QFrame#centralWidget,
 QLabel,
 QGroupBox {
@@ -22,11 +26,29 @@ QGLWidget {
     border: none !important;
 }
 
-/* Main application containers */
+/* Main application containers & dialogs */
 QMainWindow,
 QDialog,
+QMessageBox,
+QInputDialog,
+QFileDialog,
+QWizard,
 QFrame#centralWidget {
     background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+/* Ensure dialog sub-frames and contents have dark background */
+QDialog > QWidget,
+QDialog QFrame,
+QMessageBox QLabel,
+QInputDialog QLabel {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+QDialog QLabel {
+    background-color: transparent;
     color: #d4d4d4;
 }
 
@@ -1026,27 +1048,5 @@ QWidget#materialsCtrl QLineEdit {
     font-weight: normal !important;
 }
 
-/* ==========================================================================
-   TOOLTIPS - GLOBAL WHITE TEXT OVERRIDE
-   Ensures all hover tooltips in trays, toolbars, and panels display crisp
-   white text (#ffffff) on dark background (#252526).
-   ========================================================================== */
-QToolTip,
-QToolTip *,
-QTipLabel,
-QTipLabel *,
-CDockingTray QToolTip,
-CDockingTray QToolTip *,
-QDockWidget QToolTip,
-QDockWidget QToolTip *,
-CMaterialBrowserPage QToolTip,
-CMaterialBrowserPage QToolTip *,
-QWidget#materialsCtrl QToolTip,
-QWidget#materialsCtrl QToolTip * {
-    background-color: #252526 !important;
-    color: #ffffff !important;
-    border: 1px solid #555555 !important;
-    font-weight: normal !important;
-}
 
 

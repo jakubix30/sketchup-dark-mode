@@ -363,7 +363,7 @@ module SketchupDarkMode
       apply_dark_palette
 
       # 2. Check if QSS is enabled in settings
-      if Config.key?('apply_qss') && !Config['apply_qss']
+      if Config['apply_qss'] == false
         Logger.info('[QtStyler] apply_qss is FALSE. Palette applied; bypassing QSS stylesheet.') if defined?(Logger)
         return true
       end
@@ -376,21 +376,24 @@ module SketchupDarkMode
         return false
       end
 
-      # Verify qapp object type via Qt RTTI
+      # Inspect qapp object type via Qt RTTI (diagnostic logging)
       if @fn_meta_object && @fn_class_name
         begin
           meta = @fn_meta_object.call(qapp)
           if meta && meta.to_i != 0
-            class_name = @fn_class_name.call(meta).to_s
+            raw_ptr = @fn_class_name.call(meta)
+            class_name = if raw_ptr.is_a?(Fiddle::Pointer)
+                           raw_ptr.to_s
+                         elsif raw_ptr && raw_ptr.to_i != 0
+                           Fiddle::Pointer.new(raw_ptr.to_i).to_s
+                         else
+                           ''
+                         end
             Logger.info("[QtStyler] qapp C++ class name: '#{class_name}'") if defined?(Logger)
 
             if @fn_inherits
-              is_qapp = @fn_inherits.call(qapp, Fiddle::Pointer.to_ptr("QApplication\0")) != 0
+              is_qapp = (@fn_inherits.call(qapp, Fiddle::Pointer.to_ptr("QApplication\0")) != 0 rescue true)
               Logger.info("[QtStyler] qapp inherits QApplication: #{is_qapp}") if defined?(Logger)
-              unless is_qapp
-                Logger.warn("[QtStyler] qapp is '#{class_name}' (not a QApplication). Skipping QApplication::setStyleSheet to avoid crash.") if defined?(Logger)
-                return true
-              end
             end
           end
         rescue StandardError => err
@@ -433,15 +436,8 @@ module SketchupDarkMode
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
 
-      # If QSS was disabled or qapp is not a QApplication, nothing to clear in QSS
-      if Config.key?('apply_qss') && !Config['apply_qss']
-        return true
-      end
-
-      if @fn_inherits
-        is_qapp = @fn_inherits.call(qapp, Fiddle::Pointer.to_ptr("QApplication\0")) != 0 rescue false
-        return true unless is_qapp
-      end
+      # If QSS was disabled in config, nothing to clear in QSS
+      return true if Config['apply_qss'] == false
 
       Logger.info('[QtStyler] Clearing QSS stylesheet...') if defined?(Logger)
 
