@@ -1,36 +1,39 @@
-# SketchUp Dark Mode v1.1.2 📋
+# SketchUp Dark Mode v1.1.3 🚀
 
-A diagnostics, stability, and transparency update featuring real-time diagnostic file logging, optional tooltip styling, and versioned package downloads.
+A major stability, theming, and compatibility update fixing dialog/tray background colors, eliminating restyling crashes, restoring crisp white vector close icons in trays, and introducing optional QSS panel styling.
 
 ---
 
-### 🌟 What's New in v1.1.2
+### 🌟 What's New in v1.1.3
 
-- 📋 **Automated Diagnostic File Logging (`sketchup_dark_mode.log`)**:
-  - Automatically records step-by-step startup, DWM titlebar, Qt Fiddle initialization, palette updates, and viewport state changes.
-  - Every log entry is **immediately flushed to disk** (`File#flush`), ensuring that if a crash or BugSplat occurs, the exact line executed prior to the crash is preserved.
-  - Added **"View Diagnostic Log File"** in *Extensions -> Dark Mode -> View Diagnostic Log File* for 1-click inspection, or locate it at:
-    `%APPDATA%\SketchUp\SketchUp <year>\SketchUp\sketchup_dark_mode.log`
-- 💬 **Optional Tooltip Styling (Experimental, Off by Default)**:
-  - Tooltip palette customization is now an optional user toggle in **Dark Mode Settings** (`style_tooltips: false` by default).
-  - When disabled (default), the extension **completely bypasses** all low-level Fiddle calls to `QToolTip::setPalette` and `QToolTip::palette()`, eliminating any possibility of tooltip-related memory corruption or hover crashes.
-  - Safe Qt CSS rules for `QToolTip` remain active in `dark_theme.qss`.
-- 🏷️ **Versioned `.rbz` Packages**:
-  - Releases now provide both `sketchup_dark_mode_v1.1.2.rbz` and `sketchup_dark_mode.rbz` for easier version tracking and manual archive management.
-- 🧱 **Stable AppObserver Baseline**:
-  - Maintained the proven `DarkModeAppObserver` architecture with a safe 1.0s initialization timer, preventing startup event loop deadlocks.
+- 🎨 **Dark Dialog & Tray Backgrounds Fixed**:
+  - Resolved an issue where modal dialogs (including Settings `UI.inputbox`) and default tray panels rendered with stark white backgrounds and white text.
+  - Fixed a Ruby `NoMethodError` in the configuration handler that previously interrupted stylesheet application before CSS rules reached Qt.
+  - Strengthened dark container styles (`#1e1e1e` / `#252526`) for `QDialog`, `QMessageBox`, `QInputDialog`, `QFileDialog`, and tray containers (`CDockingTray`, `KDDockWidgets`, `CMaterialBrowser`).
+- 🛡️ **Sanitized QSS & Crash Prevention**:
+  - Eliminated crashes during Qt's `setStyleSheet` by removing invalid `qproperty-icon` writes from Qt subcontrols (like `QDockWidget::close-button`) and removing recursive wildcard tooltip selectors.
+  - Safe, standard CSS `image: url(...)` properties are now used for subcontrols.
+- ⚙️ **Optional QSS Panel Styling Toggle (`apply_qss`)**:
+  - Added a new setting: **Qt Stylesheet (QSS Panels)** in *Extensions -> Dark Mode -> Settings*.
+  - When enabled (default), full CSS styling applies to dialogs, toolbars, and tray containers.
+  - When disabled, the extension applies only Qt 6's dark system palette (`apply_dark_palette`), offering a 100% lightweight fallback with zero CSS overhead.
+- ✖️ **Crisp White Vector Close Icons ([X]) Restored**:
+  - Panel hide/close buttons across all tray containers (Entity Info, Materials, Components, Styles, Tags, etc.) now reliably render pure white vector icons (`close_white.svg`) across all language locales (Polish, English, and others).
+  - All tray buttons and sidebar glyphs explicitly use pure white foregrounds (`#ffffff !important`).
+- 🔍 **Compatibility Verified**:
+  - Verified on **SketchUp Pro 2026 (build 26.2.243)** and **SketchUp 2025 (build 25.0.571)**.
 
 ---
 
 ### 📦 Installation
-1. Download **`sketchup_dark_mode_v1.1.2.rbz`** (or `sketchup_dark_mode.rbz`) from Assets below.
+1. Download **`sketchup_dark_mode_v1.1.3.rbz`** (or `sketchup_dark_mode.rbz`) from Assets below.
 2. In SketchUp, open **Extensions** -> **Extension Manager**.
 3. Click **Install Extension** and select the downloaded file.
 4. Click the moon toggle button on the **Dark Mode** toolbar to activate!
 
 ---
 
-### 🛠️ Help Us Debug / Community Feedback
+### 🛠️ Diagnostic Logs & Community Feedback
 If you encounter any crash or unexpected behavior:
 1. Open `%APPDATA%\SketchUp\SketchUp <year>\SketchUp\sketchup_dark_mode.log` (or *Extensions -> Dark Mode -> View Diagnostic Log File*).
 2. Copy and paste the log contents into the [SketchUp Community Forum thread](https://forums.sketchup.com/t/can-dark-mode-extension-be-released/349839).
