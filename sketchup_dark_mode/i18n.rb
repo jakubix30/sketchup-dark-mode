@@ -50,7 +50,8 @@ module SketchupDarkMode
         # Settings Dialog
         dialog_title: 'SketchUp Dark Mode Settings',
         opt_dark_mode: 'Dark Mode (Enabled):',
-        opt_style_ui: 'Style UI (Qt 6):',
+        opt_style_ui: 'Style UI (Qt 6 Palette):',
+        opt_apply_qss: 'Apply Qt Stylesheet (QSS Panels):',
         opt_style_titlebar: 'Dark Windows Titlebar:',
         opt_style_viewport: 'Dark 3D Viewport:',
         opt_dark_materials: 'Dark Materials List Canvas:',
@@ -112,7 +113,8 @@ module SketchupDarkMode
         # Settings Dialog
         dialog_title: 'Ustawienia SketchUp Dark Mode',
         opt_dark_mode: 'Tryb ciemny (Włączony):',
-        opt_style_ui: 'Stylizuj interfejs (Qt 6):',
+        opt_style_ui: 'Stylizuj interfejs (Paleta Qt 6):',
+        opt_apply_qss: 'Arkusz stylów Qt (QSS Panele):',
         opt_style_titlebar: 'Ciemny pasek tytułu Windows:',
         opt_style_viewport: 'Ciemny obszar roboczy 3D (Viewport):',
         opt_dark_materials: 'Ciemne tło listy materiałów:',

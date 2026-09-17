@@ -21,6 +21,7 @@ module SketchupDarkMode
     DEFAULT_SETTINGS = {
       'dark_mode_enabled'   => false,
       'style_ui'            => true,
+      'apply_qss'           => true,
       'style_titlebar'      => true,
       'style_viewport'      => true,
       'dark_materials_list' => true,

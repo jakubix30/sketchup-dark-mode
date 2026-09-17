@@ -140,6 +140,21 @@ module SketchupDarkMode
         @fn_tooltip_get_palette = nil
       end
 
+      # 15. QObject RTTI (metaObject, className, inherits)
+      begin
+        sym_meta     = qt_core_handle['?metaObject@QObject@@UEBAPEBUQMetaObject@@XZ']
+        sym_name     = qt_core_handle['?className@QMetaObject@@QEBAPEBDXZ']
+        sym_inherits = qt_core_handle['?inherits@QObject@@QEBA_NPEBD@Z']
+
+        @fn_meta_object = Fiddle::Function.new(sym_meta, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP) if sym_meta
+        @fn_class_name  = Fiddle::Function.new(sym_name, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP) if sym_name
+        @fn_inherits    = Fiddle::Function.new(sym_inherits, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_CHAR) if sym_inherits
+      rescue StandardError
+        @fn_meta_object = nil
+        @fn_class_name  = nil
+        @fn_inherits    = nil
+      end
+
       @available = true
       capture_original_palette
       Logger.info('[QtStyler] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).') if defined?(Logger)
@@ -347,12 +362,40 @@ module SketchupDarkMode
       # 1. Apply dark palette
       apply_dark_palette
 
-      # 2. Apply QSS stylesheet
+      # 2. Check if QSS is enabled in settings
+      if Config.key?('apply_qss') && !Config['apply_qss']
+        Logger.info('[QtStyler] apply_qss is FALSE. Palette applied; bypassing QSS stylesheet.') if defined?(Logger)
+        return true
+      end
+
+      # 3. Apply QSS stylesheet
       qapp = @fn_instance.call
       if qapp.nil? || qapp.to_i == 0
         Logger.error('[QtStyler] QApplication pointer is NULL.') if defined?(Logger)
         puts '[Dark Mode] QApplication pointer is NULL.'
         return false
+      end
+
+      # Verify qapp object type via Qt RTTI
+      if @fn_meta_object && @fn_class_name
+        begin
+          meta = @fn_meta_object.call(qapp)
+          if meta && meta.to_i != 0
+            class_name = @fn_class_name.call(meta).to_s
+            Logger.info("[QtStyler] qapp C++ class name: '#{class_name}'") if defined?(Logger)
+
+            if @fn_inherits
+              is_qapp = @fn_inherits.call(qapp, Fiddle::Pointer.to_ptr("QApplication\0")) != 0
+              Logger.info("[QtStyler] qapp inherits QApplication: #{is_qapp}") if defined?(Logger)
+              unless is_qapp
+                Logger.warn("[QtStyler] qapp is '#{class_name}' (not a QApplication). Skipping QApplication::setStyleSheet to avoid crash.") if defined?(Logger)
+                return true
+              end
+            end
+          end
+        rescue StandardError => err
+          Logger.warn("[QtStyler] Could not inspect qapp RTTI: #{err.message}") if defined?(Logger)
+        end
       end
 
       icons_dir = File.join(File.dirname(__FILE__), 'icons').tr('\\', '/')
@@ -367,6 +410,7 @@ module SketchupDarkMode
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
+        Logger.info('[QtStyler] QString constructed. Invoking QApplication::setStyleSheet...') if defined?(Logger)
         @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
@@ -388,6 +432,16 @@ module SketchupDarkMode
 
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
+
+      # If QSS was disabled or qapp is not a QApplication, nothing to clear in QSS
+      if Config.key?('apply_qss') && !Config['apply_qss']
+        return true
+      end
+
+      if @fn_inherits
+        is_qapp = @fn_inherits.call(qapp, Fiddle::Pointer.to_ptr("QApplication\0")) != 0 rescue false
+        return true unless is_qapp
+      end
 
       Logger.info('[QtStyler] Clearing QSS stylesheet...') if defined?(Logger)
 
