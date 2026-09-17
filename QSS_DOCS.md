@@ -1,4 +1,4 @@
-# 🎨 Complete Guide to Qt Style Sheets (QSS) in SketchUp 2024 / 2025
+# 🎨 Complete Guide to Qt Style Sheets (QSS) in SketchUp 2024 / 2025 / 2026
 
 Official architectural guide, selector reference, and engineering manual for customizing SketchUp's user interface with Qt Style Sheets (QSS).
 
@@ -18,7 +18,7 @@ Official architectural guide, selector reference, and engineering manual for cus
 
 ### 1.1. The Transition from MFC to Qt 6
 For over two decades (up to version 2023), SketchUp for Windows relied on **MFC (Microsoft Foundation Classes)** and standard Win32 window handles (`HWND`).
-Starting with **SketchUp 2024**, and completed in **SketchUp 2025**, Trimble transitioned to **Qt 6 (Qt 6.5+ / 6.8+)**:
+Starting with **SketchUp 2024**, through **SketchUp 2025**, and continuing into **SketchUp 2026 (including build 26.2.243+)**, Trimble transitioned to **Qt 6 (Qt 6.5+ / 6.8+)**:
 - Menus, toolbars, docking trays, status bars, and settings dialogs are now native Qt widgets.
 - The docking panel system was rebuilt using **KDDockWidgets** by KDAB.
 - As a result, the entire visual layout can be styled using **Qt Style Sheets (QSS)** and **QPalette**.
@@ -105,13 +105,89 @@ graph TD
 - **Problem**: Setting `QToolTip { color: #ffffff; }` in QSS is ignored by Qt 6's Windows Vista style engine for `QTipLabel`, resulting in unreadable dark-blue text on dark backgrounds.
 - **Solution**: Directly call `QToolTip::setPalette(const QPalette&)` via Fiddle in Ruby to override `WindowText`, `Text`, `ButtonText`, and `ToolTipText` roles with pure white `#ffffff`.
 
-### ⚠️ Case Study 4: Hardcoded Charcoal SVG Icons
-- **Problem**: SketchUp's built-in panel close icon (`dlg_tray_dialog_hide.svg`) has `fill="#252A2E"` hardcoded inside its vector XML. CSS `color:` only affects text, leaving the `X` nearly invisible on dark gray backgrounds.
-- **Solution**: Supply a crisp vector SVG (`close_white.svg`) with `fill="#FFFFFF"` and bind it via `image: url("{{ICONS_DIR}}/close_white.svg") !important;`.
+### ⚠️ Case Study 4: Hardcoded Charcoal SVG Icons & Multi-Locale Buttons
+- **Problem**: SketchUp's built-in panel close icon (`dlg_tray_dialog_hide.svg`) has `fill="#252A2E"` hardcoded inside its vector XML. CSS `color:` only affects text, leaving the `X` nearly invisible on dark gray backgrounds. Furthermore, the close button in `CPanelHeader` is a `QToolButton` that may ignore pure CSS `image:` properties and does not have a static object name `#hide_button_` across different language packs.
+- **Solution**: Supply a crisp vector SVG (`close_white.svg`) with `fill="#FFFFFF"`. Bind it using both `qproperty-icon:` (for genuine `QToolButton` widgets) and `image:` (for subcontrols and fallback), matching multi-lingual tooltips:
+  ```css
+  CPanelHeader QToolButton,
+  CPanelHeader QPushButton,
+  CPanelHeader QToolButton[toolTip*="Ukryj"],
+  CPanelHeader QToolButton[toolTip*="Hide"],
+  CDockingTray QToolButton[toolTip*="Ukryj"],
+  CDockingTray QToolButton[toolTip*="Hide"],
+  KDDockWidgets--Button#closeButton {
+      image: url("{{ICONS_DIR}}/close_white.svg") !important;
+      qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
+      background-color: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 1px;
+  }
+
+  CPanelHeader QToolButton:hover,
+  KDDockWidgets--Button#closeButton:hover {
+      background-color: #3e3e42;
+      border: 1px solid #555555;
+      image: url("{{ICONS_DIR}}/close_white.svg") !important;
+      qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
+  }
+  ```
 
 ### ⚠️ Case Study 5: Clean Rollback to Light Mode
-- **Problem**: In Qt, `qproperty-*` permanently modifies C++ properties and does not restore them when the stylesheet is removed.
-- **Solution**: Keep QSS purely in visual CSS properties (`image`, `background`, `border`). On disable, call `setStyleSheet("")` and reapply the backed-up factory `QPalette`.
+- **Problem**: When disabling dark mode, any residual palette or stylesheet settings can leave UI components in an inconsistent hybrid state.
+- **Solution**: Clear stylesheets with `setStyleSheet("")` and reapply the factory-backed `QPalette` captured at boot time, restoring 100% factory appearance.
+
+### ⚠️ Case Study 6: Modal & Dialog Windows (White-on-White Text Fix)
+- **Problem**: In `QWindowsVistaStyle`, standard dialog windows (`QDialog`, `UI.inputbox`, `QMessageBox`, `QInputDialog`, `QFileDialog`) paint their backgrounds using Windows UXTheme (`DrawThemeBackground`). When dark mode is active and the system palette sets `WindowText` to white (`#ffffff`), modal dialog backgrounds remain native light gray/white if not explicitly styled in QSS. This leads to illegible white-on-white text in `UI.inputbox` and prompt dialogs.
+- **Solution**: Explicitly style `QDialog` containers with `#1e1e1e` backgrounds and ensure child `QLabel` widgets have transparent backgrounds:
+  ```css
+  QMainWindow,
+  QDialog,
+  QMessageBox,
+  QInputDialog,
+  QFileDialog,
+  QWizard,
+  QFrame#centralWidget {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+  }
+
+  QDialog > QWidget,
+  QDialog QFrame {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+  }
+
+  QDialog QLabel {
+      background-color: transparent;
+      color: #d4d4d4;
+  }
+  ```
+
+### ⚠️ Case Study 7: `qproperty-` Property Safety vs Qt Sub-controls (Crash Prevention)
+- **Problem**: In Qt Style Sheets, the `qproperty-<name>` directive invokes C++ property setters on `QObject` instances declared with `Q_PROPERTY`. Attempting to apply `qproperty-icon:` to a Qt sub-control (e.g., `QDockWidget::close-button`) or via universal descendant selectors (`CDockingTray *`) causes Qt's style engine to attempt meta-object property lookup on procedurally drawn elements that do not inherit from `QObject`. This leads to an immediate fatal crash (**Access Violation 0xC0000005**).
+- **Solution**: Strictly partition styling rules:
+  1. **For true widgets** (`QToolButton`, `QPushButton`): Use `qproperty-icon: url(...)`.
+  2. **For Qt sub-controls** (`QDockWidget::close-button`, `QScrollBar::handle`): Use standard CSS `image: url(...)` and background properties, **never** `qproperty-`.
+  ```css
+  /* CORRECT: Sub-controls use image: url(...) */
+  QDockWidget::close-button {
+      image: url("{{ICONS_DIR}}/close_white.svg") !important;
+      background-color: transparent;
+  }
+  ```
+
+### ⚠️ Case Study 8: Hybrid Architecture: Clean Qt 6 Palette vs Full QSS Stylesheet (`apply_qss`)
+- **Comparison**:
+  1. **Clean Palette (`apply_dark_palette`)**:
+     - Modifies native `QPalette` roles in process memory.
+     - Zero CSS parsing overhead, 0 ms latency, robust stability across any GPU driver.
+     - Darkens menus, toolbars, and headers; however, some complex docking container backgrounds remain managed by Windows UXTheme.
+  2. **Full QSS Stylesheet (`apply_stylesheet`)**:
+     - Calls `QApplication::setStyleSheet(css)`.
+     - Provides complete visual overhaul: deep dark tray backgrounds, custom borders, replaced white SVG close icons `[X]`, and dark combo dropdowns.
+  3. **User Preference**:
+     - The extension exposes an `apply_qss` toggle (*Qt Stylesheet*) in Settings, letting users freely choose between the rich styled experience and ultralight clean palette.
 
 ---
 
@@ -132,7 +208,9 @@ graph TD
 | **Panel Header** | `CPanelHeader` | Section header in tray (e.g., Entity Info) |
 | **Panel Title** | `CPanelHeader #title_ctrl_` | Section title text |
 | **Panel Arrow** | `CPanelHeader #arrow_` | Chevron expand/collapse button |
-| **Panel Close Button** | `CPanelHeader #hide_button_` | `X` close/hide button for section |
+| **Panel Close Button** | `CPanelHeader QToolButton`, `CPanelHeader #hide_button_` | `X` close/hide button for section (multi-locale) |
+| **Modal & Dialog Windows** | `QDialog`, `QMessageBox`, `QInputDialog`, `QFileDialog` | SketchUp dialogs and Ruby UI modals (`UI.inputbox`) |
+| **Tray Panel Container** | `CDockingPanel` | Tray section container |
 | **Materials Browser** | `CMaterialBrowserPage` | Materials panel |
 | **Material Thumbnail** | `CMaterialBrowserPreview` | Active material swatch preview |
 | **Outliner / Tags** | `QTreeView` | Tree views for Outliner and Tags |
@@ -166,7 +244,16 @@ graph TD
 
 ## 6. How to Create & Modify Custom Themes
 
-### Live Hot-Reload Workflow
+### 6.1. Stylesheet File Location
+The source stylesheet is located at:
+`sketchup_dark_mode/styles/dark_theme.qss`
+
+In an installed SketchUp environment on Windows:
+`%AppData%\SketchUp\SketchUp 2025\SketchUp\Plugins\sketchup_dark_mode\styles\dark_theme.qss`
+or (for SketchUp 2026):
+`%AppData%\SketchUp\SketchUp 2026\SketchUp\Plugins\sketchup_dark_mode\styles\dark_theme.qss`
+
+### 6.2. Live Hot-Reload Workflow
 1. Open `sketchup_dark_mode/styles/dark_theme.qss` in your code editor.
 2. Edit any color, border, or property and save (`Ctrl + S`).
 3. In SketchUp, click:

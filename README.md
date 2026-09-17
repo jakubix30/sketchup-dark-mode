@@ -1,13 +1,13 @@
 # SketchUp Dark Mode
 
-[![SketchUp](https://img.shields.io/badge/SketchUp-2024%20%7C%202025-blue.svg)](https://www.sketchup.com/)
+[![SketchUp](https://img.shields.io/badge/SketchUp-2024%20%7C%202025%20%7C%202026-blue.svg)](https://www.sketchup.com/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20(x64)-0078D6.svg)](https://microsoft.com/windows)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/Language-Ruby%20%7C%20Qt%206%20QSS-red.svg)](https://www.ruby-lang.org/)
 
 [**Polski opis (Polish version)**](README_PL.md)
 
-A modern, high-performance **Dark Mode extension** for **Trimble SketchUp 2025 and 2024** on Windows 10 / 11.
+A modern, high-performance **Dark Mode extension** for **Trimble SketchUp 2024, 2025, and 2026** on Windows 10 / 11.
 
 It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **Windows DWM title bar**, and the **3D modeling viewport**, while preserving pixel-perfect native toolbar dimensions and professional material swatch legibility.
 
@@ -125,7 +125,7 @@ SketchUp 2024 and 2025 transitioned their desktop UI framework from legacy MFC t
 
 ## 🎨 QSS Styling Documentation & Guide
 
-For a comprehensive deep-dive into Qt 6 styling in SketchUp 2024 / 2025, widget selectors, gotchas (toolbar inflation, tray min-width, QToolTip palette, SVG icon overrides), and custom theme creation:
+For a comprehensive deep-dive into Qt 6 styling in SketchUp 2024 / 2025 / 2026, widget selectors, gotchas (toolbar inflation, tray min-width, QToolTip palette, SVG icon overrides), and custom theme creation:
 - 📖 [Complete QSS Guide & Selector Reference (English)](QSS_DOCS.md)
 - 📖 [Kompletny Poradnik i Ściągawka QSS (Polski)](QSS_DOCS_PL.md)
 

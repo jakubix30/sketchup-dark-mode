@@ -1,13 +1,13 @@
 # SketchUp Dark Mode (Tryb Ciemny dla SketchUp)
 
-[![SketchUp](https://img.shields.io/badge/SketchUp-2024%20%7C%202025-blue.svg)](https://www.sketchup.com/)
+[![SketchUp](https://img.shields.io/badge/SketchUp-2024%20%7C%202025%20%7C%202026-blue.svg)](https://www.sketchup.com/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20(x64)-0078D6.svg)](https://microsoft.com/windows)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/J%C4%99zyk-Ruby%20%7C%20Qt%206%20QSS-red.svg)](https://www.ruby-lang.org/)
 
 [**English version (Wersja angielska)**](README.md)
 
-Nowoczesne, zaawansowane rozszerzenie dodające pełny, profesjonalny **Tryb Ciemny (Dark Mode)** do programu **Trimble SketchUp 2025 oraz 2024** na systemach Windows 10 i Windows 11 (64-bit).
+Nowoczesne, zaawansowane rozszerzenie dodające pełny, profesjonalny **Tryb Ciemny (Dark Mode)** do programu **Trimble SketchUp 2024, 2025 oraz 2026** na systemach Windows 10 i Windows 11 (64-bit).
 
 Wtyczka stylizuje **interfejs Qt 6**, **pasek tytułu Windows (DWM)** oraz **obszar roboczy modelowania 3D**, zachowując w 100% natywne proporcje pasków narzędzi (brak uciętych ikon) i pełną czytelność miniatur materiałów architektonicznych.
 
@@ -125,7 +125,7 @@ SketchUp 2024 i 2025 przeszły z dawnego MFC na nowoczesną bibliotekę **Qt 6**
 
 ## 🎨 Dokumentacja i Poradnik QSS
 
-Kompletny podręcznik architektury Qt 6 w SketchUp 2024 / 2025, katalog selektorów, rozwiązań kluczowych problemów (Toolbar inflation bug, min-width zasobnika, dymki QToolTip, ikony SVG) oraz tworzenia własnych motywów:
+Kompletny podręcznik architektury Qt 6 w SketchUp 2024 / 2025 / 2026, katalog selektorów, rozwiązań kluczowych problemów (Toolbar inflation bug, min-width zasobnika, dymki QToolTip, ikony SVG) oraz tworzenia własnych motywów:
 - 📖 [Kompletny Poradnik i Ściągawka QSS (Polski)](QSS_DOCS_PL.md)
 - 📖 [Complete QSS Guide & Selector Reference (English)](QSS_DOCS.md)
 

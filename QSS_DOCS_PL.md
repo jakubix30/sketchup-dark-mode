@@ -1,4 +1,4 @@
-# 🎨 Kompletny Przewodnik po Qt Style Sheets (QSS) w SketchUp 2024 / 2025
+# 🎨 Kompletny Przewodnik po Qt Style Sheets (QSS) w SketchUp 2024 / 2025 / 2026
 
 Oficjalny podręcznik architektury, reguł i zaawansowanej stylizacji interfejsu SketchUp za pomocą arkuszy stylów Qt (QSS).
 
@@ -18,7 +18,7 @@ Oficjalny podręcznik architektury, reguł i zaawansowanej stylizacji interfejsu
 
 ### 1.1. Przejście z MFC na Qt 6
 Przez ponad 20 lat (do wersji 2023 włącznie) SketchUp na systemie Windows opierał swój interfejs o bibliotekę **MFC (Microsoft Foundation Classes)** oraz natywne kontrolki Win32 (`HWND`). 
-Począwszy od wersji **SketchUp 2024**, a w pełni od **SketchUp 2025**, Trimble dokonał fundamentalnej migracji:
+Począwszy od wersji **SketchUp 2024**, przez **SketchUp 2025**, aż po **SketchUp 2026 (w tym build 26.2.243+)**, Trimble dokonał fundamentalnej migracji:
 - Cały interfejs okienkowy (okno główne, paski narzędzi, menu, tacki boczne, okna dialogowe) został przepisany na **Qt 6 (dokładnie Qt 6.5+ / 6.8+)**.
 - Do obsługi dokowania paneli bocznych i zakładek wdrożono zaawansowaną bibliotekę **KDDockWidgets** (od firmy KDAB).
 - Dzięki temu niemal każdy wizualny aspekt programu może być kontrolowany za pomocą silnika **Qt Style Sheets (QSS)** oraz palety systemowej **QPalette**.
@@ -186,36 +186,42 @@ Dzięki temu każdy dymek w programie automatycznie renderuje krystalicznie bia�
 ### ⚠️ Case Study 4: Zakamuflowane Ciemne Ikony Wektorowe (Hardcoded SVG Fills)
 
 #### Problem:
-Przycisk zamknięcia panelu (`X`) w nagłówkach zasobnika (`#hide_button_`) ma przypisaną wkompilowaną w zasoby SketchUpa ikonę:
+Przycisk zamknięcia panelu (`X`) w nagłówkach zasobnika (`CPanelHeader`) ma przypisaną wkompilowaną w zasoby SketchUpa ikonę:
 `:/dlg_tray_dialog_hide` (plik `dlg_tray_dialog_hide.svg`).
 Wewnątrz pliku SVG znajduje się kod:
 ```xml
 <path d="..." fill="#252A2E"/>
 ```
-Kolor `#252A2E` (niemal czarny węgiel) na ciemnym tle `#2d2d30` stawał się całkowicie niewidoczny. Właściwość CSS `color: #ffffff` nie zmienia koloru wypełnienia wewnątrz wektorowego pliku SVG.
+Kolor `#252A2E` (niemal czarny węgiel) na ciemnym tle `#2d2d30` stawał się całkowicie niewidoczny. Właściwość CSS `color: #ffffff` nie zmienia koloru wypełnienia wewnątrz wektorowego pliku SVG. Ponadto przycisk zamykania w `CPanelHeader` to instancja `QToolButton`, która domyślnie ignoruje czystą właściwość CSS `image:`, oczekując przypisania ikony przez mechanizm Qt.
 
 #### Rozwiązanie:
 1. Przygotowanie wektora [close_white.svg](file:///D:/Projects/sketchup-dark-mode/sketchup_dark_mode/icons/close_white.svg) z zachowaniem identycznych współrzędnych i `fill="#FFFFFF"`.
-2. Zastosowanie właściwości `image:` w QSS:
+2. Zastosowanie kombinacji `qproperty-icon:` oraz `image:` bezpośrednio na kontrolkach `QToolButton` z selektorami wielojęzycznymi:
 ```css
-CPanelHeader #hide_button_,
-#hide_button_,
-QDockWidget::close-button,
+CPanelHeader QToolButton,
+CPanelHeader QPushButton,
+CPanelHeader QToolButton[toolTip*="Ukryj"],
+CPanelHeader QToolButton[toolTip*="Hide"],
+CDockingTray QToolButton[toolTip*="Ukryj"],
+CDockingTray QToolButton[toolTip*="Hide"],
 KDDockWidgets--Button#closeButton {
     image: url("{{ICONS_DIR}}/close_white.svg") !important;
+    qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
     background-color: transparent;
     border: 1px solid transparent;
     border-radius: 3px;
     padding: 1px;
 }
 
-CPanelHeader #hide_button_:hover {
+CPanelHeader QToolButton:hover,
+KDDockWidgets--Button#closeButton:hover {
     background-color: #3e3e42;
-    border-color: #555555;
+    border: 1px solid #555555;
     image: url("{{ICONS_DIR}}/close_white.svg") !important;
+    qproperty-icon: url("{{ICONS_DIR}}/close_white.svg");
 }
 ```
-W silniku `QStyleSheetStyle::drawControl` właściwość `image:` podmienia rysowany pędzel i całkowicie eliminuje ciemną ikonę fabryczną.
+Właściwość `qproperty-icon:` nadpisuje wbudowaną ikonę obiektu `QToolButton`, a `image:` zapewnia poprawny podgląd subkontrolek.
 
 ---
 
@@ -234,6 +240,79 @@ qapp = @fn_instance.call
 2. **Przywrócenie zapamiętanej kopii fabrycznej `QPalette`**:
 Przed zaaplikowaniem ciemnego motywu zapamiętujemy w pamięci oryginalną paletę aplikacji i dymków, a przy powrocie natychmiast ją przywracamy.
 Dzięki temu program po wyłączeniu ciemnego motywu w 100% wraca do stanu fabrycznego.
+
+---
+
+### ⚠️ Case Study 6: Okna Modalne i Dialogowe (Biały Tekst na Białym Tle)
+
+#### Problem:
+W systemowym stylu `QWindowsVistaStyle`, standardowe okna dialogowe (`QDialog`, `UI.inputbox`, `QMessageBox`, `QInputDialog`) rysują swoje tło za pomocą mechanizmu Windows UXTheme (`DrawThemeBackground`). 
+Jeśli w ciemnym motywie ustawi się jedynie paletę `QPalette` (ustawiającą `WindowText` na `#ffffff`), ale nie nada się jasnego tła w arkuszu QSS:
+- Systemowe tło okna dialogowego pozostaje fabrycznie **białe/jasnoszare**.
+- Kolor tekstu z ciemnej palety staje się **śnieżnobiały**.
+- W efekcie etykiety stają się całkowicie nieczytelne (biały tekst na białym tle).
+
+#### Rozwiązanie:
+Jawne wymuszenie ciemnego tła kontenera w QSS na oknach dialogowych oraz ustawienie przezroczystości dla ich etykiet:
+```css
+/* Wymuszenie ciemnego tła dla okien i podkontenerów */
+QMainWindow,
+QDialog,
+QMessageBox,
+QInputDialog,
+QFileDialog,
+QWizard,
+QFrame#centralWidget {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+QDialog > QWidget,
+QDialog QFrame {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+QDialog QLabel {
+    background-color: transparent;
+    color: #d4d4d4;
+}
+```
+
+---
+
+### ⚠️ Case Study 7: Bezpieczeństwo właściwości `qproperty-` a Subkontrolki Qt (Crash Prevention)
+
+#### Problem:
+Właściwość `qproperty-<nazwa>` w arkuszach QSS służy do wywoływania setterów C++ w obiektach dziedziczących z `QObject` posiadających makro `Q_PROPERTY`. 
+Próba przypisania `qproperty-icon:` do selektora subkontrolki (np. `QDockWidget::close-button`) lub uniwersalnego selektora potomków (`CDockingTray *`) powoduje, że silnik stylów Qt próbuje odszukać `QMetaObject` na elemencie rysowanym czysto proceduralnie przez styl. Skutkuje to natychmiastowym błędem naruszenia pamięci (**Access Violation / Crash SketchUpa**).
+
+#### Rozwiązanie:
+Ścisłe rozdzielenie reguł:
+1. **Dla prawdziwych widżetów** (`QToolButton`, `QPushButton`) stosujemy `qproperty-icon: url(...)`.
+2. **Dla subkontrolek Qt** (`QDockWidget::close-button`, `QDockWidget::float-button`, `QScrollBar::handle`) stosujemy wyłącznie czysty standard CSS: `image: url(...)` i tła, **nigdy** `qproperty-`.
+```css
+/* PRAWIDŁOWO: Subkontrolka korzysta z image: url() */
+QDockWidget::close-button {
+    image: url("{{ICONS_DIR}}/close_white.svg") !important;
+    background-color: transparent;
+}
+```
+
+---
+
+### ⚠️ Case Study 8: Architektura Hybrydowa: Czysta Paleta Qt 6 vs Pełny Arkusz QSS (`apply_qss`)
+
+#### Różnice:
+1. **Czysta Paleta (`apply_dark_palette`)**:
+   - Modyfikuje natywny obiekt `QPalette` w pamięci procesu.
+   - Zero narzutu CSS, 0 ms opóźnienia, maksymalna stabilność na każdej maszynie.
+   - Paski narzędzi, menu i nagłówki stają się ciemne, ale niektóre zaawansowane tła (panele docków) mogą pozostać pod kontrolą Windows UXTheme.
+2. **Pełny Arkusz QSS (`apply_stylesheet`)**:
+   - Przypisuje `QApplication::setStyleSheet(css)`.
+   - Zapewnia głęboką, perfekcyjną stylizację: ciemne tła paneli tacki, precyzyjne zaokrąglenia, podmienione białe ikony wektorowe [X], ciemne pola list rozwijanych.
+3. **Konfiguracja użytkownika**:
+   - Wprowadzono opcję w ustawieniach `apply_qss` (*Arkusz stylów Qt*). Użytkownik ma pełną swobodę wyboru między pełnym motywem graficznym a ultralekką czystą paletą.
 
 ---
 
@@ -258,7 +337,8 @@ Poniższa tabela zawiera zestawienie najważniejszych elementów interfejsu Sket
 | **Nagłówek Panelu** | `CPanelHeader` | Pasek pojedynczego panelu (np. Informacje) |
 | **Tytuł Panelu** | `CPanelHeader #title_ctrl_` | Etykieta z nazwą panelu w zasobniku |
 | **Zwiń/Rozwiń Panel** | `CPanelHeader #arrow_` | Strzałka zwijania/rozwijania panelu |
-| **Zamknij Panel** | `CPanelHeader #hide_button_` | Przycisk `X` ukrycia danego panelu |
+| **Zamknij Panel** | `CPanelHeader QToolButton`, `CPanelHeader #hide_button_` | Przycisk `X` ukrycia danego panelu (multi-locale) |
+| **Okna Dialogowe / Modalne** | `QDialog`, `QMessageBox`, `QInputDialog`, `QFileDialog` | Okna dialogowe SketchUpa i Ruby UI (`UI.inputbox`) |
 | **Panel Zasobnika** | `CDockingPanel` | Kontener pojedynczego panelu w zasobniku |
 | **Lista Materiałów** | `CMaterialBrowserPage` | Główny widget przeglądarki materiałów |
 | **Podgląd Materiału** | `CMaterialBrowserPreview` | Miniatury i podgląd aktywnego materiału |
@@ -344,6 +424,8 @@ Główny arkusz stylów wtyczki znajduje się w:
 
 W zainstalowanej wtyczce w systemie Windows:
 `%AppData%\SketchUp\SketchUp 2025\SketchUp\Plugins\sketchup_dark_mode\styles\dark_theme.qss`
+lub (w SketchUp 2026):
+`%AppData%\SketchUp\SketchUp 2026\SketchUp\Plugins\sketchup_dark_mode\styles\dark_theme.qss`
 
 ### 6.2. Praca w trybie Hot-Reload (Bez Restartu)
 Dzięki wbudowanemu mechanizmowi przeładowywania możesz edytować plik `dark_theme.qss` w swoim ulubionym edytorze kodu (VS Code, Notepad++ itd.) i natychmiast widzieć zmiany:
