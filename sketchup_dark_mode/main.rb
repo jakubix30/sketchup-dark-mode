@@ -100,6 +100,7 @@ module SketchupDarkMode
 
       # Ensure SketchUp does not paint hardcoded white background in VCB measurements
       Sketchup.write_default('Preferences', 'VCBShowTypedInputBackground', false) rescue nil
+      VcbStyler.apply_dark_vcb(true) if defined?(VcbStyler)
 
       update_ui_elements
       t1 = Process.clock_gettime(Process::CLOCK_MONOTONIC) rescue Time.now.to_f
@@ -130,6 +131,7 @@ module SketchupDarkMode
 
       # Restore default SketchUp VCB typed input background preference
       Sketchup.write_default('Preferences', 'VCBShowTypedInputBackground', true) rescue nil
+      VcbStyler.apply_dark_vcb(false) if defined?(VcbStyler)
 
       update_ui_elements
       Logger.info('[Action] Restored default light theme successfully.') if defined?(Logger)
@@ -149,6 +151,7 @@ module SketchupDarkMode
 
     def reload_stylesheet
       loader_dir = File.dirname(__FILE__)
+      load File.join(loader_dir, 'vcb_styler.rb')
       load File.join(loader_dir, 'qt_styler.rb')
       load File.join(loader_dir, 'main.rb')
       if File.exist?(QSS_PATH)
