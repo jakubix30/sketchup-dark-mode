@@ -98,6 +98,9 @@ module SketchupDarkMode
         ViewportStyler.restore_viewport(Sketchup.active_model)
       end
 
+      # Ensure SketchUp does not paint hardcoded white background in VCB measurements
+      Sketchup.write_default('Preferences', 'VCBShowTypedInputBackground', false) rescue nil
+
       update_ui_elements
       t1 = Process.clock_gettime(Process::CLOCK_MONOTONIC) rescue Time.now.to_f
       elapsed_ms = ((t1 - t0) * 1000).round(1)
@@ -124,6 +127,9 @@ module SketchupDarkMode
       # 3. Qt 6 UI (Restore light palette and clear QSS)
       Logger.info('[Action] Step 3/3: Restoring Qt light palette and clearing QSS...') if defined?(Logger)
       QtStyler.clear_stylesheet
+
+      # Restore default SketchUp VCB typed input background preference
+      Sketchup.write_default('Preferences', 'VCBShowTypedInputBackground', true) rescue nil
 
       update_ui_elements
       Logger.info('[Action] Restored default light theme successfully.') if defined?(Logger)
@@ -173,8 +179,6 @@ module SketchupDarkMode
       end
     end
 
-    private
-
     def update_ui_elements
       return unless @cmd_toggle
 
@@ -197,6 +201,8 @@ module SketchupDarkMode
       @cmd_toggle.tooltip = status_msg if @cmd_toggle
       @cmd_toggle.status_bar_text = status_msg if @cmd_toggle
     end
+
+    private
 
     def setup_ui
       # 1. Toggle command
