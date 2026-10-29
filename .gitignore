@@ -5,7 +5,8 @@ test_*.png
 *log*.txt
 *.zip
 test_*.rb
-sketchup_dark_mode_v1.0.0.rbz
+sketchup_dark_mode_v1.*.rbz
+test/
 
 # AI & Handover documentation (internal developer notes)
 HANDOVER*.md
