@@ -29,6 +29,11 @@ module SketchupDarkMode
       'auto_sync_windows'   => false,
       'viewport_bg_hex'     => '#1e1e20',
       'viewport_edge_hex'   => '#dedee0',
+      'viewport_guide_hex'  => '#50a0f0',
+      'viewport_section_hex' => '#e04545',
+      'viewport_ground_hex' => '#242426',
+      'viewport_sky_hex'    => '#1a1a1c',
+      'custom_colors'       => [],
       'auto_hot_reload'     => false,
       'language'            => 'auto'
     }.freeze

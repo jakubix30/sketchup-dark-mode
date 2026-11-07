@@ -289,6 +289,20 @@ module SketchupDarkMode
       cmd_settings.menu_text = I18n.t(:cmd_settings_menu)
       cmd_settings.tooltip = I18n.t(:cmd_settings_tip)
 
+      # 5b. Color picker command
+      cmd_color_picker = UI::Command.new(I18n.t(:cmd_pick_color)) do
+        SettingsDialog.pick_color_interactive
+      end
+      cmd_color_picker.menu_text = I18n.t(:cmd_pick_color_menu)
+      cmd_color_picker.tooltip = I18n.t(:cmd_pick_color_tip)
+
+      # 5c. Reset colors command
+      cmd_reset_colors = UI::Command.new(I18n.t(:cmd_reset_colors)) do
+        SettingsDialog.reset_colors
+      end
+      cmd_reset_colors.menu_text = I18n.t(:cmd_reset_colors_menu)
+      cmd_reset_colors.tooltip = I18n.t(:cmd_reset_colors_tip)
+
       # 6. Reload stylesheet (Hot-Reload) command
       cmd_reload = UI::Command.new(I18n.t(:cmd_reload)) do
         Main.reload_stylesheet
@@ -312,6 +326,8 @@ module SketchupDarkMode
       menu.add_item(cmd_toggle_materials)
       menu.add_separator
       menu.add_item(cmd_settings)
+      menu.add_item(cmd_color_picker)
+      menu.add_item(cmd_reset_colors)
       menu.add_separator
       menu.add_item(cmd_reload)
       menu.add_item(cmd_log)

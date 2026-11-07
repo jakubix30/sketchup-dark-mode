@@ -18,19 +18,23 @@ module SketchupDarkMode
     end
 
     def dark_viewport_options
-      bg_hex = Config['viewport_bg_hex'] || '#1e1e20'
-      edge_hex = Config['viewport_edge_hex'] || '#dedee0'
+      bg_hex      = Config['viewport_bg_hex'] || '#1e1e20'
+      edge_hex    = Config['viewport_edge_hex'] || '#dedee0'
+      guide_hex   = Config['viewport_guide_hex'] || '#50a0f0'
+      section_hex = Config['viewport_section_hex'] || '#e04545'
+      ground_hex  = Config['viewport_ground_hex'] || '#242426'
+      sky_hex     = Config['viewport_sky_hex'] || '#1a1a1c'
 
       {
         'BackgroundColor'        => hex_to_color(bg_hex),
         'ForegroundColor'        => hex_to_color(edge_hex), # Edge color in mode 0
         'DrawGround'             => false,
-        'GroundColor'            => hex_to_color('#242426'),
+        'GroundColor'            => hex_to_color(ground_hex),
         'DrawHorizon'            => false,
-        'SkyColor'               => hex_to_color('#1a1a1c'),
+        'SkyColor'               => hex_to_color(sky_hex),
         'EdgeColorMode'          => 0, # All edges in single color (ForegroundColor)
-        'ConstructionColor'      => hex_to_color('#50a0f0'), # Guide lines
-        'SectionDefaultCutColor' => hex_to_color('#e04545'), # Section cuts
+        'ConstructionColor'      => hex_to_color(guide_hex), # Guide lines
+        'SectionDefaultCutColor' => hex_to_color(section_hex), # Section cuts
         'ModelViewColor'         => hex_to_color('#2a2a2d')
       }
     end
