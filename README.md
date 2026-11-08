@@ -45,7 +45,7 @@ It provides a complete dark theme across SketchUp's **Qt 6 user interface**, **W
 
 ### Method 1: Ready-to-use `.rbz` (Recommended)
 
-1. Download [`sketchup_dark_mode.rbz`](sketchup_dark_mode.rbz) from this repository (or from the Releases page).
+1. Download [`sketchup_dark_mode.rbz`](sketchup_dark_mode_v1.1.4.rbz) from this repository (or from the Releases page).
 2. Open **SketchUp 2025** (or 2024).
 3. Go to top menu: **Extensions** -> **Extension Manager** (or *Rozszerzenia* -> *Menedżer rozszerzeń*).
 4. Click **Install Extension** (*Zainstaluj rozszerzenie*) in the bottom left corner.
