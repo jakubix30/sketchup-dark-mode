@@ -10,15 +10,15 @@ require 'extensions.rb'
 module SketchupDarkMode
   PLUGIN_DIR = File.dirname(__FILE__)
   EXTENSION_ID = 'SketchupDarkMode'
-  VERSION = '1.1.4'
+  VERSION = '1.1.5-beta'
 
   unless file_loaded?(__FILE__)
     ext = SketchupExtension.new('SketchUp Dark Mode', File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'loader'))
     locale = (Sketchup.respond_to?(:get_locale) ? Sketchup.get_locale.to_s.downcase : 'en')
     if locale.start_with?('pl')
-      ext.description = 'Nowoczesny tryb ciemny (Dark Mode) dla SketchUp 2025 – stylizuje interfejs Qt6, pasek tytułu Windows oraz obszar roboczy 3D (PL / EN).'
+      ext.description = 'Nowoczesny tryb ciemny (Dark Mode) dla SketchUp 2025-2027 – stylizuje interfejs Qt6, pasek tytułu Windows oraz obszar roboczy 3D (PL / EN).'
     else
-      ext.description = 'Modern Dark Mode for SketchUp 2025 – styles Qt6 UI, Windows titlebar, and 3D viewport (PL / EN).'
+      ext.description = 'Modern Dark Mode for SketchUp 2025-2027 – styles Qt6 UI, Windows titlebar, and 3D viewport (PL / EN).'
     end
     ext.version     = VERSION
     ext.creator     = 'jakubix30'
