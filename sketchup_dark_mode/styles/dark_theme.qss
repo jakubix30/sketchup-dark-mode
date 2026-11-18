@@ -1104,17 +1104,38 @@ QLineEdit#vcb:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   Tooltips
+   Tooltips (Standard & Rich Text)
    -------------------------------------------------------------------------- */
 QToolTip,
 QToolTip QLabel,
 QTipLabel,
-QTipLabel QLabel {
+QTipLabel QLabel,
+QToolTip QTextEdit,
+QToolTip QTextBrowser {
     background-color: #252526 !important;
     color: #ffffff !important;
-    border: 1px solid #555555 !important;
+    border: 1px solid #3e3e42 !important;
     padding: 4px 7px;
     border-radius: 3px;
+}
+
+QToolTip *,
+QTipLabel * {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+QToolTip h1, QToolTip h2, QToolTip h3, QToolTip h4, QToolTip p, QToolTip span, QToolTip b, QToolTip a,
+QTipLabel h1, QTipLabel h2, QTipLabel h3, QTipLabel h4, QTipLabel p, QTipLabel span, QTipLabel b, QTipLabel a {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+QToolTip hr,
+QTipLabel hr {
+    border: none !important;
+    border-top: 1px solid #444448 !important;
+    margin: 4px 0 !important;
 }
 
 /* --------------------------------------------------------------------------

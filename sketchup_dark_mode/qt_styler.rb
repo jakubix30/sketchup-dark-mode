@@ -310,7 +310,7 @@ module SketchupDarkMode
       @fn_set_palette.call(pal_mem, 0)
 
       # Explicitly apply dark palette to QToolTip with white text (if enabled in settings)
-      if Config['style_tooltips'] && @fn_tooltip_set_palette
+      if (Config['style_tooltips'] != false) && @fn_tooltip_set_palette
         tt_pal_mem = Fiddle::Pointer.malloc(128)
         128.times { |i| tt_pal_mem[i] = 0 }
         @fn_palette_ctor.call(tt_pal_mem)
@@ -323,9 +323,9 @@ module SketchupDarkMode
           8  => '#ffffff', # ButtonText
           9  => '#252526', # Base
           10 => '#252526', # Window
-          12 => '#ffffff', # Highlight
+          12 => '#094771', # Highlight
           13 => '#ffffff', # HighlightedText
-          14 => '#ffffff', # Link
+          14 => '#3794ff', # Link
           18 => '#252526', # ToolTipBase
           19 => '#ffffff'  # ToolTipText
         }
@@ -338,6 +338,12 @@ module SketchupDarkMode
         end
 
         @fn_tooltip_set_palette.call(tt_pal_mem)
+        begin
+          c_qtooltip = Fiddle::Pointer.to_ptr("QToolTip\0")
+          @fn_set_palette.call(tt_pal_mem, c_qtooltip)
+        rescue StandardError => e
+          Logger.warn("[QtStyler] Could not set QApplication class palette for QToolTip: #{e.message}") if defined?(Logger)
+        end
         @fn_palette_dtor.call(tt_pal_mem)
         Logger.info('[QtStyler] style_tooltips is TRUE. Applied dark palette to QToolTip.') if defined?(Logger)
       else
@@ -476,10 +482,9 @@ module SketchupDarkMode
         if win && @fn_widget_set_stylesheet
           Logger.info('[QtStyler] QString constructed. Invoking QWidget::setStyleSheet on main_window...') if defined?(Logger)
           @fn_widget_set_stylesheet.call(win, qstr_buf)
-        else
-          Logger.info('[QtStyler] QString constructed. Invoking QApplication::setStyleSheet...') if defined?(Logger)
-          @fn_set_stylesheet.call(qapp, qstr_buf)
         end
+        Logger.info('[QtStyler] Invoking QApplication::setStyleSheet to style top-level popups & tooltips...') if defined?(Logger)
+        @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
