@@ -56,6 +56,30 @@ module SketchupDarkMode
         Fiddle::TYPE_VOID
       )
 
+      # 4b. void QWidget::setStyleSheet(const QString&)
+      sym_widget_set_sheet = (qt_widgets_handle['?setStyleSheet@QWidget@@QEAAXAEBVQString@@@Z'] rescue nil)
+      @fn_widget_set_stylesheet = Fiddle::Function.new(
+        sym_widget_set_sheet,
+        [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP],
+        Fiddle::TYPE_VOID
+      ) if sym_widget_set_sheet
+
+      # 4c. QWidget* QWidget::find(WId)
+      sym_widget_find = (qt_widgets_handle['?find@QWidget@@SAPEAV1@_K@Z'] rescue nil)
+      @fn_widget_find = Fiddle::Function.new(
+        sym_widget_find,
+        [Fiddle::TYPE_LONG_LONG],
+        Fiddle::TYPE_VOIDP
+      ) if sym_widget_find
+
+      # 4d. QWidget* QWidget::window()
+      sym_widget_window = (qt_widgets_handle['?window@QWidget@@QEBAPEAV1@XZ'] rescue nil)
+      @fn_widget_window = Fiddle::Function.new(
+        sym_widget_window,
+        [Fiddle::TYPE_VOIDP],
+        Fiddle::TYPE_VOIDP
+      ) if sym_widget_window
+
       # 5. void QApplication::setPalette(const QPalette&, const char* = nullptr)
       @fn_set_palette = Fiddle::Function.new(
         qt_widgets_handle['?setPalette@QApplication@@SAXAEBVQPalette@@PEBD@Z'],
@@ -200,6 +224,41 @@ module SketchupDarkMode
 
       hwnd = @fn_widget_winid.call(w)
       hwnd.to_i
+    rescue StandardError
+      nil
+    end
+
+    def main_window
+      return nil unless available?
+
+      # 1. Direct lookup from SketchUp main window HWND via QWidget::find
+      if @fn_widget_find && Sketchup.respond_to?(:get_main_window)
+        begin
+          hwnd = Sketchup.get_main_window
+          if hwnd && hwnd.to_i != 0
+            w = @fn_widget_find.call(hwnd)
+            return w if w && w.to_i != 0
+          end
+        rescue StandardError => e
+          Logger.warn("[QtStyler] Error finding widget from HWND: #{e.message}") if defined?(Logger)
+        end
+      end
+
+      # 2. From QApplication::activeWindow()
+      if @fn_active_window
+        begin
+          w = @fn_active_window.call
+          if w && w.to_i != 0
+            top = @fn_widget_window ? @fn_widget_window.call(w) : nil
+            return top if top && top.to_i != 0
+            return w
+          end
+        rescue StandardError => e
+          Logger.warn("[QtStyler] Error getting active window: #{e.message}") if defined?(Logger)
+        end
+      end
+
+      nil
     rescue StandardError
       nil
     end
@@ -413,8 +472,14 @@ module SketchupDarkMode
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
-        Logger.info('[QtStyler] QString constructed. Invoking QApplication::setStyleSheet...') if defined?(Logger)
-        @fn_set_stylesheet.call(qapp, qstr_buf)
+        win = main_window
+        if win && @fn_widget_set_stylesheet
+          Logger.info('[QtStyler] QString constructed. Invoking QWidget::setStyleSheet on main_window...') if defined?(Logger)
+          @fn_widget_set_stylesheet.call(win, qstr_buf)
+        else
+          Logger.info('[QtStyler] QString constructed. Invoking QApplication::setStyleSheet...') if defined?(Logger)
+          @fn_set_stylesheet.call(qapp, qstr_buf)
+        end
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
@@ -448,6 +513,10 @@ module SketchupDarkMode
 
       begin
         @fn_qstr_ctor.call(qstr_buf, c_ptr)
+        win = main_window
+        if win && @fn_widget_set_stylesheet
+          @fn_widget_set_stylesheet.call(win, qstr_buf)
+        end
         @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)

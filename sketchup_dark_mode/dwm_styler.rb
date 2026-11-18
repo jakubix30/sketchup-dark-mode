@@ -8,6 +8,9 @@ module SketchupDarkMode
 
     DWMWA_USE_IMMERSIVE_DARK_MODE = 20
     DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19
+    DWMWA_CAPTION_COLOR = 35
+    DWMWA_TEXT_COLOR = 36
+    DWMWA_COLOR_DEFAULT = 0xFFFFFFFE
     SWP_FRAMECHANGED = 0x0020
     SWP_NOMOVE = 0x0002
     SWP_NOSIZE = 0x0001
@@ -33,15 +36,28 @@ module SketchupDarkMode
       val = enable ? 1 : 0
       pv_attr = [val].pack('L')
 
-      # Get window from Qt if available
-      if defined?(QtStyler) && QtStyler.respond_to?(:active_window_hwnd)
-        qt_hwnd = QtStyler.active_window_hwnd
-        if qt_hwnd && qt_hwnd > 0
-          apply_dark_to_hwnd(qt_hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+      # 1. Directly style main window via Sketchup API if available
+      if Sketchup.respond_to?(:get_main_window)
+        begin
+          main_hwnd = Sketchup.get_main_window
+          if main_hwnd && main_hwnd.to_i != 0
+            Logger.info("[DwmStyler] Styling SketchUp.get_main_window (#{main_hwnd})") if defined?(Logger)
+            apply_dark_to_hwnd(main_hwnd, fn_dwm_attr, fn_set_pos, pv_attr, enable)
+          end
+        rescue StandardError => e
+          Logger.warn("[DwmStyler] Error getting main window: #{e.message}") if defined?(Logger)
         end
       end
 
-      # EnumWindows: find all visible windows belonging to SketchUp process (main window, Ruby Console, dialogs)
+      # 2. Get window from Qt if available
+      if defined?(QtStyler) && QtStyler.respond_to?(:active_window_hwnd)
+        qt_hwnd = QtStyler.active_window_hwnd
+        if qt_hwnd && qt_hwnd > 0
+          apply_dark_to_hwnd(qt_hwnd, fn_dwm_attr, fn_set_pos, pv_attr, enable)
+        end
+      end
+
+      # 3. EnumWindows: find all visible windows belonging to SketchUp process (main window, Ruby Console, dialogs)
       enum_callback = Fiddle::Closure::BlockCaller.new(Fiddle::TYPE_INT, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP]) do |hwnd, _|
         begin
           if hwnd && hwnd.to_i != 0
@@ -49,7 +65,7 @@ module SketchupDarkMode
             wnd_pid = pid_buf.unpack1('L')
 
             if wnd_pid == my_pid && fn_is_visible.call(hwnd) != 0
-              apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+              apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr, enable)
             end
           end
         rescue StandardError
@@ -69,16 +85,24 @@ module SketchupDarkMode
 
     private
 
-    def apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr)
+    def apply_dark_to_hwnd(hwnd, fn_dwm_attr, fn_set_pos, pv_attr, enable = true)
       return if hwnd.nil? || hwnd.to_i == 0
 
-      # First try attribute 20 (Windows 11 / newer Windows 10)
+      # 1. Immersive dark mode attribute (Windows 11 / Windows 10 20H1+ = 20, older = 19)
       hr = fn_dwm_attr.call(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, pv_attr, 4)
       if hr != 0
-        # For older Windows 10 builds fallback to attribute 19
         fn_dwm_attr.call(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, pv_attr, 4)
       end
-      # Force refresh non-client frame (titlebar)
+
+      # 2. Windows 11 explicit caption color (35) and text color (36)
+      caption_color = enable ? 0x00262525 : DWMWA_COLOR_DEFAULT # 0x00BBGGRR (#252526)
+      text_color    = enable ? 0x00FFFFFF : DWMWA_COLOR_DEFAULT
+      pv_caption = [caption_color].pack('L')
+      pv_text    = [text_color].pack('L')
+      fn_dwm_attr.call(hwnd, DWMWA_CAPTION_COLOR, pv_caption, 4)
+      fn_dwm_attr.call(hwnd, DWMWA_TEXT_COLOR, pv_text, 4)
+
+      # 3. Force refresh non-client frame (titlebar)
       fn_set_pos.call(hwnd, 0, 0, 0, 0, 0, SWP_FLAGS)
     rescue StandardError
       nil

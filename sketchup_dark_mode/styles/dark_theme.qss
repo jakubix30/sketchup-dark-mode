@@ -623,13 +623,51 @@ QTableView::item:selected {
 }
 
 
-/* Table and tree view headers */
-QHeaderView::section {
-    background-color: #2d2d30;
-    color: #cccccc;
-    border: 1px solid #333333;
-    padding: 3px 5px;
+/* Table and tree view headers (Tags, Outliner, Layer column headings) */
+QHeaderView,
+QHeaderView::section,
+CDockingTray QHeaderView,
+CDockingTray QHeaderView::section,
+TagDialogV2 QHeaderView,
+TagDialogV2 QHeaderView::section,
+TagDialog QHeaderView,
+TagDialog QHeaderView::section,
+TagTreeViewV2 QHeaderView,
+TagTreeViewV2 QHeaderView::section,
+TagTreeCtrl QHeaderView,
+TagTreeCtrl QHeaderView::section,
+QTreeWidget QHeaderView,
+QTreeWidget QHeaderView::section,
+QTreeView QHeaderView,
+QTreeView QHeaderView::section,
+QTableView QHeaderView,
+QTableView QHeaderView::section,
+QTableWidget QHeaderView,
+QTableWidget QHeaderView::section {
+    background-color: #2d2d30 !important;
+    color: #f0f0f0 !important;
+    border: 1px solid #3e3e42 !important;
+    border-top: none !important;
+    border-left: none !important;
+    padding: 3px 6px !important;
     font-weight: 600;
+}
+
+QHeaderView::section:hover,
+CDockingTray QHeaderView::section:hover,
+TagDialogV2 QHeaderView::section:hover,
+TagDialog QHeaderView::section:hover,
+TagTreeViewV2 QHeaderView::section:hover,
+QTreeView QHeaderView::section:hover,
+QTableView QHeaderView::section:hover {
+    background-color: #3e3e42 !important;
+    color: #ffffff !important;
+}
+
+QHeaderView::section:checked,
+QHeaderView::section:pressed {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -736,7 +774,7 @@ QComboBox QListView::item:selected {
 }
 
 /* --------------------------------------------------------------------------
-   Tabs
+   Tabs (Multi-model tabs in SU2026/2027, scene tabs, panel tabs)
    -------------------------------------------------------------------------- */
 QTabWidget::pane {
     border: 1px solid #3a3a3d;
@@ -744,28 +782,75 @@ QTabWidget::pane {
     top: -1px;
 }
 
+PlusTabBar,
+PlusTabBar QTabBar,
+SketchUpTabBarWidget,
+SketchUpTabBarWidget QTabBar,
+CPageTabs,
+CPageTabs QTabBar,
+QTabBar {
+    background-color: #1e1e1e !important;
+    color: #cccccc !important;
+    border: none !important;
+}
+
+PlusTabBar::tab,
+PlusTabBar QTabBar::tab,
+SketchUpTabBarWidget::tab,
+SketchUpTabBarWidget QTabBar::tab,
+CPageTabs::tab,
+CPageTabs QTabBar::tab,
 QTabBar::tab {
-    background-color: #2d2d30;
-    color: #969696;
-    border: 1px solid #3a3a3d;
-    border-bottom: none;
-    padding: 2px 4px;
-    margin-right: 1px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    background-color: #2d2d30 !important;
+    color: #969696 !important;
+    border: 1px solid #3a3a3d !important;
+    border-bottom: none !important;
+    padding: 3px 8px !important;
+    margin-right: 2px !important;
+    border-top-left-radius: 3px !important;
+    border-top-right-radius: 3px !important;
     min-width: 0px;
 }
 
+PlusTabBar::tab:selected,
+PlusTabBar QTabBar::tab:selected,
+SketchUpTabBarWidget::tab:selected,
+SketchUpTabBarWidget QTabBar::tab:selected,
+CPageTabs::tab:selected,
+CPageTabs QTabBar::tab:selected,
 QTabBar::tab:selected {
-    background-color: #252526;
-    color: #ffffff;
-    border-top: 2px solid #007acc;
-    border-bottom: 1px solid #252526;
+    background-color: #252526 !important;
+    color: #ffffff !important;
+    border-top: 2px solid #007acc !important;
+    border-bottom: 1px solid #252526 !important;
 }
 
+PlusTabBar::tab:hover:!selected,
+PlusTabBar QTabBar::tab:hover:!selected,
+SketchUpTabBarWidget::tab:hover:!selected,
+SketchUpTabBarWidget QTabBar::tab:hover:!selected,
+CPageTabs::tab:hover:!selected,
+CPageTabs QTabBar::tab:hover:!selected,
 QTabBar::tab:hover:!selected {
-    background-color: #38383c;
-    color: #d4d4d4;
+    background-color: #38383c !important;
+    color: #d4d4d4 !important;
+}
+
+PlusTabBar QToolButton,
+SketchUpTabBarWidget QToolButton,
+CPageTabs QToolButton,
+QTabBar QToolButton {
+    background-color: transparent !important;
+    color: #cccccc !important;
+    border: none !important;
+}
+
+PlusTabBar QToolButton:hover,
+SketchUpTabBarWidget QToolButton:hover,
+CPageTabs QToolButton:hover,
+QTabBar QToolButton:hover {
+    background-color: #3e3e42 !important;
+    color: #ffffff !important;
 }
 
 /* --------------------------------------------------------------------------

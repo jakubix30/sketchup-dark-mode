@@ -13,8 +13,13 @@ module SketchupDarkMode
     @toolbar = nil
     @cmd_toggle = nil
     @cmd_restore = nil
+    @startup_styled = false
 
     class DarkModeAppObserver < Sketchup::AppObserver
+      def expectsStartupModelNotifications
+        true
+      end
+
       def onNewModel(model)
         Main.on_model_changed(model)
       end
@@ -42,14 +47,17 @@ module SketchupDarkMode
       setup_ui
       setup_observers
 
-      # Only auto-apply dark mode on launch if it was explicitly enabled previously
+      # Safe startup apply: wait for AppObserver to deliver model notification
+      # or apply if SketchUp is already running (e.g. extension reload in console)
       if dark_mode_active?
-        Logger.info('[Init] Dark mode is active in config. Scheduling 1.0s startup timer...') if defined?(Logger)
-        UI.start_timer(1.0, false) do
-          if dark_mode_active?
-            Logger.info('[Init] Startup timer fired. Applying dark mode...') if defined?(Logger)
-            enable_dark_mode
+        if Sketchup.active_model && Sketchup.active_model.valid?
+          @startup_styled = true
+          Logger.info('[Init] Active model detected. Scheduling safe 0.3s timer...') if defined?(Logger)
+          UI.start_timer(0.3, false) do
+            enable_dark_mode if dark_mode_active?
           end
+        else
+          Logger.info('[Init] Dark mode is active. Waiting for model ready notification from AppObserver...') if defined?(Logger)
         end
       else
         Logger.info('[Init] Dark mode is inactive on startup. Loaded in clean Light Mode.') if defined?(Logger)
@@ -84,6 +92,7 @@ module SketchupDarkMode
       if Config['style_ui']
         Logger.info('[Action] Step 2/3: Applying Qt 6 UI styling (palette + QSS)...') if defined?(Logger)
         apply_current_qss
+        UI.start_timer(1.2, false) { apply_current_qss if dark_mode_active? }
       else
         Logger.info('[Action] Step 2/3: style_ui is false. Clearing Qt stylesheet...') if defined?(Logger)
         QtStyler.clear_stylesheet
@@ -166,8 +175,24 @@ module SketchupDarkMode
     end
 
     def on_model_changed(model)
-      if dark_mode_active? && Config['style_viewport']
+      return unless dark_mode_active?
+
+      if Config['style_viewport'] && model && model.valid?
         ViewportStyler.apply_dark_viewport(model)
+      end
+
+      # Refresh titlebar when active model/tab changes (e.g. Untitled 2 - SketchUp 2027)
+      if Config['style_titlebar']
+        DwmStyler.set_dark_titlebar(true)
+      end
+
+      # Initial safe dark mode apply on startup once the initial model is ready
+      unless @startup_styled
+        @startup_styled = true
+        Logger.info('[AppObserver] First model ready after startup. Triggering safe dark mode apply...') if defined?(Logger)
+        UI.start_timer(0.3, false) do
+          enable_dark_mode if dark_mode_active?
+        end
       end
     end
 
