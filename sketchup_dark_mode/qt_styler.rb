@@ -179,6 +179,18 @@ module SketchupDarkMode
         @fn_inherits    = nil
       end
 
+      # 16. QWidgetList QApplication::allWidgets() & QWidget::update()
+      begin
+        sym_all = qt_widgets_handle['?allWidgets@QApplication@@SA?AV?$QList@PEAVQWidget@@@@XZ']
+        @fn_all_widgets = Fiddle::Function.new(sym_all, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP) if sym_all
+
+        sym_update = qt_widgets_handle['?update@QWidget@@QEAAXXZ']
+        @fn_widget_update = Fiddle::Function.new(sym_update, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID) if sym_update
+      rescue StandardError
+        @fn_all_widgets = nil
+        @fn_widget_update = nil
+      end
+
       @available = true
       capture_original_palette
       Logger.info('[QtStyler] Successfully initialized Qt 6 Fiddle interface (Palette + QSS).') if defined?(Logger)
@@ -484,6 +496,7 @@ module SketchupDarkMode
       end
 
       Logger.info('[QtStyler] QSS stylesheet applied successfully.') if defined?(Logger)
+      style_tag_headers(true)
       true
     rescue StandardError => e
       Logger.error('[QtStyler] Error applying Qt stylesheet', e) if defined?(Logger)
@@ -496,6 +509,7 @@ module SketchupDarkMode
       return false unless available?
 
       restore_default_palette
+      style_tag_headers(false)
 
       qapp = @fn_instance.call
       return false if qapp.nil? || qapp.to_i == 0
@@ -527,6 +541,87 @@ module SketchupDarkMode
       Logger.error('[QtStyler] Error clearing Qt stylesheet', e) if defined?(Logger)
       puts "[Dark Mode] Error clearing Qt stylesheet: #{e.message}"
       false
+    end
+
+    # Styles Trimble's TagDialogHeaderDelegate directly in memory to overcome hardcoded QColors
+    def style_tag_headers(dark = true)
+      return unless available? && @fn_all_widgets && @fn_class_name
+
+      list_buf = Fiddle::Pointer.malloc(64)
+      64.times { |i| list_buf[i] = 0 }
+      @fn_all_widgets.call(list_buf)
+
+      elem_ptr = list_buf[8, 8].unpack1('Q')
+      count = list_buf[16, 8].unpack1('q')
+      return if elem_ptr == 0 || count <= 0
+
+      tag_headers = []
+      raw_ptrs = Fiddle::Pointer.new(elem_ptr)[0, count * 8].unpack("Q#{count}")
+      raw_ptrs.each do |ptr_val|
+        next if ptr_val == 0
+        vtable_ptr = Fiddle::Pointer.new(ptr_val)[0, 8].unpack1('Q')
+        next if vtable_ptr == 0
+        meta_func = Fiddle::Pointer.new(vtable_ptr)[0, 8].unpack1('Q')
+        next if meta_func == 0
+        meta = Fiddle::Function.new(meta_func, [Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOIDP).call(Fiddle::Pointer.new(ptr_val))
+        next if meta.nil? || meta.to_i == 0
+        c_name = @fn_class_name.call(meta).to_s rescue ''
+        tag_headers << Fiddle::Pointer.new(ptr_val) if c_name == 'TagDialogHeaderDelegate'
+      end
+
+      return if tag_headers.empty?
+
+      @original_tag_header_colors ||= {}
+
+      tag_headers.each do |hdr|
+        ptr_key = hdr.to_i
+
+        # Locate the 6 QColor slots (consecutive QColor structs with spec=1 and alpha=0xFFFF)
+        slots = []
+        (0x20...0x120).step(2) do |offset|
+          spec = hdr[offset, 4].unpack1('l') rescue 0
+          if spec == 1
+            alpha = hdr[offset + 4, 2].unpack1('S') rescue 0
+            slots << offset if alpha == 0xFFFF
+          end
+        end
+
+        next if slots.size < 6
+
+        if dark
+          unless @original_tag_header_colors[ptr_key]
+            @original_tag_header_colors[ptr_key] = slots.map { |s| hdr[s, 16] }
+          end
+
+          # Construct QColor (16 bytes): spec (int32=1), alpha (uint16=0xFFFF), r, g, b, pad (uint32=0)
+          make_qcolor = lambda do |r, g, b|
+            [1, 0xFFFF, (r << 8) | r, (g << 8) | g, (b << 8) | b, 0].pack('lSSSSl')
+          end
+
+          c_bg     = make_qcolor.call(0x2d, 0x2d, 0x30) # #2d2d30
+          c_hover  = make_qcolor.call(0x3e, 0x3e, 0x42) # #3e3e42
+          c_border = make_qcolor.call(0x4a, 0x4a, 0x4f) # #4a4a4f
+          c_text   = make_qcolor.call(0xff, 0xff, 0xff) # #ffffff
+
+          hdr[slots[0], 16] = c_bg
+          hdr[slots[1], 16] = c_hover
+          hdr[slots[2], 16] = c_border
+          hdr[slots[3], 16] = c_bg
+          hdr[slots[4], 16] = c_hover
+          hdr[slots[5], 16] = c_text
+        else
+          if (orig = @original_tag_header_colors[ptr_key])
+            slots.each_with_index do |s, idx|
+              hdr[s, 16] = orig[idx] if orig[idx]
+            end
+          end
+        end
+
+        @fn_widget_update.call(hdr) if @fn_widget_update
+      end
+      Logger.info("[QtStyler] TagDialogHeaderDelegate styled (dark=#{dark})") if defined?(Logger)
+    rescue StandardError => e
+      Logger.warn("[QtStyler] Error styling TagDialogHeaderDelegate: #{e.message}") if defined?(Logger)
     end
 
     private

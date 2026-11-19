@@ -1137,21 +1137,7 @@ AVPageFrameToolTip,
 CTitleTip,
 AVCTitleTip,
 QToolTip,
-QTipLabel,
-QToolTip QLabel,
-QTipLabel QLabel,
-CQtToolTipWidget QLabel,
-AVCQtToolTipWidget QLabel,
-CQtToolTip QLabel,
-AVCQtToolTip QLabel,
-CQtToolTipWidget QFrame,
-AVCQtToolTipWidget QFrame,
-CQtToolTipWidget QTextEdit,
-AVCQtToolTipWidget QTextEdit,
-CQtToolTipWidget QTextBrowser,
-AVCQtToolTipWidget QTextBrowser,
-QToolTip QTextEdit,
-QToolTip QTextBrowser {
+QTipLabel {
     background-color: #252526 !important;
     background: #252526 !important;
     color: #ffffff !important;
@@ -1164,12 +1150,18 @@ CQtToolTipWidget QLabel,
 AVCQtToolTipWidget QLabel,
 CQtToolTip QLabel,
 AVCQtToolTip QLabel,
+CQtToolTipWidget QFrame,
+AVCQtToolTipWidget QFrame,
 CQtToolTipWidget QTextBrowser,
 AVCQtToolTipWidget QTextBrowser,
 CQtToolTipWidget QTextEdit,
 AVCQtToolTipWidget QTextEdit,
 QToolTip QLabel,
-QTipLabel QLabel {
+QTipLabel QLabel,
+QToolTip QFrame,
+QTipLabel QFrame,
+QToolTip QTextEdit,
+QToolTip QTextBrowser {
     background-color: transparent !important;
     background: transparent !important;
     color: #ffffff !important;
@@ -1185,6 +1177,9 @@ QTipLabel h1, QTipLabel h2, QTipLabel h3, QTipLabel h4, QTipLabel p, QTipLabel s
     color: #ffffff !important;
     background-color: transparent !important;
     background: transparent !important;
+    text-decoration: none !important;
+    border: none !important;
+    border-bottom: none !important;
 }
 
 CQtToolTipWidget hr,
@@ -1193,9 +1188,11 @@ CQtToolTip hr,
 AVCQtToolTip hr,
 QToolTip hr,
 QTipLabel hr {
+    display: none !important;
     border: none !important;
-    border-top: 1px solid #444448 !important;
-    margin: 4px 0 !important;
+    height: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
 }
 
 /* --------------------------------------------------------------------------

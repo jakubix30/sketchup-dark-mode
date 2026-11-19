@@ -198,6 +198,9 @@ module SketchupDarkMode
         DwmStyler.set_dark_titlebar(true)
       end
 
+      # Re-apply memory patch to TagDialogHeaderDelegate if tray was reloaded
+      QtStyler.style_tag_headers(true) if defined?(QtStyler)
+
       # Initial safe dark mode apply on startup once the initial model is ready
       unless @startup_styled
         @startup_styled = true
