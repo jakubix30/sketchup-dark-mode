@@ -10,7 +10,7 @@ require 'extensions.rb'
 module SketchupDarkMode
   PLUGIN_DIR = File.dirname(__FILE__)
   EXTENSION_ID = 'SketchupDarkMode'
-  VERSION = '1.1.6-beta'
+  VERSION = '1.1.5-dev'
 
   unless file_loaded?(__FILE__)
     ext = SketchupExtension.new('SketchUp Dark Mode', File.join(PLUGIN_DIR, 'sketchup_dark_mode', 'loader'))
