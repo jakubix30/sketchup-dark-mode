@@ -1,6 +1,9 @@
 param(
     [string]$tagName = "",
-    [string]$releaseTitle = ""
+    [string]$releaseTitle = "",
+    [string]$targetCommitish = "dev",
+    [switch]$prerelease,
+    [string]$customBody = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -49,11 +52,13 @@ if (-not (Test-Path $rbzPath)) {
 }
 
 $releaseNotesPath = Join-Path $scriptDir "RELEASE_NOTES.md"
-if (-not (Test-Path $releaseNotesPath)) {
-    Write-Error "RELEASE_NOTES.md not found at $releaseNotesPath"
-    exit 1
+if ($customBody) {
+    $releaseBody = $customBody
+} elseif (Test-Path $releaseNotesPath) {
+    $releaseBody = [System.IO.File]::ReadAllText($releaseNotesPath, [System.Text.Encoding]::UTF8)
+} else {
+    $releaseBody = "Pre-release $tagName"
 }
-$releaseBody = [System.IO.File]::ReadAllText($releaseNotesPath, [System.Text.Encoding]::UTF8)
 
 $headers = @{
     "Authorization" = "Bearer $token"
@@ -72,6 +77,8 @@ try {
     Write-Host "No existing release for tag $tagName. Creating a new one..." -ForegroundColor Green
 }
 
+$isPre = $prerelease.IsPresent
+
 $releaseObj = $null
 if ($existingRelease) {
     $releaseId = $existingRelease.id
@@ -80,7 +87,7 @@ if ($existingRelease) {
         name = $releaseTitle
         body = $releaseBody
         draft = $false
-        prerelease = $false
+        prerelease = $isPre
     } | ConvertTo-Json -Compress
 
     $releaseObj = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/$releaseId" -Headers $headers -Method Patch -Body ([System.Text.Encoding]::UTF8.GetBytes($updatePayload)) -ContentType "application/json; charset=utf-8"
@@ -98,11 +105,11 @@ if ($existingRelease) {
 } else {
     $createPayload = @{
         tag_name         = $tagName
-        target_commitish = "main"
+        target_commitish = $targetCommitish
         name             = $releaseTitle
         body             = $releaseBody
         draft            = $false
-        prerelease       = $false
+        prerelease       = $isPre
     } | ConvertTo-Json -Compress
 
     $releaseObj = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases" -Headers $headers -Method Post -Body ([System.Text.Encoding]::UTF8.GetBytes($createPayload)) -ContentType "application/json; charset=utf-8"
