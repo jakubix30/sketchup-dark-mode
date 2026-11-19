@@ -330,6 +330,10 @@ module SketchupDarkMode
         tt_roles = {
           0  => '#ffffff', # WindowText
           1  => '#252526', # Button
+          2  => '#3e3e42', # Light
+          3  => '#2d2d30', # Midlight
+          4  => '#3e3e42', # Dark (border)
+          5  => '#444448', # Mid (separator line)
           6  => '#ffffff', # Text
           7  => '#ffffff', # BrightText
           8  => '#ffffff', # ButtonText

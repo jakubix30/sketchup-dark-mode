@@ -805,24 +805,12 @@ QTabWidget::pane {
     top: -1px;
 }
 
-PlusTabBar,
-PlusTabBar QTabBar,
-SketchUpTabBarWidget,
-SketchUpTabBarWidget QTabBar,
-CPageTabs,
-CPageTabs QTabBar,
 QTabBar {
     background-color: #1e1e1e !important;
     color: #cccccc !important;
     border: none !important;
 }
 
-PlusTabBar::tab,
-PlusTabBar QTabBar::tab,
-SketchUpTabBarWidget::tab,
-SketchUpTabBarWidget QTabBar::tab,
-CPageTabs::tab,
-CPageTabs QTabBar::tab,
 QTabBar::tab {
     background-color: #2d2d30 !important;
     color: #969696 !important;
@@ -835,28 +823,68 @@ QTabBar::tab {
     min-width: 0px;
 }
 
-PlusTabBar::tab:selected,
-PlusTabBar QTabBar::tab:selected,
-SketchUpTabBarWidget::tab:selected,
-SketchUpTabBarWidget QTabBar::tab:selected,
-CPageTabs::tab:selected,
-CPageTabs QTabBar::tab:selected,
 QTabBar::tab:selected {
     background-color: #252526 !important;
+    background: #252526 !important;
     color: #ffffff !important;
+    border: 1px solid #3a3a3d !important;
     border-top: 2px solid #007acc !important;
     border-bottom: 1px solid #252526 !important;
 }
 
-PlusTabBar::tab:hover:!selected,
-PlusTabBar QTabBar::tab:hover:!selected,
-SketchUpTabBarWidget::tab:hover:!selected,
-SketchUpTabBarWidget QTabBar::tab:hover:!selected,
-CPageTabs::tab:hover:!selected,
-CPageTabs QTabBar::tab:hover:!selected,
 QTabBar::tab:hover:!selected {
     background-color: #38383c !important;
     color: #d4d4d4 !important;
+}
+
+/* Specific document tab bars (PlusTabBar, SketchUpTabBarWidget, CPageTabs) */
+PlusTabBar,
+SketchUpTabBarWidget,
+CPageTabs,
+PlusTabBar QTabBar,
+SketchUpTabBarWidget QTabBar,
+CPageTabs QTabBar {
+    background-color: #1e1e1e !important;
+    color: #cccccc !important;
+    border: none !important;
+}
+
+PlusTabBar QTabBar::tab,
+SketchUpTabBarWidget QTabBar::tab,
+CPageTabs QTabBar::tab {
+    background-color: #2d2d30 !important;
+    color: #969696 !important;
+    border: 1px solid #3a3a3d !important;
+    border-bottom: none !important;
+}
+
+PlusTabBar QTabBar::tab:selected,
+SketchUpTabBarWidget QTabBar::tab:selected,
+CPageTabs QTabBar::tab:selected {
+    background-color: #252526 !important;
+    background: #252526 !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a3d !important;
+    border-top: 2px solid #007acc !important;
+    border-bottom: 1px solid #252526 !important;
+}
+
+PlusTabBar QTabBar::tab:hover:!selected,
+SketchUpTabBarWidget QTabBar::tab:hover:!selected,
+CPageTabs QTabBar::tab:hover:!selected {
+    background-color: #38383c !important;
+    color: #d4d4d4 !important;
+}
+
+/* Tab close button and buttons inside tab bar */
+QTabBar::close-button {
+    image: url("{{ICONS_DIR}}/close_white.svg");
+    subcontrol-position: right;
+}
+
+QTabBar::close-button:hover {
+    background-color: #e81123;
+    border-radius: 2px;
 }
 
 PlusTabBar QToolButton,
@@ -1126,6 +1154,19 @@ QLineEdit#vcb:disabled {
 /* --------------------------------------------------------------------------
    Tooltips (Toolbar Hover & Rich Text: CQtToolTipWidget, AVCQtToolTipWidget, QToolTip)
    -------------------------------------------------------------------------- */
+/* Standard Qt Tooltips */
+QToolTip,
+QTipLabel {
+    background-color: #252526 !important;
+    background: #252526 !important;
+    color: #ffffff !important;
+    border: 1px solid #3e3e42 !important;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+/* Trimble Rich Tooltip Widgets (Self-painted in CQtToolTipWidget::paintEvent).
+   Do NOT add CSS border or padding to prevent layout stretching, empty space, or redundant bottom lines. */
 CQtToolTipWidget,
 AVCQtToolTipWidget,
 CQtToolTip,
@@ -1135,15 +1176,13 @@ AVThumbnailTooltipWidget,
 PageFrameToolTip,
 AVPageFrameToolTip,
 CTitleTip,
-AVCTitleTip,
-QToolTip,
-QTipLabel {
+AVCTitleTip {
     background-color: #252526 !important;
     background: #252526 !important;
     color: #ffffff !important;
-    border: 1px solid #3e3e42 !important;
-    padding: 4px 7px;
-    border-radius: 3px;
+    border: none !important;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 CQtToolTipWidget QLabel,
@@ -1166,6 +1205,8 @@ QToolTip QTextBrowser {
     background: transparent !important;
     color: #ffffff !important;
     border: none !important;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 CQtToolTipWidget h1, CQtToolTipWidget h2, CQtToolTipWidget h3, CQtToolTipWidget h4, CQtToolTipWidget p, CQtToolTipWidget span, CQtToolTipWidget b, CQtToolTipWidget a,
