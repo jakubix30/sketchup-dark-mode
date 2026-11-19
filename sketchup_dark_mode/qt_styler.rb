@@ -476,9 +476,9 @@ module SketchupDarkMode
         if win && @fn_widget_set_stylesheet
           Logger.info('[QtStyler] QString constructed. Invoking QWidget::setStyleSheet on main_window...') if defined?(Logger)
           @fn_widget_set_stylesheet.call(win, qstr_buf)
-        else
-          Logger.warn('[QtStyler] main_window not found; skipped QWidget::setStyleSheet.') if defined?(Logger)
         end
+        Logger.info('[QtStyler] Invoking QApplication::setStyleSheet to style top-level trays & tooltips...') if defined?(Logger)
+        @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
@@ -516,6 +516,7 @@ module SketchupDarkMode
         if win && @fn_widget_set_stylesheet
           @fn_widget_set_stylesheet.call(win, qstr_buf)
         end
+        @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
