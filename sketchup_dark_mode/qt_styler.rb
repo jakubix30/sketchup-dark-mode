@@ -338,12 +338,6 @@ module SketchupDarkMode
         end
 
         @fn_tooltip_set_palette.call(tt_pal_mem)
-        begin
-          c_qtooltip = Fiddle::Pointer.to_ptr("QToolTip\0")
-          @fn_set_palette.call(tt_pal_mem, c_qtooltip)
-        rescue StandardError => e
-          Logger.warn("[QtStyler] Could not set QApplication class palette for QToolTip: #{e.message}") if defined?(Logger)
-        end
         @fn_palette_dtor.call(tt_pal_mem)
         Logger.info('[QtStyler] style_tooltips is TRUE. Applied dark palette to QToolTip.') if defined?(Logger)
       else
@@ -482,9 +476,9 @@ module SketchupDarkMode
         if win && @fn_widget_set_stylesheet
           Logger.info('[QtStyler] QString constructed. Invoking QWidget::setStyleSheet on main_window...') if defined?(Logger)
           @fn_widget_set_stylesheet.call(win, qstr_buf)
+        else
+          Logger.warn('[QtStyler] main_window not found; skipped QWidget::setStyleSheet.') if defined?(Logger)
         end
-        Logger.info('[QtStyler] Invoking QApplication::setStyleSheet to style top-level popups & tooltips...') if defined?(Logger)
-        @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end
@@ -522,7 +516,6 @@ module SketchupDarkMode
         if win && @fn_widget_set_stylesheet
           @fn_widget_set_stylesheet.call(win, qstr_buf)
         end
-        @fn_set_stylesheet.call(qapp, qstr_buf)
       ensure
         @fn_qstr_dtor.call(qstr_buf)
       end

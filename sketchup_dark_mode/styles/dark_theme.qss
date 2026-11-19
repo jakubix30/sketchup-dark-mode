@@ -628,14 +628,34 @@ QHeaderView,
 QHeaderView::section,
 CDockingTray QHeaderView,
 CDockingTray QHeaderView::section,
+TagDialogHeader,
+AVTagDialogHeader,
+TagDialogHeader::section,
+AVTagDialogHeader::section,
+TagDialogHeader QHeaderView,
+AVTagDialogHeader QHeaderView,
+TagDialogHeader QHeaderView::section,
+AVTagDialogHeader QHeaderView::section,
+TagDialogHeader QWidget,
+AVTagDialogHeader QWidget,
+TagDialogHeaderDelegate,
 TagDialogV2 QHeaderView,
 TagDialogV2 QHeaderView::section,
 TagDialog QHeaderView,
 TagDialog QHeaderView::section,
+TagDialog,
+AVTagDialog,
+TagTreeView,
+AVTagTreeView,
 TagTreeViewV2 QHeaderView,
 TagTreeViewV2 QHeaderView::section,
+TagTreeCtrl,
+AVTagTreeCtrl,
 TagTreeCtrl QHeaderView,
 TagTreeCtrl QHeaderView::section,
+TagTree,
+AVTagTree,
+LayerListCtrl,
 QTreeWidget QHeaderView,
 QTreeWidget QHeaderView::section,
 QTreeView QHeaderView,
@@ -645,6 +665,7 @@ QTableView QHeaderView::section,
 QTableWidget QHeaderView,
 QTableWidget QHeaderView::section {
     background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
     color: #f0f0f0 !important;
     border: 1px solid #3e3e42 !important;
     border-top: none !important;
@@ -653,14 +674,26 @@ QTableWidget QHeaderView::section {
     font-weight: 600;
 }
 
+TagDialogHeader QLabel,
+AVTagDialogHeader QLabel {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #f0f0f0 !important;
+}
+
 QHeaderView::section:hover,
 CDockingTray QHeaderView::section:hover,
+TagDialogHeader::section:hover,
+AVTagDialogHeader::section:hover,
+TagDialogHeader QHeaderView::section:hover,
+AVTagDialogHeader QHeaderView::section:hover,
 TagDialogV2 QHeaderView::section:hover,
 TagDialog QHeaderView::section:hover,
 TagTreeViewV2 QHeaderView::section:hover,
 QTreeView QHeaderView::section:hover,
 QTableView QHeaderView::section:hover {
     background-color: #3e3e42 !important;
+    background: #3e3e42 !important;
     color: #ffffff !important;
 }
 
@@ -1104,33 +1137,73 @@ QLineEdit#vcb:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   Tooltips (Standard & Rich Text)
+   Tooltips (Toolbar Hover & Rich Text: CQtToolTipWidget, AVCQtToolTipWidget, QToolTip)
    -------------------------------------------------------------------------- */
+CQtToolTipWidget,
+AVCQtToolTipWidget,
+CQtToolTip,
+AVCQtToolTip,
+ThumbnailTooltipWidget,
+AVThumbnailTooltipWidget,
+PageFrameToolTip,
+AVPageFrameToolTip,
+CTitleTip,
+AVCTitleTip,
 QToolTip,
-QToolTip QLabel,
 QTipLabel,
+QToolTip QLabel,
 QTipLabel QLabel,
+CQtToolTipWidget QLabel,
+AVCQtToolTipWidget QLabel,
+CQtToolTip QLabel,
+AVCQtToolTip QLabel,
+CQtToolTipWidget QFrame,
+AVCQtToolTipWidget QFrame,
+CQtToolTipWidget QTextEdit,
+AVCQtToolTipWidget QTextEdit,
+CQtToolTipWidget QTextBrowser,
+AVCQtToolTipWidget QTextBrowser,
 QToolTip QTextEdit,
 QToolTip QTextBrowser {
     background-color: #252526 !important;
+    background: #252526 !important;
     color: #ffffff !important;
     border: 1px solid #3e3e42 !important;
     padding: 4px 7px;
     border-radius: 3px;
 }
 
-QToolTip *,
-QTipLabel * {
+CQtToolTipWidget QLabel,
+AVCQtToolTipWidget QLabel,
+CQtToolTip QLabel,
+AVCQtToolTip QLabel,
+CQtToolTipWidget QTextBrowser,
+AVCQtToolTipWidget QTextBrowser,
+CQtToolTipWidget QTextEdit,
+AVCQtToolTipWidget QTextEdit,
+QToolTip QLabel,
+QTipLabel QLabel {
     background-color: transparent !important;
+    background: transparent !important;
     color: #ffffff !important;
+    border: none !important;
 }
 
+CQtToolTipWidget h1, CQtToolTipWidget h2, CQtToolTipWidget h3, CQtToolTipWidget h4, CQtToolTipWidget p, CQtToolTipWidget span, CQtToolTipWidget b, CQtToolTipWidget a,
+AVCQtToolTipWidget h1, AVCQtToolTipWidget h2, AVCQtToolTipWidget h3, AVCQtToolTipWidget h4, AVCQtToolTipWidget p, AVCQtToolTipWidget span, AVCQtToolTipWidget b, AVCQtToolTipWidget a,
+CQtToolTip h1, CQtToolTip h2, CQtToolTip h3, CQtToolTip h4, CQtToolTip p, CQtToolTip span, CQtToolTip b, CQtToolTip a,
+AVCQtToolTip h1, AVCQtToolTip h2, AVCQtToolTip h3, AVCQtToolTip h4, AVCQtToolTip p, AVCQtToolTip span, AVCQtToolTip b, AVCQtToolTip a,
 QToolTip h1, QToolTip h2, QToolTip h3, QToolTip h4, QToolTip p, QToolTip span, QToolTip b, QToolTip a,
 QTipLabel h1, QTipLabel h2, QTipLabel h3, QTipLabel h4, QTipLabel p, QTipLabel span, QTipLabel b, QTipLabel a {
     color: #ffffff !important;
     background-color: transparent !important;
+    background: transparent !important;
 }
 
+CQtToolTipWidget hr,
+AVCQtToolTipWidget hr,
+CQtToolTip hr,
+AVCQtToolTip hr,
 QToolTip hr,
 QTipLabel hr {
     border: none !important;

@@ -50,10 +50,10 @@ module SketchupDarkMode
       # Safe startup apply: wait for AppObserver to deliver model notification
       # or apply if SketchUp is already running (e.g. extension reload in console)
       if dark_mode_active?
-        if Sketchup.active_model && Sketchup.active_model.valid?
+        if main_window_visible?
           @startup_styled = true
-          Logger.info('[Init] Active model detected. Scheduling safe 0.3s timer...') if defined?(Logger)
-          UI.start_timer(0.3, false) do
+          Logger.info('[Init] SketchUp window is visible (hot reload detected). Scheduling safe 0.2s timer...') if defined?(Logger)
+          UI.start_timer(0.2, false) do
             enable_dark_mode if dark_mode_active?
           end
         else
@@ -62,6 +62,19 @@ module SketchupDarkMode
       else
         Logger.info('[Init] Dark mode is inactive on startup. Loaded in clean Light Mode.') if defined?(Logger)
       end
+    end
+
+    def main_window_visible?
+      hwnd = (Sketchup.get_main_window rescue nil)
+      return false if hwnd.nil? || hwnd.to_i == 0
+
+      user32 = Fiddle.dlopen('user32.dll') rescue nil
+      return false unless user32
+
+      fn = Fiddle::Function.new(user32['IsWindowVisible'], [Fiddle::TYPE_LONG_LONG], Fiddle::TYPE_INT)
+      fn.call(hwnd) != 0
+    rescue StandardError
+      false
     end
 
     def dark_mode_active?
@@ -92,7 +105,6 @@ module SketchupDarkMode
       if Config['style_ui']
         Logger.info('[Action] Step 2/3: Applying Qt 6 UI styling (palette + QSS)...') if defined?(Logger)
         apply_current_qss
-        UI.start_timer(1.2, false) { apply_current_qss if dark_mode_active? }
       else
         Logger.info('[Action] Step 2/3: style_ui is false. Clearing Qt stylesheet...') if defined?(Logger)
         QtStyler.clear_stylesheet

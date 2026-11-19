@@ -67,7 +67,12 @@ module SketchupDarkMode
       if File.exist?(target_file)
         begin
           data = JSON.parse(File.read(target_file))
-          DEFAULT_SETTINGS.merge(data)
+          loaded = DEFAULT_SETTINGS.merge(data)
+          # Automatically upgrade style_tooltips to true if it was left at old false default
+          if data['style_tooltips'] == false && !data['style_tooltips_customized']
+            loaded['style_tooltips'] = true
+          end
+          loaded
         rescue StandardError => e
           puts "[Dark Mode] Error reading configuration: #{e.message}, restoring defaults"
           DEFAULT_SETTINGS.dup
