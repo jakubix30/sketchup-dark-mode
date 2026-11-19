@@ -28,8 +28,12 @@ if (-not $releaseTitle) {
 }
 
 # 1. Retrieve GitHub PAT from Git Credential Manager
-$inputStr = "protocol=https`nhost=github.com`n"
-$credOutput = $inputStr | git credential fill
+$credInput = @"
+protocol=https
+host=github.com
+
+"@
+$credOutput = $credInput | git credential fill
 $token = ""
 foreach ($line in $credOutput) {
     if ($line -match "^password=(.+)$") {
