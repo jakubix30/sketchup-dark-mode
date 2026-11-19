@@ -1,5 +1,6 @@
 $targets = @(
     "C:\Users\jakub\AppData\Roaming\SketchUp\SketchUp 2025\SketchUp\Plugins",
+    "C:\Users\jakub\AppData\Roaming\SketchUp\SketchUp 2027\SketchUp\Plugins",
     "C:\Users\jakub\Downloads\schizza262\SketchUp Pro 2026 v26.2.243 Portable\Sandbox\SketchUp 2026\roaming\modified\@APPDATA@\SketchUp\SketchUp 2026\SketchUp\Plugins",
     "C:\Users\jakub\Downloads\SketchUp Pro 2027 v27.0.277 (x64)\Data\AppData\SketchUp\SketchUp 2027\SketchUp\Plugins",
     "C:\Users\jakub\Downloads\SketchUp Pro 2027 v27.0.277 (x64)\App\SketchUp 2027\SketchUp\plugins"

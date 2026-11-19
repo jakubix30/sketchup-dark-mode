@@ -624,44 +624,32 @@ QTableView::item:selected {
 
 
 /* Table and tree view headers (Tags, Outliner, Layer column headings) */
-QHeaderView,
-QHeaderView::section,
+QHeaderView {
+    background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
+    color: #f0f0f0 !important;
+    border: none !important;
+}
+
+QHeaderView::section {
+    background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
+    color: #f0f0f0 !important;
+    border: 1px solid #3e3e42 !important;
+    border-top: none !important;
+    border-left: none !important;
+    padding: 3px 6px !important;
+    font-weight: 600;
+}
+
 CDockingTray QHeaderView,
 CDockingTray QHeaderView::section,
-TagDialogHeader,
-AVTagDialogHeader,
-TagDialogHeader::section,
-AVTagDialogHeader::section,
-TagDialogHeader QHeaderView,
-AVTagDialogHeader QHeaderView,
-TagDialogHeader QHeaderView::section,
-AVTagDialogHeader QHeaderView::section,
-TagDialogHeader QWidget,
-AVTagDialogHeader QWidget,
-TagDialogHeaderDelegate,
-TagDialogV2 QHeaderView,
-TagDialogV2 QHeaderView::section,
-TagDialog QHeaderView,
-TagDialog QHeaderView::section,
-TagDialog,
-AVTagDialog,
-TagTreeView,
-AVTagTreeView,
-TagTreeViewV2 QHeaderView,
-TagTreeViewV2 QHeaderView::section,
-TagTreeCtrl,
-AVTagTreeCtrl,
-TagTreeCtrl QHeaderView,
-TagTreeCtrl QHeaderView::section,
-TagTree,
-AVTagTree,
-LayerListCtrl,
-QTreeWidget QHeaderView,
-QTreeWidget QHeaderView::section,
 QTreeView QHeaderView,
 QTreeView QHeaderView::section,
 QTableView QHeaderView,
 QTableView QHeaderView::section,
+QTreeWidget QHeaderView,
+QTreeWidget QHeaderView::section,
 QTableWidget QHeaderView,
 QTableWidget QHeaderView::section {
     background-color: #2d2d30 !important;
@@ -674,22 +662,8 @@ QTableWidget QHeaderView::section {
     font-weight: 600;
 }
 
-TagDialogHeader QLabel,
-AVTagDialogHeader QLabel {
-    background: transparent !important;
-    background-color: transparent !important;
-    color: #f0f0f0 !important;
-}
-
 QHeaderView::section:hover,
 CDockingTray QHeaderView::section:hover,
-TagDialogHeader::section:hover,
-AVTagDialogHeader::section:hover,
-TagDialogHeader QHeaderView::section:hover,
-AVTagDialogHeader QHeaderView::section:hover,
-TagDialogV2 QHeaderView::section:hover,
-TagDialog QHeaderView::section:hover,
-TagTreeViewV2 QHeaderView::section:hover,
 QTreeView QHeaderView::section:hover,
 QTableView QHeaderView::section:hover {
     background-color: #3e3e42 !important;
@@ -700,7 +674,67 @@ QTableView QHeaderView::section:hover {
 QHeaderView::section:checked,
 QHeaderView::section:pressed {
     background-color: #1e1e1e !important;
+    background: #1e1e1e !important;
     color: #ffffff !important;
+}
+
+QHeaderView::down-arrow,
+QHeaderView::up-arrow {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    margin-right: 4px;
+}
+
+/* Specific Trimble Tag Views */
+TagDialogV2,
+TagDialog,
+TagTreeViewV2,
+TagTreeCtrl,
+TagTreeView,
+TagTree,
+LayerListCtrl {
+    background-color: #1e1e1e !important;
+    background: #1e1e1e !important;
+    color: #f0f0f0 !important;
+}
+
+TagDialogV2 QHeaderView,
+TagDialog QHeaderView,
+TagTreeViewV2 QHeaderView,
+TagTreeCtrl QHeaderView,
+TagTreeView QHeaderView {
+    background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
+    color: #f0f0f0 !important;
+}
+
+TagDialogV2 QHeaderView::section,
+TagDialog QHeaderView::section,
+TagTreeViewV2 QHeaderView::section,
+TagTreeCtrl QHeaderView::section,
+TagTreeView QHeaderView::section {
+    background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
+    color: #f0f0f0 !important;
+    border: 1px solid #3e3e42 !important;
+    border-top: none !important;
+    border-left: none !important;
+    padding: 3px 6px !important;
+    font-weight: 600;
+}
+
+TagDialogHeader,
+AVTagDialogHeader {
+    background-color: #2d2d30 !important;
+    background: #2d2d30 !important;
+    color: #f0f0f0 !important;
+}
+
+TagDialogHeader QLabel,
+AVTagDialogHeader QLabel {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #f0f0f0 !important;
 }
 
 /* --------------------------------------------------------------------------
